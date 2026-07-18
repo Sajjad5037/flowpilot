@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
 
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import EngineeringIcon from "@mui/icons-material/Engineering";
+
+
 import PageHeader from "../../components/common/PageHeader";
 import StatCard from "../../components/common/StatCard";
 
-import ActivityTimeline from "../../components/dashboard/ActivityTimeline";
-import ProgressCard from "../../components/dashboard/ProgressCard";
+
 import NotificationCard from "../../components/dashboard/NotificationCard";
 import MeetingCard from "../../components/dashboard/MeetingCard";
 
@@ -51,7 +54,14 @@ export default function Dashboard() {
     reviewStatus,
   } = dashboard;
 
-  const { employees, reviews, meetings: meetingStats, overdue } = statistics;
+  const {
+  employees,
+  supervisors,
+  contractors,
+  reviews,
+  meetings: meetingStats,
+  overdue,
+} = statistics;
 
   return (
     <>
@@ -61,140 +71,123 @@ export default function Dashboard() {
       />
 
       {/* KPI Cards */}
+      {/* Workforce Overview */}
 
-      <Grid
-        container
-        spacing={4}
-        sx={{ mb: 4 }}
-      >
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          xl={3}
-        >
-          <StatCard
-  title={employees.title}
-  value={employees.value}
-  unit={employees.unit}
-  summary={employees.summary}
-  action={employees.action}
-  icon={<GroupsIcon />}
-  color="#2563EB"
-/>
-      </Grid>
+<Grid
+  container
+  spacing={4}
+  sx={{ mb: 4 }}
+>
+  <Grid
+    item
+    xs={12}
+    sm={6}
+    xl={4}
+  >
+    <StatCard
+      title={employees.title}
+      value={employees.value}
+      unit={employees.unit}
+      summary={employees.summary}
+      action={employees.action}
+      icon={<GroupsIcon />}
+      color="#2563EB"
+    />
+  </Grid>
 
-      <Grid
-        item
-        xs={12}
-        sm={6}
-        xl={3}
-      >
-        <StatCard
-          title={reviews.title}
-          value={reviews.value}
-          unit={reviews.unit}
-          summary={reviews.summary}
-          action={reviews.action}
-          icon={<AssignmentTurnedInIcon />}
-          color="#22C55E"
-        />
-      </Grid>
+  <Grid
+    item
+    xs={12}
+    sm={6}
+    xl={4}
+  >
+    <StatCard
+      title={supervisors.title}
+      value={supervisors.value}
+      summary={supervisors.summary}
+      action={supervisors.action}
+      icon={<SupervisorAccountIcon />}
+      color="#7C3AED"
+    />
+  </Grid>
 
-      <Grid
-        item
-        xs={12}
-        sm={6}
-        xl={3}
-      >
-        <StatCard
-          title={meetingStats.title}
-          value={meetingStats.value}
-          unit={meetingStats.unit}
-          summary={meetingStats.summary}
-          action={meetingStats.action}
-          icon={<EventAvailableIcon />}
-          color="#7C3AED"
-        />
-      </Grid>
+  <Grid
+    item
+    xs={12}
+    sm={6}
+    xl={4}
+  >
+    <StatCard
+      title={contractors.title}
+      value={contractors.value}
+      summary={contractors.summary}
+      action={contractors.action}
+      icon={<EngineeringIcon />}
+      color="#F59E0B"
+    />
+  </Grid>
+</Grid>
 
-      <Grid
-        item
-        xs={12}
-        sm={6}
-        xl={3}
-      >
-        <StatCard
-          title={overdue.title}
-          value={overdue.value}
-          unit={overdue.unit}
-          summary={overdue.summary}
-          action={overdue.action}
-          icon={<WarningAmberIcon />}
-          color="#EF4444"
-        />
-      </Grid>
-      </Grid>
+{/* Review Workflow */}
 
-      {/* Activity & Progress */}
+<Grid
+  container
+  spacing={4}
+  sx={{ mb: 4 }}
+>
+  <Grid
+    item
+    xs={12}
+    sm={6}
+    xl={4}
+  >
+    <StatCard
+      title={reviews.title}
+      value={reviews.value}
+      unit={reviews.unit}
+      summary={reviews.summary}
+      action={reviews.action}
+      icon={<AssignmentTurnedInIcon />}
+      color="#22C55E"
+    />
+  </Grid>
 
-      <Grid
-        container
-        spacing={4}
-        sx={{ mb: 4 }}
-      >
-        <Grid
-          item
-          xs={12}
-          lg={8}
-        >
-          <ActivityTimeline
-            activities={activities}
-          />
-        </Grid>
+  <Grid
+    item
+    xs={12}
+    sm={6}
+    xl={4}
+  >
+    <StatCard
+      title={meetingStats.title}
+      value={meetingStats.value}
+      unit={meetingStats.unit}
+      summary={meetingStats.summary}
+      action={meetingStats.action}
+      icon={<EventAvailableIcon />}
+      color="#7C3AED"
+    />
+  </Grid>
 
-        <Grid
-          item
-          xs={12}
-          lg={4}
-        >
-          <ProgressCard
-            progress={progress}
-          />
-        </Grid>
-      </Grid>
+  <Grid
+    item
+    xs={12}
+    sm={6}
+    xl={4}
+  >
+    <StatCard
+      title={overdue.title}
+      value={overdue.value}
+      unit={overdue.unit}
+      summary={overdue.summary}
+      action={overdue.action}
+      icon={<WarningAmberIcon />}
+      color="#EF4444"
+    />
+  </Grid>
+</Grid>
 
-      {/* Charts */}
-
-      <Grid
-        container
-        spacing={4}
-        sx={{ mb: 4 }}
-      >
-        <Grid
-          item
-          xs={12}
-          lg={6}
-        >
-          <LineChartCard
-            title="Monthly Review Completion"
-            subtitle="Reviews completed over the last six months"
-            data={monthlyReviews}
-          />
-        </Grid>
-
-        <Grid
-          item
-          xs={12}
-          lg={6}
-        >
-          <BarChartCard
-            title="Department Performance"
-            subtitle="Average review score by department"
-            data={departmentPerformance}
-          />
-        </Grid>
-      </Grid>
+      
 
       {/* Notifications & Review Status */}
 
@@ -202,15 +195,7 @@ export default function Dashboard() {
         container
         spacing={4}
       >
-        <Grid
-          item
-          xs={12}
-          lg={4}
-        >
-          <NotificationCard
-            notifications={notifications}
-          />
-        </Grid>
+        
 
         <Grid
           item
@@ -222,17 +207,7 @@ export default function Dashboard() {
           />
         </Grid>
 
-        <Grid
-          item
-          xs={12}
-          lg={4}
-        >
-          <PieChartCard
-            title="Review Status Distribution"
-            subtitle="Current review status"
-            data={reviewStatus}
-          />
-        </Grid>
+        
       </Grid>
     </>
   );

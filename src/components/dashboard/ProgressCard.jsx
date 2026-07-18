@@ -41,32 +41,11 @@ export default function ProgressCard({
             height: 10,
             borderRadius: 999,
             bgcolor: "#E2E8F0",
-
             "& .MuiLinearProgress-bar": {
               borderRadius: 999,
             },
           }}
         />
-
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-        >
-          <Typography
-            variant="caption"
-            color="text.secondary"
-          >
-            Completion
-          </Typography>
-
-          <Typography
-            variant="caption"
-            fontWeight={600}
-            color="primary.main"
-          >
-            {progress}%
-          </Typography>
-        </Stack>
       </Stack>
     </SectionCard>
   );

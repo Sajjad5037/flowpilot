@@ -12,18 +12,37 @@
 
         "action": "Manage Employees"
     },
-    "reviews": {
-        "title": "Reviews",
-        "value": 18,
-        "unit": "Pending Reviews",
-
-        "summary": [
-            "6 Due This Week",
-            "4 Awaiting Approval"
-        ],
-
-        "action": "Open Reviews"
+    "supervisors": {
+      "title": "Supervisors",
+      "value": 8,
+      "summary": [
+        "1 Pending Approval",
+        "2 Departments"
+      ],
+      "action": "Manage Employees"
     },
+
+    "contractors": {
+      "title": "Contractors",
+      "value": 14,
+      "summary": [
+        "3 Contracts Expiring",
+        "1 Awaiting Approval"
+      ],
+      "action": "Manage Employees"
+    },
+    "reviews": {
+      "title": "Evaluations",
+      "value": 18,
+      "unit": "Pending Evaluations",
+
+      "summary": [
+          "6 Due This Week",
+          "4 Awaiting Approval"
+      ],
+
+      "action": "Open Evaluations"
+  },
     "meetings": {
         "title": "Meetings",
         "value": 7,
