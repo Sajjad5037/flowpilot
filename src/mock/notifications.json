@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "type": "error",
+    "message": "Emily Davis submitted her self review.",
+    "link": "/reviews"
+  },
+  {
+    "id": 2,
+    "type": "warning",
+    "message": "John Smith's review is due tomorrow.",
+    "link": "/reviews"
+  },
+  {
+    "id": 3,
+    "type": "success",
+    "message": "Sarah Lee approved a review.",
+    "link": "/reviews"
+  },
+  {
+    "id": 4,
+    "type": "error",
+    "message": "Two employees have no assigned supervisor.",
+    "link": "/employees"
+  },
+  {
+    "id": 5,
+    "type": "info",
+    "message": "Review Cycle Q3 starts Monday.",
+    "link": "/review-cycles"
+  }
+]

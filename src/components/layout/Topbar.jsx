@@ -1,10 +1,18 @@
+import { useEffect, useState } from "react";
+
+import notificationService from "../../services/notificationService";
+
 import {
   AppBar,
   Avatar,
   Badge,
   Box,
+  Divider,
   IconButton,
   InputBase,
+  ListItemText,
+  Menu,
+  MenuItem,
   Paper,
   Toolbar,
   Typography,
@@ -15,6 +23,30 @@ import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneR
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
 export default function Topbar() {
+  const [notificationAnchor, setNotificationAnchor] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+
+  const handleNotificationOpen = (event) => {
+    setNotificationAnchor(event.currentTarget);
+  };
+
+  const handleNotificationClose = () => {
+    setNotificationAnchor(null);
+  };
+  useEffect(() => {
+  async function loadNotifications() {
+  try {
+    const data = await notificationService.getNotifications();
+    setNotifications(data);
+  } catch (error) {
+    console.error("Failed to load notifications:", error);
+  }
+}
+
+  loadNotifications();
+}, []);
+
+
   return (
     <AppBar
       position="sticky"
@@ -76,14 +108,69 @@ export default function Topbar() {
             <SettingsOutlinedIcon />
           </IconButton>
 
-          <IconButton>
+          {/* Notifications */}
+
+          <IconButton onClick={handleNotificationOpen}>
             <Badge
-              badgeContent={5}
-              color="error"
+                badgeContent={notifications.length}
+                color="error"
             >
               <NotificationsNoneRoundedIcon />
             </Badge>
           </IconButton>
+
+          <Menu
+            anchorEl={notificationAnchor}
+            open={Boolean(notificationAnchor)}
+            onClose={handleNotificationClose}
+            PaperProps={{
+              sx: {
+                width: 380,
+                mt: 1.5,
+                borderRadius: 3,
+                boxShadow: "0 12px 30px rgba(15,23,42,.12)",
+              },
+            }}
+          >
+            <Typography
+              sx={{
+                px: 2,
+                py: 1.5,
+                fontWeight: 700,
+                fontSize: 15,
+              }}
+            >
+              🔔 Notifications ({notifications.length})
+            </Typography>
+
+            <Divider />
+
+            {notifications.map((notification) => (
+                <MenuItem
+                    key={notification.id}
+                    onClick={handleNotificationClose}
+                >
+                    <ListItemText
+                        primary={notification.message}
+                    />
+                </MenuItem>
+            ))}
+
+            <Divider />
+
+            <MenuItem
+              onClick={handleNotificationClose}
+              sx={{
+                justifyContent: "center",
+                color: "primary.main",
+                fontWeight: 600,
+              }}
+            >
+              View All Notifications →
+            </MenuItem>
+          </Menu>
+
+          {/* User */}
 
           <Avatar
             sx={{

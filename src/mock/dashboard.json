@@ -1,28 +1,52 @@
 {
   "statistics": {
-    "employees": {
-      "title": "Employees",
-      "value": 25,
-      "trend": "+3%",
-      "subtitle": "this month"
+        "employees": {
+        "title": "Employees",
+        "value": 25,
+        "unit": "Active Employees",
+
+        "summary": [
+            "3 New Hires",
+            "2 Awaiting Assignment"
+        ],
+
+        "action": "Manage Employees"
     },
     "reviews": {
-      "title": "Reviews",
-      "value": 18,
-      "trend": "+12%",
-      "subtitle": "completed"
+        "title": "Reviews",
+        "value": 18,
+        "unit": "Pending Reviews",
+
+        "summary": [
+            "6 Due This Week",
+            "4 Awaiting Approval"
+        ],
+
+        "action": "Open Reviews"
     },
     "meetings": {
-      "title": "Meetings",
-      "value": 6,
-      "trend": "+3",
-      "subtitle": "scheduled today"
+        "title": "Meetings",
+        "value": 7,
+        "unit": "Scheduled",
+
+        "summary": [
+            "2 Today",
+            "3 Tomorrow"
+        ],
+
+        "action": "Meeting Queue"
     },
     "overdue": {
-      "title": "Overdue",
-      "value": 2,
-      "trend": "-1",
-      "subtitle": "requires attention"
+        "title": "Overdue",
+        "value": 2,
+        "unit": "Reviews",
+
+        "summary": [
+            "Oldest: 5 Days",
+            "High Priority"
+        ],
+
+        "action": "Resolve Reviews"
     }
   },
 

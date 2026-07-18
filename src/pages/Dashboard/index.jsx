@@ -51,7 +51,7 @@ export default function Dashboard() {
     reviewStatus,
   } = dashboard;
 
-  const { employees, reviews, overdue } = statistics;
+  const { employees, reviews, meetings: meetingStats, overdue } = statistics;
 
   return (
     <>
@@ -74,62 +74,66 @@ export default function Dashboard() {
           xl={3}
         >
           <StatCard
-            title={employees.title}
-            value={employees.value}
-            trend={employees.trend}
-            subtitle={employees.subtitle}
-            icon={<GroupsIcon />}
-            color="#2563EB"
-          />
-        </Grid>
+  title={employees.title}
+  value={employees.value}
+  unit={employees.unit}
+  summary={employees.summary}
+  action={employees.action}
+  icon={<GroupsIcon />}
+  color="#2563EB"
+/>
+      </Grid>
 
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          xl={3}
-        >
-          <StatCard
-            title={reviews.title}
-            value={reviews.value}
-            trend={reviews.trend}
-            subtitle={reviews.subtitle}
-            icon={<AssignmentTurnedInIcon />}
-            color="#22C55E"
-          />
-        </Grid>
+      <Grid
+        item
+        xs={12}
+        sm={6}
+        xl={3}
+      >
+        <StatCard
+          title={reviews.title}
+          value={reviews.value}
+          unit={reviews.unit}
+          summary={reviews.summary}
+          action={reviews.action}
+          icon={<AssignmentTurnedInIcon />}
+          color="#22C55E"
+        />
+      </Grid>
 
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          xl={3}
-        >
-          <StatCard
-            title={meetings.title}
-            value={meetings.value}
-            trend={meetings.trend}
-            subtitle={meetings.subtitle}
-            icon={<EventAvailableIcon />}
-            color="#7C3AED"
-          />
-        </Grid>
+      <Grid
+        item
+        xs={12}
+        sm={6}
+        xl={3}
+      >
+        <StatCard
+          title={meetingStats.title}
+          value={meetingStats.value}
+          unit={meetingStats.unit}
+          summary={meetingStats.summary}
+          action={meetingStats.action}
+          icon={<EventAvailableIcon />}
+          color="#7C3AED"
+        />
+      </Grid>
 
-        <Grid
-          item
-          xs={12}
-          sm={6}
-          xl={3}
-        >
-          <StatCard
-            title={overdue.title}
-            value={overdue.value}
-            trend={overdue.trend}
-            subtitle={overdue.subtitle}
-            icon={<WarningAmberIcon />}
-            color="#EF4444"
-          />
-        </Grid>
+      <Grid
+        item
+        xs={12}
+        sm={6}
+        xl={3}
+      >
+        <StatCard
+          title={overdue.title}
+          value={overdue.value}
+          unit={overdue.unit}
+          summary={overdue.summary}
+          action={overdue.action}
+          icon={<WarningAmberIcon />}
+          color="#EF4444"
+        />
+      </Grid>
       </Grid>
 
       {/* Activity & Progress */}

@@ -1,4 +1,5 @@
-import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import Divider from "@mui/material/Divider";
 import ArrowForwardRoundedIcon from "@mui/icons-material/ArrowForwardRounded";
 
 import {
@@ -12,8 +13,9 @@ import SectionCard from "./SectionCard";
 export default function StatCard({
   title,
   value,
-  subtitle,
-  trend = "+12%",
+  unit,
+  summary = [],
+  action = "View Details",
   icon,
   color = "#2563EB",
 }) {
@@ -54,12 +56,19 @@ export default function StatCard({
             >
               {value}
             </Typography>
+            <Typography
+              variant="body2"
+              color="text.secondary"
+            >
+              {unit}
+            </Typography>
+
           </Box>
 
           <Box
             sx={{
-              width: 60,
-              height: 60,
+              width: 64,
+              height: 64,
               borderRadius: 4,
 
               bgcolor: `${color}15`,
@@ -71,7 +80,7 @@ export default function StatCard({
               justifyContent: "center",
 
               "& svg": {
-                fontSize: 30,
+                fontSize: 32,
               },
             }}
           >
@@ -81,33 +90,29 @@ export default function StatCard({
 
         {/* Trend */}
 
-        <Stack
-          direction="row"
-          spacing={1}
-          alignItems="center"
-        >
-          <TrendingUpRoundedIcon
-            sx={{
-              color: "#22C55E",
-              fontSize: 18,
-            }}
-          />
+        <Divider />
+        <Stack spacing={1}>
+          {summary.map((item) => (
+            <Stack
+              key={item}
+              direction="row"
+              spacing={1}
+              alignItems="center"
+            >
+              <CheckCircleRoundedIcon
+                sx={{
+                  fontSize: 18,
+                  color: "#22C55E",
+                }}
+              />
 
-          <Typography
-            fontWeight={600}
-            color="#22C55E"
-            fontSize={14}
-          >
-            {trend}
-          </Typography>
-
-          <Typography
-            variant="body2"
-            color="text.secondary"
-          >
-            {subtitle}
-          </Typography>
+              <Typography variant="body2">
+                {item}
+              </Typography>
+            </Stack>
+          ))}
         </Stack>
+        <Divider sx={{ mt: "auto" }} />
 
         {/* Footer */}
 
@@ -129,7 +134,7 @@ export default function StatCard({
             fontWeight={600}
             fontSize={14}
           >
-            View Details
+            {action}
           </Typography>
 
           <ArrowForwardRoundedIcon
