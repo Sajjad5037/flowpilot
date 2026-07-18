@@ -1,0 +1,235 @@
+{
+  "statistics": {
+    "employees": {
+      "title": "Employees",
+      "value": 25,
+      "trend": "+3%",
+      "subtitle": "this month"
+    },
+    "reviews": {
+      "title": "Reviews",
+      "value": 18,
+      "trend": "+12%",
+      "subtitle": "completed"
+    },
+    "meetings": {
+      "title": "Meetings",
+      "value": 6,
+      "trend": "+3",
+      "subtitle": "scheduled today"
+    },
+    "overdue": {
+      "title": "Overdue",
+      "value": 2,
+      "trend": "-1",
+      "subtitle": "requires attention"
+    }
+  },
+
+  "activities": [
+    {
+      "id": 1,
+      "user": "John Smith",
+      "action": "submitted self review",
+      "time": "2 mins ago"
+    },
+    {
+      "id": 2,
+      "user": "Sarah Lee",
+      "action": "approved employee goals",
+      "time": "18 mins ago"
+    },
+    {
+      "id": 3,
+      "user": "Michael Brown",
+      "action": "scheduled review meeting",
+      "time": "1 hour ago"
+    },
+    {
+      "id": 4,
+      "user": "Emily Davis",
+      "action": "completed performance review",
+      "time": "Today, 9:15 AM"
+    }
+  ],
+
+  "notifications": [
+    {
+      "id": 1,
+      "message": "5 employees have pending reviews",
+      "type": "warning",
+      "time": "5 mins ago"
+    },
+    {
+      "id": 2,
+      "message": "Annual review cycle begins Monday",
+      "type": "info",
+      "time": "30 mins ago"
+    },
+    {
+      "id": 3,
+      "message": "2 meetings require rescheduling",
+      "type": "error",
+      "time": "Today"
+    },
+    {
+      "id": 4,
+      "message": "Reminder emails sent successfully",
+      "type": "success",
+      "time": "Yesterday"
+    }
+  ],
+
+  "meetings": [
+    {
+      "id": 1,
+      "employee": "John Smith",
+      "role": "Software Engineer",
+      "department": "Engineering",
+      "date": "Today",
+      "time": "2:00 PM"
+    },
+    {
+      "id": 2,
+      "employee": "Sarah Lee",
+      "role": "Product Designer",
+      "department": "Design",
+      "date": "Today",
+      "time": "3:30 PM"
+    },
+    {
+      "id": 3,
+      "employee": "Emily Davis",
+      "role": "HR Specialist",
+      "department": "Human Resources",
+      "date": "Tomorrow",
+      "time": "11:00 AM"
+    }
+  ],
+
+  "monthlyReviews": [
+    {
+      "month": "Jan",
+      "reviews": 42
+    },
+    {
+      "month": "Feb",
+      "reviews": 58
+    },
+    {
+      "month": "Mar",
+      "reviews": 71
+    },
+    {
+      "month": "Apr",
+      "reviews": 65
+    },
+    {
+      "month": "May",
+      "reviews": 89
+    },
+    {
+      "month": "Jun",
+      "reviews": 97
+    }
+  ],
+
+  "departmentPerformance": [
+    {
+      "department": "Engineering",
+      "score": 91
+    },
+    {
+      "department": "HR",
+      "score": 82
+    },
+    {
+      "department": "Sales",
+      "score": 74
+    },
+    {
+      "department": "Marketing",
+      "score": 87
+    },
+    {
+      "department": "Finance",
+      "score": 79
+    }
+  ],
+
+  "reviewStatus": [
+    {
+      "status": "Completed",
+      "value": 62
+    },
+    {
+      "status": "In Progress",
+      "value": 24
+    },
+    {
+      "status": "Pending",
+      "value": 10
+    },
+    {
+      "status": "Overdue",
+      "value": 4
+    }
+  ],
+
+  "quickActions": [
+    {
+      "id": 1,
+      "title": "Create Review Cycle"
+    },
+    {
+      "id": 2,
+      "title": "Add Employee"
+    },
+    {
+      "id": 3,
+      "title": "Schedule Meeting"
+    },
+    {
+      "id": 4,
+      "title": "Create Template"
+    }
+  ],
+
+  "upcomingReviewCycles": [
+    {
+      "id": 1,
+      "title": "Q3 Performance Reviews",
+      "startDate": "2026-08-01",
+      "employees": 112,
+      "status": "Scheduled"
+    },
+    {
+      "id": 2,
+      "title": "Leadership Review",
+      "startDate": "2026-08-15",
+      "employees": 18,
+      "status": "Draft"
+    }
+  ],
+
+  "topPerformers": [
+    {
+      "id": 1,
+      "name": "John Smith",
+      "department": "Engineering",
+      "score": 98
+    },
+    {
+      "id": 2,
+      "name": "Sarah Lee",
+      "department": "Design",
+      "score": 96
+    },
+    {
+      "id": 3,
+      "name": "Emily Davis",
+      "department": "Human Resources",
+      "score": 95
+    }
+  ]
+}
