@@ -36,7 +36,7 @@ export default function Topbar() {
   useEffect(() => {
   async function loadNotifications() {
   try {
-    const data = await notificationService.getNotifications();
+    const data = await notificationService.getTopbarNotifications();
     setNotifications(data);
   } catch (error) {
     console.error("Failed to load notifications:", error);

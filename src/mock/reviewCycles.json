@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "quarter": "Q1",
+    "reviewPeriod": "January 1 – March 31",
+    "sendDate": "2026-03-15"
+  },
+  {
+    "id": 2,
+    "quarter": "Q2",
+    "reviewPeriod": "April 1 – June 30",
+    "sendDate": "2026-06-15"
+  },
+  {
+    "id": 3,
+    "quarter": "Q3",
+    "reviewPeriod": "July 1 – September 30",
+    "sendDate": "2026-09-15"
+  },
+  {
+    "id": 4,
+    "quarter": "Q4",
+    "reviewPeriod": "October 1 – December 31",
+    "sendDate": "2026-12-15"
+  }
+]

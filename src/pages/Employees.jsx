@@ -7,13 +7,14 @@ import {
     Typography
 } from "@mui/material";
 
-import EmployeesTable from "../../components/employees/EmployeesTable";
-import { getEmployees } from "../../services/employeeService";
-
+import EmployeesTable from "../components/employee/EmployeesTable";
+import { getEmployees } from "../services/employeeService";
+import AddEmployeeDialog from "../components/employee/AddEmployeeDialog";
 export default function Employees() {
 
     const [employees, setEmployees] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [openAddDialog, setOpenAddDialog] = useState(false);
 
     useEffect(() => {
         loadEmployees();
@@ -30,10 +31,22 @@ export default function Employees() {
     }
 
     function handleAddEmployee() {
-        console.log("Open Add Employee Dialog");
-    }
+        setOpenAddDialog(true);
+        }
+    function handleCloseDialog() {
+        setOpenAddDialog(false);
+        }
 
-    return (
+    function handleEmployeeSaved(employee) {
+        setEmployees((prev) => [
+            ...prev,
+            {
+            id: Date.now(),
+            ...employee,
+            },
+        ]);
+        }
+return (
 
         <Box p={4}>
 
@@ -57,17 +70,20 @@ export default function Employees() {
 
             </Stack>
 
-            {loading ? (
+            <>
+                {loading ? (
+                    <CircularProgress />
+                ) : (
+                    <EmployeesTable employees={employees} />
+                )}
 
-                <CircularProgress />
-
-            ) : (
-
-                <EmployeesTable
-                    employees={employees}
+                <AddEmployeeDialog
+                    open={openAddDialog}
+                    onClose={handleCloseDialog}
+                    onSaved={handleEmployeeSaved}
                 />
+                </>
 
-            )}
 
         </Box>
 

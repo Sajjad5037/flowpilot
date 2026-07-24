@@ -1,12 +1,14 @@
-import notifications from "../mock/notifications.json";
+import { mockNotifications } from "../mock/notifications";
+
+console.log("notificationService loaded");
 
 const notificationService = {
   async getNotifications() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(notifications);
-      }, 200);
-    });
+    return mockNotifications;
+  },
+
+  async getTopbarNotifications() {
+    return mockNotifications.notifications;
   },
 };
 

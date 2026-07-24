@@ -3,17 +3,23 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
 import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
+import EvaluationTemplates from "../pages/EvaluationTemplates";
+import MeetingReadiness from "../pages/MeetingReadiness";
+
+
 
 import Dashboard from "../pages/Dashboard";
-import ReviewCycles from "../pages/ReviewCycles";
+
 import Templates from "../pages/Templates";
 import Employees from "../pages/Employees";
 import Supervisors from "../pages/Supervisors";
-import Reviews from "../pages/Reviews";
+import Evaluations from "../pages/Evaluations";
 import Notifications from "../pages/Notifications";
 import MeetingQueue from "../pages/MeetingQueue";
 import Analytics from "../pages/Analytics";
 import DemoScenarios from "../pages/DemoScenarios";
+import ReviewCycles from "../pages/ReviewCycles";
+import EvaluationTemplateBuilder from "../pages/EvaluationTemplateBuilder";
 
 function Layout({ children }) {
   return (
@@ -41,6 +47,14 @@ export default function AppRoutes() {
           </Layout>
         }
       />
+      <Route
+          path="/evaluations"
+          element={
+              <Layout>
+                  <Evaluations />
+              </Layout>
+          }
+      />
 
       <Route
         path="/review-cycles"
@@ -55,7 +69,7 @@ export default function AppRoutes() {
         path="/templates"
         element={
           <Layout>
-            <Templates />
+            <EvaluationTemplates />
           </Layout>
         }
       />
@@ -77,15 +91,16 @@ export default function AppRoutes() {
           </Layout>
         }
       />
-
       <Route
-        path="/reviews"
-        element={
-          <Layout>
-            <Reviews />
-          </Layout>
-        }
+          path="/meeting-readiness"
+          element={
+              <Layout>
+                  <MeetingReadiness />
+              </Layout>
+          }
       />
+
+      
 
       <Route
         path="/notifications"
@@ -121,6 +136,10 @@ export default function AppRoutes() {
             <DemoScenarios />
           </Layout>
         }
+      />
+      <Route
+          path="/evaluation-templates/:id/builder"
+          element={<EvaluationTemplateBuilder />}
       />
 
       {/* 404 */}

@@ -30,12 +30,12 @@ const mainMenu = [
     path: "/dashboard",
   },
   {
-    title: "Review Cycles",
+    title: "Evaluation Cycles",
     icon: <CalendarMonth />,
     path: "/review-cycles",
   },
   {
-    title: "Templates",
+    title: "Evaluation Templates",
     icon: <Description />,
     path: "/templates",
   },
@@ -50,9 +50,14 @@ const mainMenu = [
     path: "/supervisors",
   },
   {
-    title: "Reviews",
+    title: "Evaluation Preview",
     icon: <Assignment />,
-    path: "/reviews",
+    path: "/evaluations",
+  },
+  {
+      title: "Meeting Readiness",
+      path: "/meeting-readiness",
+      icon: <Event />,
   },
 ];
 
