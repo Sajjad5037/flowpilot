@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { QUESTION_TYPES } from "../../constants/questionTypes";
-import { QUESTION_DEFAULTS } from "../../constants/questionRegistry";
-
+import {
+    QUESTION_DEFAULTS,
+    QUESTION_REGISTRY
+} from "../../constants/questionRegistry";
 import {
     Button,
     Checkbox,
@@ -10,6 +12,7 @@ import {
     DialogContent,
     DialogTitle,
     FormControlLabel,
+    ListSubheader,
     MenuItem,
     Stack,
     TextField
@@ -21,12 +24,25 @@ export default function AddQuestionDialog({
     onSave
 }) {
 
+    
     const [form, setForm] = useState({
         type: "short_text",
         label: "",
         helpText: "",
         required: true
     });
+    const selectedTypeLabel =
+        QUESTION_TYPES.find(type => type.value === form.type)?.label || "Question";
+
+    
+
+    const hideStandardFields =
+        QUESTION_REGISTRY[form.type]?.hideStandardFields ?? false;
+
+    const buttonText =
+        hideStandardFields
+            ? `Create ${selectedTypeLabel}`
+            : `Create ${selectedTypeLabel} Question`;    
 
     function handleChange(event) {
 
@@ -61,7 +77,9 @@ export default function AddQuestionDialog({
 
     function handleSave() {
 
-        if (!form.label.trim()) return;
+        if (!hideStandardFields && !form.label.trim()) {
+            return;
+        }
 
         const question = {
             id: crypto.randomUUID(),
@@ -94,7 +112,7 @@ export default function AddQuestionDialog({
 
             <DialogTitle>
 
-                Add Question
+                Add Component
 
             </DialogTitle>
 
@@ -114,46 +132,128 @@ export default function AddQuestionDialog({
                         onChange={handleChange}
                     >
 
-                        {QUESTION_TYPES.map((type) => (
+                        <ListSubheader>
+                            Content
+                        </ListSubheader>
 
-                            <MenuItem
-                                key={type.value}
-                                value={type.value}
-                            >
-                                {type.label}
-                            </MenuItem>
+                        <MenuItem value="heading">
+                            Heading
+                        </MenuItem>
 
-                        ))}
+                        <MenuItem value="paragraph">
+                            Paragraph
+                        </MenuItem>
+                        <MenuItem value="information_card">
+                            Information Card
+                        </MenuItem>
+
+                        <ListSubheader>
+                            Questions
+                        </ListSubheader>
+
+                        <MenuItem value="short_text">
+                            Short Text
+                        </MenuItem>
+
+                        <MenuItem value="long_text">
+                            Long Text
+                        </MenuItem>
+
+                        <MenuItem value="number">
+                            Number
+                        </MenuItem>
+
+                        <MenuItem value="yes_no">
+                            Yes / No
+                        </MenuItem>
+
+                        <MenuItem value="rating">
+                            Rating
+                        </MenuItem>
+
+                        <MenuItem value="multiple_choice">
+                            Multiple Choice
+                        </MenuItem>
+
+                        <MenuItem value="checkbox">
+                            Checkbox Group
+                        </MenuItem>
+
+                        <MenuItem value="dropdown">
+                            Dropdown
+                        </MenuItem>
+
+                        <MenuItem value="date">
+                            Date
+                        </MenuItem>
+
+                        <ListSubheader>
+                            Evaluation
+                        </ListSubheader>
+
+                        <MenuItem value="performance_rating_scale">
+                            Performance Rating Scale
+                        </MenuItem>
+
+                        <MenuItem
+                            disabled
+                        >
+                            Quarter Goal (Coming Soon)
+                        </MenuItem>
+
+                        <MenuItem
+                            disabled
+                        >
+                            KPI Table (Coming Soon)
+                        </MenuItem>
+
+                        <MenuItem
+                            disabled
+                        >
+                            Leadership Block (Coming Soon)
+                        </MenuItem>
 
                     </TextField>
 
-                    <TextField
-                        fullWidth
-                        label="Question Label"
-                        name="label"
-                        value={form.label}
-                        onChange={handleChange}
-                    />
+                    {!hideStandardFields && (
 
-                    <TextField
-                        fullWidth
-                        multiline
-                        rows={3}
-                        label="Help Text"
-                        name="helpText"
-                        value={form.helpText}
-                        onChange={handleChange}
-                    />
+                        <TextField
+                            fullWidth
+                            label="Question Label"
+                            name="label"
+                            value={form.label}
+                            onChange={handleChange}
+                        />
 
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={form.required}
-                                onChange={handleCheckbox}
-                            />
-                        }
-                        label="Required"
-                    />
+                    )}
+
+                    {!hideStandardFields && (
+
+                        <TextField
+                            fullWidth
+                            multiline
+                            rows={3}
+                            label="Help Text"
+                            name="helpText"
+                            value={form.helpText}
+                            onChange={handleChange}
+                        />
+
+                    )}
+
+                    {!hideStandardFields && (
+
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={form.required}
+                                    onChange={handleCheckbox}
+                                />
+                            }
+                            label="Required"
+                        />
+
+                    )}
 
                 </Stack>
 
@@ -168,9 +268,8 @@ export default function AddQuestionDialog({
                 <Button
                     variant="contained"
                     onClick={handleSave}
-                    disabled={!form.label.trim()}
                 >
-                    Create Question
+                    {buttonText}
                 </Button>
 
             </DialogActions>

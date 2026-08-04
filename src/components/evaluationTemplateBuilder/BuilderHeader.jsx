@@ -3,7 +3,9 @@ import {
     Button,
     Chip,
     Stack,
-    Typography
+    Typography,
+    ToggleButton,
+    ToggleButtonGroup
 } from "@mui/material";
 
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -11,7 +13,11 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import SaveIcon from "@mui/icons-material/Save";
 import PublishIcon from "@mui/icons-material/Publish";
 
-export default function BuilderHeader() {
+export default function BuilderHeader({
+    templateName,
+    viewMode,
+    onViewModeChange
+}) {
 
     return (
 
@@ -41,7 +47,7 @@ export default function BuilderHeader() {
                         variant="h4"
                         fontWeight={700}
                     >
-                        Employee Quarterly Evaluation
+                        {templateName}
                     </Typography>
 
                     <Chip
@@ -58,11 +64,30 @@ export default function BuilderHeader() {
                 spacing={2}
             >
 
-                <Button
-                    startIcon={<VisibilityIcon />}
+                <ToggleButtonGroup
+                    value={viewMode}
+                    exclusive
+                    onChange={(event, value) => {
+                        if (value) {
+                            onViewModeChange(value);
+                        }
+                    }}
+                    size="small"
                 >
-                    Preview
-                </Button>
+
+                    <ToggleButton value="builder">
+                        Builder
+                    </ToggleButton>
+
+                    <ToggleButton value="preview">
+                        <VisibilityIcon
+                            fontSize="small"
+                            sx={{ mr: 1 }}
+                        />
+                        Preview
+                    </ToggleButton>
+
+                </ToggleButtonGroup>
 
                 <Button
                     startIcon={<SaveIcon />}

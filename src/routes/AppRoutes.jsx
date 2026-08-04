@@ -3,10 +3,11 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
 import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
-import EvaluationTemplates from "../pages/EvaluationTemplates";
+import EvaluationTemplates from "../workflowDesigner/pages/EvaluationTemplates";
 import MeetingReadiness from "../pages/MeetingReadiness";
-
-
+import WorkflowDesigner from "../workflowDesigner/pages/WorkflowDesigner";
+import WorkflowEditor from "../workflowDesigner/WorkflowEditor";
+import EvaluationAssignments from "../pages/EvaluationAssignments";
 
 import Dashboard from "../pages/Dashboard";
 
@@ -20,7 +21,7 @@ import Analytics from "../pages/Analytics";
 import DemoScenarios from "../pages/DemoScenarios";
 import ReviewCycles from "../pages/ReviewCycles";
 import EvaluationTemplateBuilder from "../pages/EvaluationTemplateBuilder";
-
+import PublicEvaluation from "../pages/PublicEvaluation";
 function Layout({ children }) {
   return (
     <MainLayout
@@ -48,6 +49,18 @@ export default function AppRoutes() {
         }
       />
       <Route
+          path="/evaluation-assignments"
+          element={
+              <Layout>
+                  <EvaluationAssignments />
+              </Layout>
+          }
+      />
+      <Route
+          path="/evaluation/:accessToken"
+          element={<PublicEvaluation />}
+      />
+      <Route
           path="/evaluations"
           element={
               <Layout>
@@ -73,6 +86,23 @@ export default function AppRoutes() {
           </Layout>
         }
       />
+      <Route
+          path="/workflow-designer"
+          element={
+              <Layout>
+                  <WorkflowDesigner />
+              </Layout>
+          }
+      />
+
+      <Route
+          path="/workflow-editor/:id"
+          element={
+              <Layout>
+                  <WorkflowEditor />
+              </Layout>
+          }
+      />
 
       <Route
         path="/employees"
@@ -82,6 +112,7 @@ export default function AppRoutes() {
           </Layout>
         }
       />
+      
 
       <Route
         path="/supervisors"

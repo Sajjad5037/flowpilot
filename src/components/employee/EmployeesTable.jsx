@@ -14,7 +14,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function EmployeesTable({
-    employees
+
+    employees,
+    onEdit,
+    onDelete
+
 }) {
 
     return (
@@ -45,8 +49,6 @@ export default function EmployeesTable({
 
                             <TableCell>Role</TableCell>
 
-                            <TableCell>Template</TableCell>
-
                             <TableCell align="center">
                                 Actions
                             </TableCell>
@@ -57,12 +59,12 @@ export default function EmployeesTable({
 
                     <TableBody>
 
-                        {employees.map(employee => (
+                        {employees.map((employee) => (
 
                             <TableRow key={employee.id}>
 
                                 <TableCell>
-                                    {employee.fullName}
+                                    {employee.full_name ?? employee.fullName}
                                 </TableCell>
 
                                 <TableCell>
@@ -70,7 +72,7 @@ export default function EmployeesTable({
                                 </TableCell>
 
                                 <TableCell>
-                                    {employee.slackId}
+                                    {employee.slack_id ?? employee.slackId}
                                 </TableCell>
 
                                 <TableCell>
@@ -78,22 +80,24 @@ export default function EmployeesTable({
                                 </TableCell>
 
                                 <TableCell>
-                                    {employee.jobTitle}
-                                </TableCell>
-
-                                <TableCell>
-                                    {employee.template}
+                                    {employee.role}
                                 </TableCell>
 
                                 <TableCell align="center">
 
-                                    <IconButton>
+                                    <IconButton
+                                        color="primary"
+                                        onClick={() => onEdit(employee)}
+                                    >
 
                                         <EditIcon />
 
                                     </IconButton>
 
-                                    <IconButton color="error">
+                                    <IconButton
+                                        color="error"
+                                        onClick={() => onDelete(employee.id)}
+                                    >
 
                                         <DeleteIcon />
 

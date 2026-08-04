@@ -82,7 +82,7 @@ export default function BuilderCanvas({
                 variant="contained"
                 onClick={onAddQuestion}
             >
-                + Add Question
+                + Add Component
             </Button>
 
             {selectedSection.questions.length === 0 ? (

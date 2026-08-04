@@ -20,8 +20,7 @@ export default function CreateTemplateDialog({
     const [form, setForm] = useState({
         name: "",
         audience: "Employee",
-        category: "Quarterly Evaluation",
-        description: ""
+        
     });
 
     function handleChange(event) {
@@ -40,8 +39,7 @@ export default function CreateTemplateDialog({
         setForm({
             name: "",
             audience: "Employee",
-            category: "Quarterly Evaluation",
-            description: ""
+            
         });
 
     }
@@ -99,36 +97,9 @@ export default function CreateTemplateDialog({
 
                     </TextField>
 
-                    <TextField
-                        select
-                        label="Evaluation Type"
-                        name="category"
-                        value={form.category}
-                        onChange={handleChange}
-                    >
+                    
 
-                        <MenuItem value="Quarterly Evaluation">
-                            Quarterly Evaluation
-                        </MenuItem>
-
-                        <MenuItem value="Annual Review">
-                            Annual Review
-                        </MenuItem>
-
-                        <MenuItem value="Probation Review">
-                            Probation Review
-                        </MenuItem>
-
-                    </TextField>
-
-                    <TextField
-                        multiline
-                        rows={4}
-                        label="Description"
-                        name="description"
-                        value={form.description}
-                        onChange={handleChange}
-                    />
+                    
 
                 </Stack>
 

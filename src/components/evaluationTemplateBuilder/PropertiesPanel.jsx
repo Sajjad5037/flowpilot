@@ -9,6 +9,8 @@ import {
 import { QUESTION_REGISTRY } from "../../constants/questionRegistry";
 import { QUESTION_TYPES } from "../../constants/questionTypes";
 
+console.log("QUESTION_REGISTRY =", QUESTION_REGISTRY);
+console.log("Registry Keys =", Object.keys(QUESTION_REGISTRY));
 
 export default function PropertiesPanel({
     selectedSection,
@@ -16,6 +18,7 @@ export default function PropertiesPanel({
     onQuestionChange,
     onSectionChange
 }) {
+    
 
     // Nothing selected
     if (!selectedSection && !selectedQuestion) {
@@ -57,6 +60,19 @@ export default function PropertiesPanel({
 
     // Question selected
     if (selectedQuestion) {
+        const detailsTitle =
+            ["heading", "paragraph", "divider"].includes(selectedQuestion.type)
+                ? `${QUESTION_TYPES.find(type => type.value === selectedQuestion.type)?.label} Details`
+                : "Question Details";
+
+            const labelFieldLabel =
+                selectedQuestion.type === "heading"
+                    ? "Heading Text"
+                    : selectedQuestion.type === "paragraph"
+                        ? "Paragraph Text"
+                        : "Question Label";
+            const hideStandardFields =
+                QUESTION_REGISTRY[selectedQuestion.type]?.hideStandardFields ?? false;
 
         return (
 
@@ -77,28 +93,43 @@ export default function PropertiesPanel({
                 <Divider sx={{ my: 2 }} />
 
                 <Typography
+                    variant="subtitle1"
                     fontWeight={600}
-                    gutterBottom
                 >
-                    Question Details
+                    {detailsTitle}
                 </Typography>
 
                 <Divider sx={{ my: 2 }} />
 
                 <Typography variant="subtitle2" color="text.secondary">
-                    Label
+                    {labelFieldLabel}
                 </Typography>
 
-                <TextField
-                    fullWidth
-                    value={selectedQuestion.label}
-                    onChange={(event) =>
-                        onQuestionChange(selectedQuestion.id, {
-                            label: event.target.value
-                        })
-                    }
-                    sx={{ mb: 2 }}
-                />
+                {!hideStandardFields && (
+
+                    <>
+
+                        <Typography
+                            variant="subtitle2"
+                            color="text.secondary"
+                        >
+                            {labelFieldLabel}
+                        </Typography>
+
+                        <TextField
+                            fullWidth
+                            value={selectedQuestion.label}
+                            onChange={(event) =>
+                                onQuestionChange(selectedQuestion.id, {
+                                    label: event.target.value
+                                })
+                            }
+                            sx={{ mb: 2 }}
+                        />
+
+                    </>
+
+                )}
 
                 <Typography variant="subtitle2" color="text.secondary">
                     Question Type
@@ -112,40 +143,48 @@ export default function PropertiesPanel({
                     }
                 </Typography>
 
-                <Typography variant="subtitle2" color="text.secondary">
-                    Help Text
-                </Typography>
+                {!hideStandardFields && (
+                    <>
+                        <Typography variant="subtitle2" color="text.secondary">
+                            Help Text
+                        </Typography>
 
-                <TextField
-                    fullWidth
-                    multiline
-                    rows={3}
-                    value={selectedQuestion.helpText || ""}
-                    onChange={(event) =>
-                        onQuestionChange(selectedQuestion.id, {
-                            helpText: event.target.value
-                        })
-                    }
-                    sx={{ mb: 2 }}
-                />
-
-                <Typography variant="subtitle2" color="text.secondary">
-                    Required
-                </Typography>
-
-                <FormControlLabel
-                    control={
-                        <Checkbox
-                            checked={selectedQuestion.required}
+                        <TextField
+                            fullWidth
+                            multiline
+                            rows={3}
+                            value={selectedQuestion.helpText || ""}
                             onChange={(event) =>
                                 onQuestionChange(selectedQuestion.id, {
-                                    required: event.target.checked
+                                    helpText: event.target.value
                                 })
                             }
+                            sx={{ mb: 2 }}
                         />
-                    }
-                    label="Required"
-                />
+                    </>
+                )}
+
+                {!hideStandardFields && (
+                    <>
+                        <Typography variant="subtitle2" color="text.secondary">
+                            Required
+                        </Typography>
+
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={selectedQuestion.required}
+                                    onChange={(event) =>
+                                        onQuestionChange(selectedQuestion.id, {
+                                            required: event.target.checked
+                                        })
+                                    }
+                                />
+                            }
+                            label="Required"
+                        />
+                    </>
+                )}
                 {renderQuestionTypeProperties()}
 
             </Box>
@@ -153,10 +192,15 @@ export default function PropertiesPanel({
         );
 
     }
-    function renderQuestionTypeProperties() {
+function renderQuestionTypeProperties() {
+
+    console.log("Question Type:", selectedQuestion.type);
+    console.log("Registry Entry:", QUESTION_REGISTRY[selectedQuestion.type]);
 
     const PropertiesComponent =
         QUESTION_REGISTRY[selectedQuestion.type]?.properties;
+
+    console.log("Properties Component:", PropertiesComponent);
 
     if (!PropertiesComponent) {
         return null;
@@ -168,7 +212,6 @@ export default function PropertiesPanel({
             onQuestionChange={onQuestionChange}
         />
     );
-
 }
     
 

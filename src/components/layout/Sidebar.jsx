@@ -1,14 +1,13 @@
 import {
   Dashboard,
   CalendarMonth,
-  Description,
   Groups,
-  Person,
-  Assignment,
   Notifications,
   Event,
   Analytics,
   PlayCircle,
+  AccountTree,
+  Assignment,
 } from "@mui/icons-material";
 
 import {
@@ -34,10 +33,15 @@ const mainMenu = [
     icon: <CalendarMonth />,
     path: "/review-cycles",
   },
+  //{
+   // title: "Evaluation Templates",
+   // icon: <Description />,
+    //path: "/templates",
+  //},
   {
-    title: "Evaluation Templates",
-    icon: <Description />,
-    path: "/templates",
+    title: "Workflow Designer",
+    icon: <AccountTree />,
+    path: "/workflow-designer",
   },
   {
     title: "Employees",
@@ -45,15 +49,20 @@ const mainMenu = [
     path: "/employees",
   },
   {
-    title: "Supervisors",
-    icon: <Person />,
-    path: "/supervisors",
-  },
-  {
-    title: "Evaluation Preview",
+    title: "Evaluation Assignments",
     icon: <Assignment />,
-    path: "/evaluations",
+    path: "/evaluation-assignments",
   },
+  //{
+  //  title: "Supervisors",
+  //  icon: <Person />,
+  //  path: "/supervisors",
+  //},
+  //{
+   // title: "Evaluation Preview",
+    //icon: <Assignment />,
+    //path: "/evaluations",
+  //},
   {
       title: "Meeting Readiness",
       path: "/meeting-readiness",

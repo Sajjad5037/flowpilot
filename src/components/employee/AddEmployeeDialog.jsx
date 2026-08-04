@@ -1,156 +1,269 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Grid,
-  MenuItem,
-  TextField,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Grid,
+    MenuItem,
+    TextField
 } from "@mui/material";
 
-import { createEmployee } from "../../services/employeeService";
+import {
+    createEmployee,
+    updateEmployee
+} from "../../services/employeeService";
 
-const templateOptions = [
-  "Employee Evaluation",
-  "Leadership Evaluation",
+const roleOptions = [
+    "Employee",
+    "Supervisor",
+    "HR",
+    "Admin"
 ];
 
 export default function AddEmployeeDialog({
-  open,
-  onClose,
-  onSaved,
+
+    open,
+    onClose,
+    onSaved,
+    employee
+
 }) {
-  const [form, setForm] = useState({
-    fullName: "",
-    email: "",
-    slackId: "",
-    department: "",
-    jobTitle: "",
-    template: "",
-  });
 
-  function handleChange(e) {
-    const { name, value } = e.target;
+    const emptyForm = {
 
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  }
+        fullName: "",
+        email: "",
+        slackId: "",
+        department: "",
+        role: ""
 
-  async function handleSave() {
-    await createEmployee(form);
+    };
 
-    if (onSaved) {
-      onSaved(form);
+    const [form, setForm] = useState(emptyForm);
+
+    const isEditing = employee != null;
+    console.log("=======================");
+    console.log("EMPLOYEE PROP");
+    console.log(employee);
+    console.log("isEditing =", isEditing);
+    console.log("=======================");
+
+    useEffect(() => {
+
+        if (employee) {
+
+            setForm({
+
+                fullName: employee.full_name ?? employee.fullName ?? "",
+                email: employee.email ?? "",
+                slackId: employee.slack_id ?? employee.slackId ?? "",
+                department: employee.department ?? "",
+                role: employee.role ?? ""
+
+            });
+
+        }
+
+        else {
+
+            setForm(emptyForm);
+
+        }
+
+    }, [employee, open]);
+
+    function handleChange(event) {
+
+        const { name, value } = event.target;
+
+        setForm(prev => ({
+
+            ...prev,
+
+            [name]: value
+
+        }));
+
     }
 
-    setForm({
-      fullName: "",
-      email: "",
-      slackId: "",
-      department: "",
-      jobTitle: "",
-      template: "",
-    });
+    async function handleSave() {
+      console.log("Saving...");
+      console.log("isEditing =", isEditing);
 
-    onClose();
-  }
+      if (isEditing) {
 
-  return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      maxWidth="md"
-    >
-      <DialogTitle>Add Employee</DialogTitle>
+          console.log("UPDATE");
 
-      <DialogContent>
-        <Grid container spacing={2} sx={{ mt: 1 }}>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              fullWidth
-              label="Full Name"
-              name="fullName"
-              value={form.fullName}
-              onChange={handleChange}
-            />
-          </Grid>
+      }
+      else {
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              fullWidth
-              label="Email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-            />
-          </Grid>
+          console.log("CREATE");
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              fullWidth
-              label="Slack ID"
-              name="slackId"
-              value={form.slackId}
-              onChange={handleChange}
-            />
-          </Grid>
+      }
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              fullWidth
-              label="Department"
-              name="department"
-              value={form.department}
-              onChange={handleChange}
-            />
-          </Grid>
+        try {
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              fullWidth
-              label="Role / Job Title"
-              name="jobTitle"
-              value={form.jobTitle}
-              onChange={handleChange}
-            />
-          </Grid>
+            if (isEditing) {
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <TextField
-              select
-              fullWidth
-              label="Evaluation Template"
-              name="template"
-              value={form.template}
-              onChange={handleChange}
-            >
-              {templateOptions.map((template) => (
-                <MenuItem key={template} value={template}>
-                  {template}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-        </Grid>
-      </DialogContent>
+                await updateEmployee(
+                    employee.id,
+                    form
+                );
 
-      <DialogActions>
-        <Button onClick={onClose}>
-          Cancel
-        </Button>
+            }
 
-        <Button
-          variant="contained"
-          onClick={handleSave}
+            else {
+
+                await createEmployee(form);
+
+            }
+
+            onSaved?.();
+
+            onClose();
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert("Unable to save employee.");
+
+        }
+
+    }
+
+    return (
+
+        <Dialog
+            open={open}
+            onClose={onClose}
+            fullWidth
+            maxWidth="md"
         >
-          Save Employee
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
+
+            <DialogTitle>
+
+                {isEditing
+                    ? "Edit Employee"
+                    : "Add Employee"}
+
+            </DialogTitle>
+
+            <DialogContent>
+
+                <Grid
+                    container
+                    spacing={2}
+                    sx={{ mt: 1 }}
+                >
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+
+                        <TextField
+                            fullWidth
+                            label="Full Name"
+                            name="fullName"
+                            value={form.fullName}
+                            onChange={handleChange}
+                        />
+
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            name="email"
+                            value={form.email}
+                            onChange={handleChange}
+                        />
+
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+
+                        <TextField
+                            fullWidth
+                            label="Slack ID"
+                            name="slackId"
+                            value={form.slackId}
+                            onChange={handleChange}
+                        />
+
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+
+                        <TextField
+                            fullWidth
+                            label="Department"
+                            name="department"
+                            value={form.department}
+                            onChange={handleChange}
+                        />
+
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+
+                        <TextField
+                            select
+                            fullWidth
+                            label="Role"
+                            name="role"
+                            value={form.role}
+                            onChange={handleChange}
+                        >
+
+                            {roleOptions.map(role => (
+
+                                <MenuItem
+                                    key={role}
+                                    value={role}
+                                >
+
+                                    {role}
+
+                                </MenuItem>
+
+                            ))}
+
+                        </TextField>
+
+                    </Grid>
+
+                </Grid>
+
+            </DialogContent>
+
+            <DialogActions>
+
+                <Button onClick={onClose}>
+
+                    Cancel
+
+                </Button>
+
+                <Button
+                    variant="contained"
+                    onClick={handleSave}
+                >
+
+                    {isEditing
+                        ? "Update Employee"
+                        : "Save Employee"}
+
+                </Button>
+
+            </DialogActions>
+
+        </Dialog>
+
+    );
+
 }

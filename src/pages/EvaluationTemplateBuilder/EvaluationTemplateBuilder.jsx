@@ -11,7 +11,7 @@ import BuilderCanvas from "../../components/evaluationTemplateBuilder/BuilderCan
 import PropertiesPanel from "../../components/evaluationTemplateBuilder/PropertiesPanel";
 import AddSectionDialog from "../../components/evaluationTemplateBuilder/AddSectionDialog";
 import AddQuestionDialog from "../../components/evaluationTemplateBuilder/AddQuestionDialog";
-
+import TemplatePreview from "../../components/evaluationTemplateBuilder/preview/TemplatePreview";
 export default function EvaluationTemplateBuilder() {
 
     const [sections, setSections] = useState([]);
@@ -19,6 +19,7 @@ export default function EvaluationTemplateBuilder() {
     const [selectedQuestion, setSelectedQuestion] = useState(null);
     const [dialogOpen, setDialogOpen] = useState(false);
     const [questionDialogOpen, setQuestionDialogOpen] = useState(false);
+    const [viewMode, setViewMode] = useState("builder");
 
     function handleAddSection(section) {
 
@@ -126,7 +127,11 @@ export default function EvaluationTemplateBuilder() {
 
         <Box>
 
-            <BuilderHeader />
+            <BuilderHeader
+                templateName="Q2 2026 Goal & KPI Evaluation"
+                viewMode={viewMode}
+                onViewModeChange={setViewMode}
+            />
 
             <Grid
                 container
@@ -153,12 +158,22 @@ export default function EvaluationTemplateBuilder() {
                     size={{ xs: 12, md: 6 }}
                 >
 
-                    <BuilderCanvas
-                        selectedSection={selectedSection}
-                        selectedQuestion={selectedQuestion}
-                        onSelectQuestion={setSelectedQuestion}
-                        onAddQuestion={() => setQuestionDialogOpen(true)}
-                    />
+                    {viewMode === "builder" ? (
+
+                        <BuilderCanvas
+                            selectedSection={selectedSection}
+                            selectedQuestion={selectedQuestion}
+                            onSelectQuestion={setSelectedQuestion}
+                            onAddQuestion={() => setQuestionDialogOpen(true)}
+                        />
+
+                    ) : (
+
+                        <TemplatePreview
+                            sections={sections}
+                        />
+
+                    )}
 
                 </Grid>
 

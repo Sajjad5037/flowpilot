@@ -1,38 +1,58 @@
 export const QUESTION_TYPES = [
+    // Content Components
+    {
+        value: "heading",
+        label: "Content — Heading"
+    },
+    {
+        value: "paragraph",
+        label: "Content — Paragraph"
+    },
+
+    // Question Components
     {
         value: "short_text",
-        label: "Short Text"
+        label: "Question — Short Text"
     },
     {
         value: "long_text",
-        label: "Long Text"
+        label: "Question — Long Text"
     },
     {
         value: "number",
-        label: "Number"
+        label: "Question — Number"
     },
     {
         value: "yes_no",
-        label: "Yes / No"
+        label: "Question — Yes / No"
     },
     {
         value: "rating",
-        label: "Rating"
+        label: "Question — Rating"
     },
     {
         value: "multiple_choice",
-        label: "Multiple Choice"
+        label: "Question — Multiple Choice"
     },
     {
         value: "checkbox",
-        label: "Checkbox Group"
+        label: "Question — Checkbox Group"
     },
     {
         value: "dropdown",
-        label: "Dropdown"
+        label: "Question — Dropdown"
     },
     {
         value: "date",
-        label: "Date"
+        label: "Question — Date"
+    },
+    {
+        value: "information_card",
+        label: "Content — Information Card"
+    },
+    {
+        value: "performance_rating_scale",
+        label: "Composite — Performance Rating Scale"
     }
+
 ];
