@@ -1,6 +1,7 @@
 import axios from "axios";
 const API_BASE ="https://nurpbackend-production.up.railway.app";
-
+console.log("Evaluation Assignment Service Loaded");
+console.log("API_BASE =", API_BASE);
 // --------------------------------------------------
 // Get All Evaluation Assignments
 // --------------------------------------------------
