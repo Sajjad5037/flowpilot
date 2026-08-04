@@ -1,6 +1,7 @@
 import axios from "axios";
-
-const API_BASE = import.meta.env.VITE_API_URL || "";
+const API_BASE =
+  import.meta.env.VITE_API_URL ||
+  "https://nurpbackend-production.up.railway.app";
 export async function getEmployees() {
 
     const response = await axios.get(
