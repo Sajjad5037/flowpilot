@@ -1,7 +1,5 @@
 import axios from "axios";
-const API_BASE =
-  import.meta.env.VITE_API_URL ||
-  "https://nurpbackend-production.up.railway.app";
+const API_BASE ="https://nurpbackend-production.up.railway.app";
 
 // --------------------------------------------------
 // Get All Evaluation Assignments
