@@ -31,6 +31,15 @@
       ],
       "action": "Manage Employees"
     },
+    "leadership": {
+      "title": "Leadership",
+      "value": 5,
+      "summary": [
+        "2 Executive Team",
+        "3 Department Heads"
+      ],
+      "action": "Manage Leadership"
+    },
     "reviews": {
       "title": "Evaluations",
       "value": 18,

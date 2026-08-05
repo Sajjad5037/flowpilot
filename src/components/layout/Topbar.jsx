@@ -185,7 +185,7 @@ export default function Topbar() {
               fontWeight={700}
               fontSize={14}
             >
-              Michael Johnson
+              Yashika Saini
             </Typography>
 
             <Typography

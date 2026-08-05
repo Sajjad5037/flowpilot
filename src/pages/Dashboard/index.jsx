@@ -22,7 +22,7 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import EventAvailableIcon from "@mui/icons-material/EventAvailable";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
 export default function Dashboard() {
   const [dashboard, setDashboard] = useState(null);
 
@@ -58,6 +58,7 @@ export default function Dashboard() {
   employees,
   supervisors,
   contractors,
+  leadership,
   reviews,
   meetings: meetingStats,
   overdue,
@@ -67,7 +68,7 @@ export default function Dashboard() {
     <>
       <PageHeader
         title="Dashboard"
-        subtitle="Welcome back, Michael 👋 Here's what's happening with your review workflow today."
+        subtitle="Welcome back, Yashika Saini 👋 Here's what's happening with your review workflow today."
       />
 
       {/* KPI Cards */}
@@ -125,6 +126,21 @@ export default function Dashboard() {
       icon={<EngineeringIcon />}
       color="#F59E0B"
     />
+  </Grid>
+  <Grid
+    item
+    xs={12}
+    sm={6}
+    xl={4}
+  >
+      <StatCard
+          title={leadership.title}
+          value={leadership.value}
+          summary={leadership.summary}
+          action={leadership.action}
+          icon={<WorkspacePremiumIcon />}
+          color="#14B8A6"
+      />
   </Grid>
 </Grid>
 
