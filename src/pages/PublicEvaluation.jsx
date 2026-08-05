@@ -15,6 +15,7 @@ import {
     Stack,
     Typography
 } from "@mui/material";
+import nurpLogo from "./assests/nurp-logo.png";
 
 export default function PublicEvaluation() {
 
@@ -27,6 +28,8 @@ export default function PublicEvaluation() {
     const [employeeResponses, setEmployeeResponses] = useState({});
 
     const [supervisorResponses, setSupervisorResponses] = useState({});
+
+    const [hrResponses, setHrResponses] = useState({});
 
     useEffect(() => {
 
@@ -43,6 +46,16 @@ export default function PublicEvaluation() {
         const data = await getEvaluationByToken(accessToken);
 
         console.log("Assignment from API:", data);
+        console.log("Employee Responses:");
+        console.log(data.employee_responses);
+
+        console.log("Supervisor Responses:");
+        console.log(data.supervisor_responses);
+
+        console.log("Performance & Core Values:");
+        console.log(
+            data.supervisor_responses?.performance_and_core_values
+        );
 
         setAssignment(data);
 
@@ -54,6 +67,10 @@ export default function PublicEvaluation() {
         // Load supervisor responses
         setSupervisorResponses(
             data.supervisor_responses || {}
+        );
+
+        setHrResponses(
+            data.hr_responses || {}
         );
 
     }
@@ -99,9 +116,10 @@ export default function PublicEvaluation() {
         }
         else if (assignment.current_stage === "hr") {
 
-            console.log("HR Stage");
+            console.log("HR Responses:");
+            console.log(hrResponses);
 
-            dataToSubmit = {};
+            dataToSubmit = hrResponses;
 
         }
 
@@ -188,38 +206,65 @@ export default function PublicEvaluation() {
                 sx={{ p: 4 }}
             >
 
-                <Typography
-                    variant="h4"
-                    gutterBottom
+                <Box
+                    sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "flex-start",
+                        mb: 4
+                    }}
                 >
-                    Performance Evaluation
-                </Typography>
 
-                <Typography
-                    variant="h6"
-                    mb={2}
-                >
-                    Employee:
-                    {" "}
-                    {assignment.employee_name}
-                </Typography>
+                    <Box>
 
-                <Typography
-                    color="primary"
-                    mb={4}
-                >
-                    Current Stage:
-                    {" "}
-                    {assignment.current_stage}
-                </Typography>
+                        <Typography
+                            variant="h4"
+                            fontWeight={700}
+                            gutterBottom
+                        >
+                            Performance Evaluation
+                        </Typography>
+
+                        <Typography
+                            variant="h6"
+                            mb={1}
+                        >
+                            Employee: {assignment.employee_name}
+                        </Typography>
+
+                        <Typography
+                            color="primary"
+                        >
+                            Current Stage: {assignment.current_stage}
+                        </Typography>
+
+                    </Box>
+
+                    <Box
+                        component="img"
+                        src={nurpLogo}
+                        alt="NURP Logo"
+                        sx={{
+                            width: 140,
+                            height: "auto",
+                            objectFit: "contain",
+                            mt: 1,
+                            mr: 1,
+                            alignSelf: "center"
+                        }}
+                    />
+
+                </Box>
 
                 <EmployeeFormPreview
                     workflow={assignment.workflow_json}
                     previewMode={assignment.current_stage}
                     employeeResponses={employeeResponses}
                     supervisorResponses={supervisorResponses}
+                    hrResponses={hrResponses}
                     setEmployeeResponses={setEmployeeResponses}
                     setSupervisorResponses={setSupervisorResponses}
+                    setHrResponses={setHrResponses}
                 />
                 <Box
                     mt={4}

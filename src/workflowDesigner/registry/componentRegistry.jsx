@@ -21,6 +21,10 @@ import KPIListPreview from "../components/KPIList/KPIListPreview";
 import PerformanceAndCoreValues from "../components/PerformanceAndCoreValues/PerformanceAndCoreValues";
 import PerformanceAndCoreValuesProperties from "../components/PerformanceAndCoreValues/PerformanceAndCoreValuesProperties";
 import PerformanceAndCoreValuesPreview from "../components/PerformanceAndCoreValues/PerformanceAndCoreValuesPreview";
+
+import PerformanceAndCoreValuesHRPreview
+from "../components/PerformanceAndCoreValues/PerformanceAndCoreValuesHRPreview";
+
 export const COMPONENT_REGISTRY = {
 
     company_information: {

@@ -38,9 +38,11 @@ export default function PerformanceAndCoreValuesPreview({
         <Box sx={{ mb: 4 }}>
 
             <Typography
-                variant="h6"
-                fontWeight={700}
-                mb={3}
+                variant="h5"
+                sx={{
+                    fontWeight: 700,
+                    mb: 1
+                }}
             >
                 {component.title || "Performance & Core Values"}
             </Typography>

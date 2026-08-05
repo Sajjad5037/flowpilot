@@ -10,7 +10,9 @@ export default function KPIListHRPreview({
 
     component,
     employeeResponses,
-    responses
+    supervisorResponses,
+    responses,
+    onResponsesChange
 
 }) {
 
@@ -27,9 +29,11 @@ export default function KPIListHRPreview({
         <Box sx={{ mb: 4 }}>
 
             <Typography
-                variant="h6"
-                fontWeight={700}
-                mb={1}
+                variant="h5"
+                sx={{
+                    fontWeight: 700,
+                    mb: 1
+                }}
             >
                 {component.title || "KPI Alignment Review"}
             </Typography>
@@ -68,7 +72,7 @@ export default function KPIListHRPreview({
                                     fontWeight: 700
                                 }}
                             >
-                                Employee KPI
+                                Employee KPI Title & Expectation
                             </Box>
 
                             <Box
@@ -79,7 +83,7 @@ export default function KPIListHRPreview({
                                     fontWeight: 700
                                 }}
                             >
-                                Supervisor KPI
+                                Supervisor KPI Title & Expectation
                             </Box>
 
                             <Box
@@ -89,7 +93,7 @@ export default function KPIListHRPreview({
                                     fontWeight: 700
                                 }}
                             >
-                                HR Review
+                                Final Set KPI & Expectation
                             </Box>
 
                             {/* EMPLOYEE */}
@@ -111,7 +115,10 @@ export default function KPIListHRPreview({
                                     }}
                                 >
 
-                                    <Typography fontWeight={700}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{ fontWeight: 700 }}
+                                    >
                                         Title
                                     </Typography>
 
@@ -126,7 +133,10 @@ export default function KPIListHRPreview({
                                         }
                                     </Typography>
 
-                                    <Typography fontWeight={700}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{ fontWeight: 700 }}
+                                    >
                                         Expectation
                                     </Typography>
 
@@ -161,7 +171,10 @@ export default function KPIListHRPreview({
                                     }}
                                 >
 
-                                    <Typography fontWeight={700}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{ fontWeight: 700 }}
+                                    >
                                         Title
                                     </Typography>
 
@@ -170,20 +183,21 @@ export default function KPIListHRPreview({
                                         mb={2}
                                     >
                                         {
-                                            responses?.kpi_list?.[kpiKey(index)]?.title ||
-
+                                            supervisorResponses?.kpi_list?.[kpiKey(index)]?.title ||
                                             "No supervisor KPI title."
                                         }
                                     </Typography>
 
-                                    <Typography fontWeight={700}>
+                                    <Typography
+                                        variant="subtitle1"
+                                        sx={{ fontWeight: 700 }}
+                                    >
                                         Expectation
                                     </Typography>
 
                                     <Typography color="text.secondary">
                                         {
-                                            responses?.kpi_list?.[kpiKey(index)]?.expectation ||
-
+                                            supervisorResponses?.kpi_list?.[kpiKey(index)]?.expectation ||
                                             "No supervisor KPI expectation."
                                         }
                                     </Typography>
@@ -206,21 +220,68 @@ export default function KPIListHRPreview({
                                     <TextField
                                         fullWidth
                                         label="HR KPI Title"
+                                        value={
+                                            responses?.kpi_list?.[kpiKey(index)]?.title || ""
+                                        }
+                                        onChange={(e) => {
+
+                                            onResponsesChange({
+
+                                                ...responses,
+
+                                                kpi_list: {
+
+                                                    ...(responses?.kpi_list || {}),
+
+                                                    [kpiKey(index)]: {
+
+                                                        ...(responses?.kpi_list?.[kpiKey(index)] || {}),
+
+                                                        title: e.target.value
+
+                                                    }
+
+                                                }
+
+                                            });
+
+                                        }}
                                     />
 
                                     <TextField
                                         fullWidth
                                         multiline
                                         rows={3}
-                                        label="HR Expectation"
+                                        label="HR KPI Expectation"
+                                        value={
+                                            responses?.kpi_list?.[kpiKey(index)]?.expectation || ""
+                                        }
+                                        onChange={(e) => {
+
+                                            onResponsesChange({
+
+                                                ...responses,
+
+                                                kpi_list: {
+
+                                                    ...(responses?.kpi_list || {}),
+
+                                                    [kpiKey(index)]: {
+
+                                                        ...(responses?.kpi_list?.[kpiKey(index)] || {}),
+
+                                                        expectation: e.target.value
+
+                                                    }
+
+                                                }
+
+                                            });
+
+                                        }}
                                     />
 
-                                    <TextField
-                                        fullWidth
-                                        multiline
-                                        rows={4}
-                                        label="HR Comments"
-                                    />
+                                    
 
                                 </Stack>
 

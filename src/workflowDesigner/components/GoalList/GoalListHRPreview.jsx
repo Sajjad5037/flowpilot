@@ -10,7 +10,9 @@ export default function GoalListHRPreview({
 
     component,
     employeeResponses,
-    responses
+    supervisorResponses,
+    responses,
+    onResponsesChange
 
 }) {
 
@@ -21,9 +23,11 @@ export default function GoalListHRPreview({
         <Box sx={{ mb: 4 }}>
 
             <Typography
-                variant="h6"
-                fontWeight={700}
-                mb={3}
+                variant="h5"
+                sx={{
+                    fontWeight: 700,
+                    mb: 3
+                }}
             >
                 {component.title || "Goal Review"}
             </Typography>
@@ -69,10 +73,13 @@ export default function GoalListHRPreview({
                                     <Box>
 
                                         <Typography
-                                            fontWeight={600}
-                                            mb={1}
+                                            variant="subtitle1"
+                                            sx={{
+                                                fontWeight: 700,
+                                                mb: 1
+                                            }}
                                         >
-                                            Employee Proposal
+                                            Employee Response
                                         </Typography>
 
                                         <Paper
@@ -106,10 +113,13 @@ export default function GoalListHRPreview({
                                     <Box>
 
                                         <Typography
-                                            fontWeight={600}
-                                            mb={1}
+                                            variant="subtitle1"
+                                            sx={{
+                                                fontWeight: 700,
+                                                mb: 1
+                                            }}
                                         >
-                                            Supervisor Review
+                                            Supervisor Response
                                         </Typography>
 
                                         <Paper
@@ -126,8 +136,7 @@ export default function GoalListHRPreview({
 
                                                 {
 
-                                                    responses?.goal_list?.[goalKey]?.review ||
-
+                                                    supervisorResponses?.goal_list?.[goalKey]?.review ||
                                                     "No supervisor review."
 
                                                 }
@@ -143,17 +152,46 @@ export default function GoalListHRPreview({
                                     <Box>
 
                                         <Typography
-                                            fontWeight={600}
-                                            mb={1}
+                                            variant="subtitle1"
+                                            sx={{
+                                                fontWeight: 700,
+                                                mb: 1
+                                            }}
                                         >
-                                            HR Review
+                                            Final Agreed Goal (Discussed in Meeting)
                                         </Typography>
 
                                         <TextField
                                             fullWidth
                                             multiline
                                             rows={10}
-                                            placeholder="Enter HR comments..."
+                                            placeholder="Type Final agreed goal..."
+                                            value={
+                                                responses?.goal_list?.[goalKey]?.final_goal || ""
+                                            }
+                                            onChange={(e) => {
+
+                                                onResponsesChange({
+
+                                                    ...responses,
+
+                                                    goal_list: {
+
+                                                        ...(responses?.goal_list || {}),
+
+                                                        [goalKey]: {
+
+                                                            ...(responses?.goal_list?.[goalKey] || {}),
+
+                                                            final_goal: e.target.value
+
+                                                        }
+
+                                                    }
+
+                                                });
+
+                                            }}
                                         />
 
                                     </Box>

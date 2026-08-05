@@ -8,6 +8,7 @@ import {
   PlayCircle,
   AccountTree,
   Assignment,
+  Description,
 } from "@mui/icons-material";
 
 import {
@@ -52,6 +53,11 @@ const mainMenu = [
     title: "Evaluation Assignments",
     icon: <Assignment />,
     path: "/evaluation-assignments",
+  },
+    {
+      title: "Evaluation Master Sheets",
+      icon: <Description />,
+      path: "/master-sheets",
   },
   //{
   //  title: "Supervisors",

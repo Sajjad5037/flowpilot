@@ -12,15 +12,18 @@ import GoalListSupervisorPreview from "../GoalList/GoalListSupervisorPreview";
 import GoalListHRPreview from "../GoalList/GoalListHRPreview";
 import KPIListSupervisorPreview from "../KPIList/KPIListSupervisorPreview";
 import KPIListHRPreview from "../KPIList/KPIListHRPreview";
-
+import PerformanceAndCoreValuesHRPreview
+from "../PerformanceAndCoreValues/PerformanceAndCoreValuesHRPreview";
 export default function EmployeeFormPreview({
 
     workflow,
     previewMode,
     employeeResponses,
     supervisorResponses,
+    hrResponses,
     setEmployeeResponses,
-    setSupervisorResponses
+    setSupervisorResponses,
+    setHrResponses
 
 }) {
     let stageComponents;
@@ -47,20 +50,65 @@ export default function EmployeeFormPreview({
 
         <Box>
 
-            <Typography
-                variant="h4"
-                fontWeight={700}
-                gutterBottom
-            >
-                {workflow.name} — {previewMode.charAt(0).toUpperCase() + previewMode.slice(1)} Stage
-            </Typography>
-            <Typography
-                color="primary"
-                fontWeight={700}
-                mb={2}
-            >
-                Preview Mode: {previewMode}
-            </Typography>
+            {previewMode === "hr" ? (
+
+                <>
+
+                    <Typography
+                        variant="h3"
+                        fontWeight={700}
+                        gutterBottom
+                    >
+                        HR Goal & KPI Setting Master Sheet
+                    </Typography>
+
+                    <Typography
+                        variant="h6"
+                        fontWeight={500}
+                        sx={{ mb: 3 }}
+                    >
+
+                        <strong>Employee:</strong>{" "}
+
+                        {employeeResponses?.employee_information?.employee_name || "-"}
+
+                        {" | "}
+
+                        <strong>Supervisor:</strong>{" "}
+
+                        {employeeResponses?.employee_information?.supervisor || "-"}
+
+                    </Typography>
+
+                    <Divider sx={{ mb: 4 }} />
+
+                </>
+
+            ) : (
+
+                <>
+
+                    <Typography
+                        variant="h4"
+                        fontWeight={700}
+                        gutterBottom
+                    >
+                        {workflow.name} — {previewMode.charAt(0).toUpperCase() + previewMode.slice(1)} Stage
+                    </Typography>
+
+                    <Typography
+                        color="primary"
+                        fontWeight={700}
+                        mb={2}
+                    >
+                        Preview Mode: {previewMode}
+                    </Typography>
+
+                    <Divider sx={{ mb: 4 }} />
+
+                </>
+
+            )}
             <Divider sx={{ mb: 4 }} />
             {stageComponents.length === 0 && (
 
@@ -72,10 +120,22 @@ export default function EmployeeFormPreview({
 
             )}
 
-            {stageComponents.map(component => {
+            {stageComponents
+                .filter(component =>
 
-                let PreviewComponent =
-                    COMPONENT_REGISTRY[component.id]?.preview;
+                    !(
+
+                        previewMode === "hr" &&
+
+                        component.id === "company_information"
+
+                    )
+
+                )
+                .map(component => {
+
+                    let PreviewComponent =
+                        COMPONENT_REGISTRY[component.id]?.preview;
 
                 if (
                     component.id === "self_assessment" &&
@@ -133,6 +193,15 @@ export default function EmployeeFormPreview({
                     PreviewComponent = KPIListHRPreview;
 
                 }
+                if (
+                    component.id === "performance_and_core_values" &&
+                    previewMode === "hr"
+                ) {
+
+                    PreviewComponent = PerformanceAndCoreValuesHRPreview;
+
+                }
+
                 return (
 
                     <Box
@@ -147,13 +216,21 @@ export default function EmployeeFormPreview({
                             responses={
                                 previewMode === "employee"
                                     ? employeeResponses
-                                    : supervisorResponses
+                                    : previewMode === "supervisor"
+                                    ? supervisorResponses
+                                    : hrResponses
                             }
+
                             employeeResponses={employeeResponses}
+
+                            supervisorResponses={supervisorResponses}
+
                             onResponsesChange={
                                 previewMode === "employee"
                                     ? setEmployeeResponses
-                                    : setSupervisorResponses
+                                    : previewMode === "supervisor"
+                                    ? setSupervisorResponses
+                                    : setHrResponses
                             }
                         />
 
@@ -167,6 +244,15 @@ export default function EmployeeFormPreview({
 
                     let PreviewComponent =
                         COMPONENT_REGISTRY[component.id]?.preview;
+
+                    if (
+                        component.id === "performance_and_core_values" &&
+                        previewMode === "hr"
+                    ) {
+
+                        PreviewComponent = PerformanceAndCoreValuesHRPreview;
+
+                    }
 
                     if (!PreviewComponent) {
                         return null;
@@ -183,9 +269,18 @@ export default function EmployeeFormPreview({
                                 component={component}
                                 previewMode={previewMode}
                                 previewData={previewData}
-                                responses={supervisorResponses}
+                                responses={
+                                    previewMode === "supervisor"
+                                        ? supervisorResponses
+                                        : hrResponses
+                                }
                                 employeeResponses={employeeResponses}
-                                onResponsesChange={setSupervisorResponses}
+                                supervisorResponses={supervisorResponses}
+                                onResponsesChange={
+                                    previewMode === "supervisor"
+                                        ? setSupervisorResponses
+                                        : setHrResponses
+                                }
                             />
 
                         </Box>

@@ -8,9 +8,9 @@ import MeetingReadiness from "../pages/MeetingReadiness";
 import WorkflowDesigner from "../workflowDesigner/pages/WorkflowDesigner";
 import WorkflowEditor from "../workflowDesigner/WorkflowEditor";
 import EvaluationAssignments from "../pages/EvaluationAssignments";
-
+import EvaluationMasterSheets from "../pages/EvaluationMasterSheets";
 import Dashboard from "../pages/Dashboard";
-
+import MasterSheetViewer from "../pages/MasterSheetViewer";
 import Templates from "../pages/Templates";
 import Employees from "../pages/Employees";
 import Supervisors from "../pages/Supervisors";
@@ -53,6 +53,14 @@ export default function AppRoutes() {
           element={
               <Layout>
                   <EvaluationAssignments />
+              </Layout>
+          }
+      />
+      <Route
+          path="/master-sheet/:assignmentId"
+          element={
+              <Layout>
+                  <MasterSheetViewer />
               </Layout>
           }
       />
@@ -111,6 +119,14 @@ export default function AppRoutes() {
             <Employees />
           </Layout>
         }
+      />
+      <Route
+          path="/master-sheets"
+          element={
+              <Layout>
+                  <EvaluationMasterSheets />
+              </Layout>
+          }
       />
       
 

@@ -1,63 +1,101 @@
 import { useEffect, useState } from "react";
 
 import {
-  Box,
-  CircularProgress,
-  Typography,
+    Box,
+    CircularProgress,
+    Typography,
 } from "@mui/material";
 
-import { getMeetingReadiness } from "../../services/meetingReadinessService";
+import {
+    getMeetingReadiness
+} from "../../services/meetingReadinessService";
 
+import MeetingReadinessSummary
+from "../../components/meetingReadiness/MeetingReadinessSummary";
 
-
-
-import MeetingReadinessSummary from "../../components/meetingReadiness/MeetingReadinessSummary";
-import MeetingReadinessTable from "../../components/meetingReadiness/MeetingReadinessTable";
+import MeetingReadinessTable
+from "../../components/meetingReadiness/MeetingReadinessTable";
 
 export default function MeetingReadiness() {
 
-  const [data, setData] = useState(null);
-  
-  useEffect(() => {
+    const [evaluations, setEvaluations] = useState([]);
 
-    async function loadData() {
+    const [loading, setLoading] = useState(true);
 
-      const response =
-        await getMeetingReadiness();
+    useEffect(() => {
 
-      setData(response);
+      loadMeetingReadiness();
 
-    }
+      const interval = setInterval(() => {
 
-    loadData();
+          loadMeetingReadiness();
+
+      }, 10000);
+
+      return () => {
+
+          clearInterval(interval);
+
+      };
 
   }, []);
 
-  if (!data) {
-    return <CircularProgress />;
-  }
+    async function loadMeetingReadiness() {
 
-  return (
+        try {
 
-    <Box p={4}>
+            const response =
+                await getMeetingReadiness();
 
-      <Typography
-        variant="h4"
-        mb={4}
-    >
-        Meeting Readiness
-    </Typography>
+            setEvaluations(response);
 
-      <MeetingReadinessSummary
-        summary={data.summary}
-      />
+        }
 
-      <MeetingReadinessTable
-        evaluations={data.evaluations}
-      />
+        catch (error) {
 
-    </Box>
+            console.error(error);
 
-  );
+        }
+
+        finally {
+
+            setLoading(false);
+
+        }
+
+    }
+
+    if (loading) {
+
+        return (
+
+            <CircularProgress />
+
+        );
+
+    }
+
+    return (
+
+        <Box p={4}>
+
+            <Typography
+                variant="h4"
+                mb={4}
+            >
+                Meeting Readiness
+            </Typography>
+
+            <MeetingReadinessSummary
+                evaluations={evaluations}
+            />
+
+            <MeetingReadinessTable
+                evaluations={evaluations}
+            />
+
+        </Box>
+
+    );
 
 }

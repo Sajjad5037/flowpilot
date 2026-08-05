@@ -10,6 +10,7 @@ export default function GoalListSupervisorPreview({
 
     component,
     responses,
+    employeeResponses,
     onResponsesChange
 
 }) {
@@ -110,7 +111,7 @@ export default function GoalListSupervisorPreview({
 
                                             <Typography>
 
-                                                {responses?.goal_list?.[goalKey]?.proposal ||
+                                                {employeeResponses?.goal_list?.[goalKey]?.proposal ||
                                                     "No proposal submitted."}
 
                                             </Typography>

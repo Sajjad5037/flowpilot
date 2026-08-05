@@ -10,7 +10,9 @@ export default function SelfAssessmentHRPreview({
 
     component,
     employeeResponses,
-    responses
+    supervisorResponses,
+    responses,
+    onResponsesChange
 
 }) {
 
@@ -21,8 +23,8 @@ export default function SelfAssessmentHRPreview({
         <Box sx={{ mb: 4 }}>
 
             <Typography
-                variant="h6"
-                fontWeight={700}
+                variant="h5"
+                fontWeight="bold"
                 mb={3}
             >
                 {component.title || "Self Assessment Review"}
@@ -55,7 +57,7 @@ export default function SelfAssessmentHRPreview({
                             <Box
                                 sx={{
                                     display: "grid",
-                                    gridTemplateColumns: "1fr 1fr 1fr",
+                                    gridTemplateColumns: "1fr 1fr",
                                     gap: 3
                                 }}
                             >
@@ -65,8 +67,10 @@ export default function SelfAssessmentHRPreview({
                                 <Box>
 
                                     <Typography
-                                        fontWeight={600}
-                                        mb={1}
+                                        variant="body1"
+                                        sx={{
+                                            fontWeight: 700
+                                        }}
                                     >
                                         Employee Response
                                     </Typography>
@@ -104,8 +108,10 @@ export default function SelfAssessmentHRPreview({
                                 <Box>
 
                                     <Typography
-                                        fontWeight={600}
-                                        mb={1}
+                                        variant="body1"
+                                        sx={{
+                                            fontWeight: 700
+                                        }}
                                     >
                                         Supervisor Response
                                     </Typography>
@@ -126,7 +132,7 @@ export default function SelfAssessmentHRPreview({
 
                                             {
 
-                                                responses?.self_assessment?.[question.id] ||
+                                                supervisorResponses?.self_assessment?.[question.id] ||
 
                                                 "No supervisor response."
 
@@ -138,25 +144,8 @@ export default function SelfAssessmentHRPreview({
 
                                 </Box>
 
-                                {/* HR Response */}
-
-                                <Box>
-
-                                    <Typography
-                                        fontWeight={600}
-                                        mb={1}
-                                    >
-                                        HR Comments
-                                    </Typography>
-
-                                    <TextField
-                                        fullWidth
-                                        multiline
-                                        rows={5}
-                                        placeholder="Enter HR comments..."
-                                    />
-
-                                </Box>
+                                
+                                
 
                             </Box>
 

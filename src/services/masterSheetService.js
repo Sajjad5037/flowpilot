@@ -5,11 +5,11 @@ const API_BASE =
     ? "http://127.0.0.1:8000"
     : "https://nurpbackend-production.up.railway.app";
 
-export async function getMeetingReadiness() {
+export async function getMasterSheet(assignmentId) {
 
     const response = await axios.get(
 
-        `${API_BASE}/meeting-readiness`
+        `${API_BASE}/evaluation-master-sheets/${assignmentId}`
 
     );
 

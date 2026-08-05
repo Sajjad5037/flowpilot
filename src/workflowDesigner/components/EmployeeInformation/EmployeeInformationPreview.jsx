@@ -67,96 +67,125 @@ export default function EmployeeInformationPreview({
 
 }
 
+    if (isHR) {
+
     return (
 
-    <Box
-        sx={{
-            mb: 4
-        }}
-    >
+        <Box sx={{ mb: 4 }}>
 
-        {(fields.employeeName ?? true) && (
+            <Typography
+                variant="body1"
+                fontWeight={600}
+            >
 
-            <Box>
+                <strong>Employee:</strong>{" "}
 
-                {renderField("Employee Name", "employee_name")}
+                {employeeResponses?.employee_information?.employee_name || "-"}
+
+                {" | "}
+
+                <strong>Supervisor:</strong>{" "}
+
+                {employeeResponses?.employee_information?.supervisor || "-"}
+
+            </Typography>
+
+        </Box>
+
+    );
+
+        }
+
+        return (
+
+            <Box
+                sx={{
+                    mb: 4
+                }}
+            >
+
+                {(fields.employeeName ?? true) && (
+
+                    <Box>
+
+                        {renderField("Employee Name", "employee_name")}
+
+                    </Box>
+
+                )}
+
+                {(fields.supervisor ?? true) && (
+
+                    <Box>
+
+                        {renderField("Supervisor", "supervisor")}
+
+                    </Box>
+
+                )}
+
+                {(fields.department ?? true) && (
+
+                    <Box>
+
+                        {renderField("Department", "department")}
+
+                    </Box>
+
+                )}
+
+                {(fields.position ?? true) && (
+
+                    <Box>
+
+                        {renderField("Position", "position")}
+
+                    </Box>
+
+                )}
+
+                {(fields.phoneNumber ?? false) && (
+
+                    <Box>
+
+                        {renderField("Phone Number", "phone_number")}
+
+                    </Box>
+
+                )}
+
+                {(fields.employeeId ?? false) && (
+
+                    <Box>
+
+                        {renderField("Employee ID", "employee_id")}
+
+                    </Box>
+
+                )}
+
+                {(fields.officeLocation ?? false) && (
+
+                    <Box>
+
+                        {renderField("Office Location", "office_location")}
+
+                    </Box>
+
+                )}
+
+                {(fields.costCentre ?? false) && (
+
+                    <Box>
+
+                        {renderField("Cost Center", "cost_center")}
+
+                    </Box>
+
+                )}
 
             </Box>
 
-        )}
-
-        {(fields.supervisor ?? true) && (
-
-            <Box>
-
-                {renderField("Supervisor", "supervisor")}
-
-            </Box>
-
-        )}
-
-        {(fields.department ?? true) && (
-
-            <Box>
-
-                {renderField("Department", "department")}
-
-            </Box>
-
-        )}
-
-        {(fields.position ?? true) && (
-
-            <Box>
-
-                {renderField("Position", "position")}
-
-            </Box>
-
-        )}
-
-        {(fields.phoneNumber ?? false) && (
-
-            <Box>
-
-                {renderField("Phone Number", "phone_number")}
-
-            </Box>
-
-        )}
-
-        {(fields.employeeId ?? false) && (
-
-            <Box>
-
-                {renderField("Employee ID", "employee_id")}
-
-            </Box>
-
-        )}
-
-        {(fields.officeLocation ?? false) && (
-
-            <Box>
-
-                {renderField("Office Location", "office_location")}
-
-            </Box>
-
-        )}
-
-        {(fields.costCentre ?? false) && (
-
-            <Box>
-
-                {renderField("Cost Center", "cost_center")}
-
-            </Box>
-
-        )}
-
-    </Box>
-
-);
+        );
 
 }
