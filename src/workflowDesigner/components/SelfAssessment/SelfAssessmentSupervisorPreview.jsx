@@ -70,52 +70,47 @@ export default function SelfAssessmentSupervisorPreview({
                                 {index + 1}. {question.text}
                             </Typography>
 
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gridTemplateColumns: "1fr 1fr",
-                                    gap: 3
-                                }}
-                            >
+                            <Box>
 
-                                {/* Employee Response */}
+                                {/* Employee Response 
 
-                                <Box>
+                                    <Box>
 
-                                    <Typography
-                                        fontWeight={600}
-                                        mb={1}
-                                    >
-                                        Employee Response
-                                    </Typography>
-
-                                    <Paper
-                                        elevation={0}
-                                        sx={{
-                                            p: 2,
-                                            bgcolor: "#F3F4F6",
-                                            borderLeft: "4px solid #64748B",
-                                            minHeight: 120,
-                                            display: "flex",
-                                            alignItems: "flex-start"
-                                        }}
-                                    >
-
-                                        <Typography>
-
-                                            {
-
-                                                employeeResponses?.self_assessment?.[question.id] ||
-
-                                                "No employee response."
-
-                                            }
-
+                                        <Typography
+                                            fontWeight={600}
+                                            mb={1}
+                                        >
+                                            Employee Response
                                         </Typography>
 
-                                    </Paper>
+                                        <Paper
+                                            elevation={0}
+                                            sx={{
+                                                p: 2,
+                                                bgcolor: "#F3F4F6",
+                                                borderLeft: "4px solid #64748B",
+                                                minHeight: 120,
+                                                display: "flex",
+                                                alignItems: "flex-start"
+                                            }}
+                                        >
 
-                                </Box>
+                                            <Typography>
+
+                                                {
+
+                                                    employeeResponses?.self_assessment?.[question.id] ||
+
+                                                    "No employee response."
+
+                                                }
+
+                                            </Typography>
+
+                                        </Paper>
+
+                                    </Box>
+                                */}
 
                                 {/* Supervisor Response */}
 

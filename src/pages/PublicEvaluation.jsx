@@ -25,6 +25,10 @@ export default function PublicEvaluation() {
 
     const [assignment, setAssignment] = useState(null);
 
+    const [submitted, setSubmitted] = useState(false);
+
+    const [errorMessage, setErrorMessage] = useState("");
+
     const [employeeResponses, setEmployeeResponses] = useState({});
 
     const [supervisorResponses, setSupervisorResponses] = useState({});
@@ -78,6 +82,30 @@ export default function PublicEvaluation() {
     catch (error) {
 
         console.error(error);
+
+        if (error.response?.status === 403) {
+
+            setErrorMessage(
+                "This evaluation has already been submitted."
+            );
+
+        }
+
+        else if (error.response?.status === 404) {
+
+            setErrorMessage(
+                "Evaluation not found."
+            );
+
+        }
+
+        else {
+
+            setErrorMessage(
+                "Unable to load evaluation."
+            );
+
+        }
 
     }
 
@@ -136,13 +164,11 @@ export default function PublicEvaluation() {
 
         );
 
-        console.log("Submission Successful");
+       console.log("Submission Successful");
 
-        alert(
-            "Evaluation submitted successfully."
-        );
+        setSubmitted(true);
 
-    }
+            }
 
     catch (error) {
 
@@ -156,6 +182,67 @@ export default function PublicEvaluation() {
     }
 
 }
+    if (submitted) {
+
+        return (
+
+            <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                minHeight="100vh"
+                bgcolor="#F8FAFC"
+                p={3}
+            >
+
+                <Paper
+                    elevation={4}
+                    sx={{
+                        p: 6,
+                        maxWidth: 600,
+                        width: "100%",
+                        textAlign: "center",
+                        borderRadius: 3
+                    }}
+                >
+
+                    <Typography
+                        variant="h3"
+                        color="success.main"
+                        gutterBottom
+                    >
+                        ✅ Evaluation Submitted
+                    </Typography>
+
+                    <Typography
+                        variant="h6"
+                        sx={{ mt: 3 }}
+                    >
+                        Thank you for completing your evaluation.
+                    </Typography>
+
+                    <Typography
+                        color="text.secondary"
+                        sx={{ mt: 2, mb: 5 }}
+                    >
+                        This evaluation has been recorded successfully.
+                    </Typography>
+
+                    <Button
+                        variant="contained"
+                        size="large"
+                        onClick={() => window.close()}
+                    >
+                        Close Window
+                    </Button>
+
+                </Paper>
+
+            </Box>
+
+        );
+
+    }
 
     if (loading) {
 
@@ -183,7 +270,7 @@ export default function PublicEvaluation() {
 
                 <Alert severity="error">
 
-                    Evaluation not found.
+                    {errorMessage || "Evaluation not found."}
 
                 </Alert>
 
@@ -296,8 +383,11 @@ export default function PublicEvaluation() {
                             variant="contained"
                             size="large"
                             onClick={handleSubmitEvaluation}
+                            disabled={submitted}
                         >
-                            Submit Evaluation
+                            {submitted
+                                ? "Evaluation Submitted"
+                                : "Submit Evaluation"}
                         </Button>
 
                     </Stack>

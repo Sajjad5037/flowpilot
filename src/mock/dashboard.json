@@ -6,39 +6,66 @@
         "unit": "Active Employees",
 
         "summary": [
-            "3 New Hires",
-            "2 Awaiting Assignment"
-        ],
+            {
+                "text": "2 Waiting Goals & KPI",
+                "color": "#F59E0B"
+            },
+            {
+                "text": "7 Waiting Submission",
+                "color": "#F59E0B"
+            },
+            {
+                "text": "23 Have Goals & KPIs Set",
+                "color": "#22C55E"
+            }
+        ]
 
-        "action": "Manage Employees"
+        
     },
     "supervisors": {
       "title": "Supervisors",
       "value": 8,
       "summary": [
-        "1 Pending Approval",
-        "2 Departments"
-      ],
-      "action": "Manage Employees"
+        {
+          "text": "3 Waiting Submission",
+          "color": "#F59E0B"
+        },
+        {
+          "text": "4 Have Completed Submission",
+          "color": "#22C55E"
+        }
+      ]
+      
     },
 
     "contractors": {
       "title": "Contractors",
       "value": 14,
       "summary": [
-        "3 Contracts Expiring",
-        "1 Awaiting Approval"
-      ],
-      "action": "Manage Employees"
+        {
+          "text": "2 Waiting Goals & KPI",
+          "color": "#F59E0B"
+        },
+        {
+          "text": "9 Have Goals & KPIs Set",
+          "color": "#22C55E"
+        }
+      ]
+      
     },
     "leadership": {
       "title": "Leadership",
       "value": 5,
       "summary": [
-        "2 Executive Team",
-        "3 Department Heads"
-      ],
-      "action": "Manage Leadership"
+        {
+          "text": "1 Waiting Approval",
+          "color": "#F59E0B"
+        },
+        {
+          "text": "4 Evaluations Approved",
+          "color": "#22C55E"
+        }
+      ]
     },
     "reviews": {
       "title": "Evaluations",
@@ -46,23 +73,31 @@
       "unit": "Pending Evaluations",
 
       "summary": [
-          "6 Due This Week",
-          "4 Awaiting Approval"
+        {
+          "text": "4 Due This Week",
+          "color": "#F59E0B"
+        },
+        {
+          "text": "21 Evaluations Completed",
+          "color": "#22C55E"
+        }
+      ]
+
+      
+    },
+    "meetings": {
+      "title": "Meetings",
+      "value": 7,
+      "unit": "Scheduled",
+
+      "summary": [
+        {
+          "text": "5 Meetings Not Scheduled",
+          "color": "#EF4444"
+        }
       ],
 
-      "action": "Open Evaluations"
-  },
-    "meetings": {
-        "title": "Meetings",
-        "value": 7,
-        "unit": "Scheduled",
-
-        "summary": [
-            "2 Today",
-            "3 Tomorrow"
-        ],
-
-        "action": "Meeting Queue"
+      "action": "Meeting Queue"
     },
     "overdue": {
         "title": "Overdue",
@@ -72,9 +107,7 @@
         "summary": [
             "Oldest: 5 Days",
             "High Priority"
-        ],
-
-        "action": "Resolve Reviews"
+        ]
     }
   },
 

@@ -41,14 +41,16 @@ export default function EmployeesTable({
 
                             <TableCell>Name</TableCell>
 
-                            <TableCell>Email</TableCell>
+                            <TableCell>Role</TableCell>
+
+                            <TableCell>Department</TableCell>
+                            
+                            <TableCell>Designation</TableCell>
 
                             <TableCell>Slack ID</TableCell>
 
-                            <TableCell>Department</TableCell>
-
-                            <TableCell>Role</TableCell>
-
+                            <TableCell>Email</TableCell>
+                            
                             <TableCell align="center">
                                 Actions
                             </TableCell>
@@ -68,11 +70,7 @@ export default function EmployeesTable({
                                 </TableCell>
 
                                 <TableCell>
-                                    {employee.email}
-                                </TableCell>
-
-                                <TableCell>
-                                    {employee.slack_id ?? employee.slackId}
+                                    {employee.role}
                                 </TableCell>
 
                                 <TableCell>
@@ -80,7 +78,15 @@ export default function EmployeesTable({
                                 </TableCell>
 
                                 <TableCell>
-                                    {employee.role}
+                                    {employee.designation}
+                                </TableCell>
+
+                                <TableCell>
+                                    {employee.slack_id ?? employee.slackId}
+                                </TableCell>
+
+                                <TableCell>
+                                    {employee.email}
                                 </TableCell>
 
                                 <TableCell align="center">

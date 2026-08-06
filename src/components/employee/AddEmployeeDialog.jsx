@@ -18,8 +18,31 @@ import {
 const roleOptions = [
     "Employee",
     "Supervisor",
-    "HR",
-    "Admin"
+    "Reviewer",
+    "Contractor",
+    "Leadership"
+    
+];
+const departmentOptions = [
+
+    "Sales",
+
+    "Finance",
+
+    "Marketing",
+
+    "Compliance",
+
+    "Member Success",
+
+    "Human Resources",
+
+    "Product Development",
+
+    "Information Technology",
+
+    "Business Development"
+
 ];
 
 export default function AddEmployeeDialog({
@@ -37,6 +60,7 @@ export default function AddEmployeeDialog({
         email: "",
         slackId: "",
         department: "",
+        designation: "",
         role: ""
 
     };
@@ -60,6 +84,7 @@ export default function AddEmployeeDialog({
                 email: employee.email ?? "",
                 slackId: employee.slack_id ?? employee.slackId ?? "",
                 department: employee.department ?? "",
+                designation: employee.designation ?? "",
                 role: employee.role ?? ""
 
             });
@@ -200,14 +225,42 @@ export default function AddEmployeeDialog({
                     <Grid size={{ xs: 12, md: 6 }}>
 
                         <TextField
+                            select
                             fullWidth
                             label="Department"
                             name="department"
                             value={form.department}
                             onChange={handleChange}
+                        >
+
+                            {departmentOptions.map(department => (
+
+                                <MenuItem
+                                    key={department}
+                                    value={department}
+                                >
+
+                                    {department}
+
+                                </MenuItem>
+
+                            ))}
+
+                        </TextField>
+
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+
+                        <TextField
+                            fullWidth
+                            label="Designation"
+                            name="designation"
+                            value={form.designation}
+                            onChange={handleChange}
                         />
 
                     </Grid>
+
 
                     <Grid size={{ xs: 12, md: 6 }}>
 

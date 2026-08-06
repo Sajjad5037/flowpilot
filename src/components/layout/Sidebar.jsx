@@ -186,7 +186,7 @@ export default function Sidebar() {
           variant="h5"
           fontWeight={700}
         >
-          ⚡ FlowPilot
+          ⚡ Nurp
         </Typography>
 
         <Typography

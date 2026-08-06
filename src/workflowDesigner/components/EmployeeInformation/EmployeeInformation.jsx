@@ -13,6 +13,8 @@ export default function EmployeeInformation({
 }) {
 
     const fields = component?.fields || {};
+    const entityLabel =
+    component?.entityLabel || "Employee";
 
     return (
 
@@ -31,7 +33,7 @@ export default function EmployeeInformation({
                 fontWeight={700}
                 gutterBottom
             >
-                Employee Information
+                {entityLabel} Information
             </Typography>
 
             <Typography
@@ -54,7 +56,7 @@ export default function EmployeeInformation({
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
-                            label="Employee Name"
+                            label={`${entityLabel} Name`}
                             placeholder="John Smith"
                         />
                     </Grid>
@@ -114,7 +116,7 @@ export default function EmployeeInformation({
                     <Grid item xs={12}>
                         <TextField
                             fullWidth
-                            label="Employee ID"
+                            label={`${entityLabel} ID`}
                             placeholder="EMP-1001"
                         />
                     </Grid>

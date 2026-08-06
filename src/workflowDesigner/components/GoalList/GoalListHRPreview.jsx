@@ -158,7 +158,7 @@ export default function GoalListHRPreview({
                                                 mb: 1
                                             }}
                                         >
-                                            Final Agreed Goal (Discussed in Meeting)
+                                            Final Agreed Goal 
                                         </Typography>
 
                                         <TextField

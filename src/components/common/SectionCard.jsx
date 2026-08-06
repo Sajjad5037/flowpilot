@@ -15,19 +15,24 @@ export default function SectionCard({
 }) {
   return (
     <Card
-      sx={{
-        height: "100%",
-        transition: "all .25s ease",
+  sx={{
+    width: "100%",
+    height: "100%",
+    transition: "all .25s ease",
 
-        "&:hover": {
-          transform: "translateY(-2px)",
-          boxShadow: "0 20px 40px rgba(15,23,42,.08)",
-        },
+    "&:hover": {
+      transform: "translateY(-2px)",
+      boxShadow: "0 20px 40px rgba(15,23,42,.08)",
+    },
 
-        ...sx,
-      }}
-    >
-      <CardContent sx={{ p: 3 }}>
+    ...sx,
+  }}
+>
+      <CardContent
+        sx={{
+          p: 4
+        }}
+      >
         {(title || subtitle || action) && (
           <Stack
             direction="row"

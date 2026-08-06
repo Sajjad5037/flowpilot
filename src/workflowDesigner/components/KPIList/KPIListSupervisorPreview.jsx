@@ -78,15 +78,10 @@ export default function KPIListSupervisorPreview({
                             variant="outlined"
                         >
 
-                            <Box
-                                sx={{
-                                    display: "grid",
-                                    gridTemplateColumns: "1fr 1fr"
-                                }}
-                            >
+                            <Box>
 
                                 {/* Header */}
-
+                                {/* removing employee response for  supervisor 
                                 <Box
                                     sx={{
                                         p: 2,
@@ -97,6 +92,7 @@ export default function KPIListSupervisorPreview({
                                 >
                                     Employee KPI Title & Expectation
                                 </Box>
+                                */}
 
                                 <Box
                                     sx={{
@@ -105,62 +101,63 @@ export default function KPIListSupervisorPreview({
                                         fontWeight: 700
                                     }}
                                 >
-                                    Supervisor KPI Title & Expectation
+                                    Supervisor KPI
                                 </Box>
 
-                                {/* Employee */}
+                                {/* Employee 
 
-                                <Box
-                                    sx={{
-                                        p: 2,
-                                        borderRight: "1px solid #D1D5DB",
-                                        borderTop: "1px solid #D1D5DB"
-                                    }}
-                                >
-
-                                    <Paper
-                                        elevation={0}
+                                    <Box
                                         sx={{
                                             p: 2,
-                                            bgcolor: "#F9FAFB",
-                                            borderLeft: "4px solid #64748B"
+                                            borderRight: "1px solid #D1D5DB",
+                                            borderTop: "1px solid #D1D5DB"
                                         }}
                                     >
 
-                                        <Typography fontWeight={700}>
-
-                                            Title
-
-                                        </Typography>
-
-                                        <Typography
-                                            color="text.secondary"
-                                            mb={2}
+                                        <Paper
+                                            elevation={0}
+                                            sx={{
+                                                p: 2,
+                                                bgcolor: "#F9FAFB",
+                                                borderLeft: "4px solid #64748B"
+                                            }}
                                         >
-                                            {
-                                                employeeResponses?.kpi_list?.[kpiKey]?.title ||
 
-                                                "No KPI title submitted."
-                                            }
-                                        </Typography>
+                                            <Typography fontWeight={700}>
 
-                                        <Typography fontWeight={700}>
-                                            Expectation
-                                        </Typography>
+                                                Title
 
-                                        <Typography color="text.secondary">
+                                            </Typography>
 
-                                            {
-                                                employeeResponses?.kpi_list?.[kpiKey]?.expectation ||
+                                            <Typography
+                                                color="text.secondary"
+                                                mb={2}
+                                            >
+                                                {
+                                                    employeeResponses?.kpi_list?.[kpiKey]?.title ||
 
-                                                "No KPI expectation submitted."
-                                            }
+                                                    "No KPI title submitted."
+                                                }
+                                            </Typography>
 
-                                        </Typography>
+                                            <Typography fontWeight={700}>
+                                                Expectation
+                                            </Typography>
 
-                                    </Paper>
+                                            <Typography color="text.secondary">
 
-                                </Box>
+                                                {
+                                                    employeeResponses?.kpi_list?.[kpiKey]?.expectation ||
+
+                                                    "No KPI expectation submitted."
+                                                }
+
+                                            </Typography>
+
+                                        </Paper>
+
+                                    </Box>
+                                */}
 
                                 {/* Supervisor */}
 

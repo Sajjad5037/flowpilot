@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid";
+import { Box } from "@mui/material";
 
 import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
 import EngineeringIcon from "@mui/icons-material/Engineering";
@@ -205,26 +206,18 @@ export default function Dashboard() {
 
       
 
-      {/* Notifications & Review Status */}
+      {/* Upcoming Meetings */}
 
-      <Grid
-        container
-        spacing={4}
+      <Box
+        sx={{
+          width: "900px",
+          
+        }}
       >
-        
-
-        <Grid
-          item
-          xs={12}
-          lg={4}
-        >
-          <MeetingCard
-            meetings={meetings}
-          />
-        </Grid>
-
-        
-      </Grid>
+        <MeetingCard
+          meetings={meetings}
+        />
+      </Box>
     </>
   );
 }

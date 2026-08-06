@@ -25,6 +25,7 @@ export async function createEmployee(employee) {
             email: employee.email,
             slack_id: employee.slackId,
             department: employee.department,
+            designation: employee.designation,
             role: employee.role
         }
     );
@@ -45,6 +46,7 @@ export async function updateEmployee(id, employee) {
             email: employee.email,
             slack_id: employee.slackId,
             department: employee.department,
+            designation: employee.designation,
             role: employee.role
         }
     );

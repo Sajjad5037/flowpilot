@@ -87,26 +87,53 @@ export default function StatCard({
 
         <Divider />
         <Stack spacing={1}>
-          {summary.map((item) => (
-            <Stack
-              key={item}
-              direction="row"
-              spacing={1}
-              alignItems="center"
-            >
-              <CheckCircleRoundedIcon
-                sx={{
-                  fontSize: 18,
-                  color: "#22C55E",
-                }}
-              />
 
-              <Typography variant="body2">
-                {item}
-              </Typography>
-            </Stack>
-          ))}
-        </Stack>
+          {summary.map((item, index) => {
+
+              const isObject =
+                  typeof item === "object";
+
+              return (
+
+                  <Stack
+                      key={index}
+                      direction="row"
+                      spacing={1}
+                      alignItems="center"
+                  >
+
+                      <CheckCircleRoundedIcon
+                          sx={{
+                              fontSize: 18,
+                              color: isObject
+                                  ? item.color
+                                  : "#22C55E"
+                          }}
+                      />
+
+                      <Typography
+                          variant="body2"
+                          sx={{
+                              color: isObject
+                                  ? item.color
+                                  : "inherit",
+                              fontWeight: isObject
+                                  ? 600
+                                  : 400
+                          }}
+                      >
+                          {isObject
+                              ? item.text
+                              : item}
+                      </Typography>
+
+                  </Stack>
+
+              );
+
+          })}
+
+      </Stack>
         <Divider sx={{ mt: "auto" }} />
 
         {/* Footer */}

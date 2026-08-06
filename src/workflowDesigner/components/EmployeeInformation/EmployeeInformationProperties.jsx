@@ -4,7 +4,8 @@ import {
     Divider,
     Stack,
     FormControlLabel,
-    Checkbox
+    Checkbox,
+    TextField
 } from "@mui/material";
 
 export default function EmployeeInformationProperties({
@@ -15,6 +16,8 @@ export default function EmployeeInformationProperties({
 }) {
 
     const fields = component.fields || {};
+    const entityLabel =
+    component.entityLabel || "Employee";
 
     function updateField(fieldName, checked) {
 
@@ -33,6 +36,17 @@ export default function EmployeeInformationProperties({
         });
 
     }
+    function updateEntityLabel(value) {
+
+    onChange({
+
+        ...component,
+
+        entityLabel: value
+
+    });
+
+}
 
     return (
 
@@ -48,7 +62,7 @@ export default function EmployeeInformationProperties({
                 variant="h6"
                 fontWeight={700}
             >
-                Employee Information
+                {entityLabel} Information
             </Typography>
 
             <Typography
@@ -58,6 +72,15 @@ export default function EmployeeInformationProperties({
             >
                 Select which fields should appear in the employee information section.
             </Typography>
+            <TextField
+                fullWidth
+                label="Entity Label"
+                value={component.entityLabel ?? "Employee"}
+                onChange={(e) =>
+                    updateEntityLabel(e.target.value)
+                }
+                helperText="Example: Employee, Contractor, Consultant, Volunteer"
+            />
 
             <Divider sx={{ my: 3 }} />
 

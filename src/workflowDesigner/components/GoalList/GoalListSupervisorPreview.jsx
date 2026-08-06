@@ -80,46 +80,40 @@ export default function GoalListSupervisorPreview({
                                     Goal {index + 1}
                                 </Typography>
 
-                                <Box
-                                    sx={{
-                                        display: "grid",
-                                        gridTemplateColumns: "1fr 1fr",
-                                        gap: 3
-                                    }}
-                                >
+                                <Box>
 
-                                    {/* Employee Goal */}
+                                    {/* Employee Goal x
 
-                                    <Box>
+                                        <Box>
 
-                                        <Typography
-                                            fontWeight={600}
-                                            mb={1}
-                                        >
-                                            Employee Proposal
-                                        </Typography>
-
-                                        <Paper
-                                            elevation={0}
-                                            sx={{
-                                                p: 2,
-                                                bgcolor: "#F3F4F6",
-                                                borderLeft: "4px solid #64748B",
-                                                minHeight: 220
-                                            }}
-                                        >
-
-                                            <Typography>
-
-                                                {employeeResponses?.goal_list?.[goalKey]?.proposal ||
-                                                    "No proposal submitted."}
-
+                                            <Typography
+                                                fontWeight={600}
+                                                mb={1}
+                                            >
+                                                Employee Proposal
                                             </Typography>
 
-                                        </Paper>
+                                            <Paper
+                                                elevation={0}
+                                                sx={{
+                                                    p: 2,
+                                                    bgcolor: "#F3F4F6",
+                                                    borderLeft: "4px solid #64748B",
+                                                    minHeight: 220
+                                                }}
+                                            >
 
-                                    </Box>
+                                                <Typography>
 
+                                                    {employeeResponses?.goal_list?.[goalKey]?.proposal ||
+                                                        "No proposal submitted."}
+
+                                                </Typography>
+
+                                            </Paper>
+
+                                        </Box>
+                                    {/* Employee Goal */}
                                     {/* Supervisor Review */}
 
                                     <Box>

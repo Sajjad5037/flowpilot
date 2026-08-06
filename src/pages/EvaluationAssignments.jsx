@@ -191,14 +191,14 @@ export default function EvaluationAssignments() {
 
                     </Grid>
 
-                    {/* HR */}
+                    {/* Reviewer */}
 
                     <Grid size={{ xs: 12, md: 6 }}>
 
                         <TextField
                             select
                             fullWidth
-                            label="HR Reviewer"
+                            label="Reviewer"
                             value={hr}
                             onChange={(event) =>
                                 setHr(event.target.value)
@@ -206,18 +206,18 @@ export default function EvaluationAssignments() {
                         >
 
                             <MenuItem value="">
-                                Select HR Reviewer
+                                Select Reviewer
                             </MenuItem>
 
                             {employees
-                                .filter(e => e.role === "HR")
-                                .map(hr => (
+                                .filter(e => e.role === "Reviewer")
+                                .map(reviewer => (
 
                                     <MenuItem
-                                        key={hr.id}
-                                        value={hr.id}
+                                        key={reviewer.id}
+                                        value={reviewer.id}
                                     >
-                                        {hr.full_name}
+                                        {reviewer.full_name}
                                     </MenuItem>
 
                                 ))}
