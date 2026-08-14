@@ -12,33 +12,58 @@ export default function WorkflowDesigner() {
 
     const [workflows, setWorkflows] = useState([]);
 
-    function handleCreate(evaluationName) {
+    function handleCreate(evaluation) {
 
-        const workflow = {
+    const workflow = {
 
-            id: crypto.randomUUID(),
+        id: crypto.randomUUID(),
 
-            name: evaluationName,
+        name: evaluation.name,
 
-            stages: {
+        type: evaluation.type,
 
-                employee: [],
-                supervisor: [],
-                hr: []
+        stages: {
 
+            employee: [],
+            supervisor: [],
+            hr: []
+
+        }
+
+    };
+
+    // Existing Employee Goal & KPI workflow
+    if (evaluation.type === "employee_goal_kpi") {
+
+        setWorkflows(prev => [
+            ...prev,
+            workflow
+        ]);
+
+        navigate(
+            `/workflow-editor/${workflow.id}`,
+            {
+                state: workflow
             }
+        );
 
-        };
-
-        setWorkflows(prev => [...prev, workflow]);
-
-        navigate(`/workflow-editor/${workflow.id}`, {
-
-            state: workflow
-
-        });
-
+        return;
     }
+
+    // New Employee Evaluation workflow
+    if (evaluation.type === "employee_evaluation") {
+
+        navigate(
+            `/employee-evaluation-builder/${workflow.id}`,
+            {
+                state: workflow
+            }
+        );
+
+        return;
+    }
+
+}
 
     return (
 

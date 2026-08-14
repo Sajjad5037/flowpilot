@@ -6,6 +6,7 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    MenuItem,
     Stack,
     TextField,
     Typography
@@ -19,15 +20,25 @@ export default function CreateEvaluationDialog({
 
 }) {
 
+    const [evaluationType, setEvaluationType] = useState("");
+
     const [evaluationName, setEvaluationName] = useState("");
 
     function handleCreate() {
 
-        if (!evaluationName.trim()) {
+        if (!evaluationType || !evaluationName.trim()) {
             return;
         }
 
-        onCreate(evaluationName);
+        onCreate({
+
+            type: evaluationType,
+
+            name: evaluationName.trim()
+
+        });
+
+        setEvaluationType("");
 
         setEvaluationName("");
 
@@ -36,6 +47,8 @@ export default function CreateEvaluationDialog({
     }
 
     function handleCancel() {
+
+        setEvaluationType("");
 
         setEvaluationName("");
 
@@ -53,31 +66,79 @@ export default function CreateEvaluationDialog({
         >
 
             <DialogTitle>
-
                 Create Evaluation
-
             </DialogTitle>
 
             <DialogContent>
 
                 <Stack spacing={3} mt={1}>
 
-                    <Typography color="text.secondary">
-
-                        Give your evaluation a meaningful name. You will build the workflow after creating it.
-
+                    <Typography
+                        color="text.secondary"
+                    >
+                        Choose the type of evaluation you want to create.
                     </Typography>
 
+                    {/* Evaluation Type */}
+
                     <TextField
-                        autoFocus
+                        select
                         fullWidth
-                        label="Evaluation Name"
-                        placeholder="Q2 2026 Goal & KPI Evaluation"
-                        value={evaluationName}
+                        label="Evaluation Type"
+                        value={evaluationType}
                         onChange={(event) =>
-                            setEvaluationName(event.target.value)
+                            setEvaluationType(event.target.value)
                         }
-                    />
+                    >
+
+                        <MenuItem value="">
+                            Select Evaluation Type
+                        </MenuItem>
+
+                        <MenuItem value="employee_goal_kpi">
+                            Employee Goal & KPI
+                        </MenuItem>
+
+                        <MenuItem value="employee_evaluation">
+                            Employee Evaluation
+                        </MenuItem>
+
+                    </TextField>
+
+                    {evaluationType && (
+
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                        >
+                            {evaluationType === "employee_goal_kpi"
+                                ? "Goal and KPI setting for new employees."
+                                : "Performance evaluation for existing employees."
+                            }
+                        </Typography>
+
+                    )}
+
+                    {/* Evaluation Name */}
+
+                    {evaluationType && (
+
+                        <TextField
+                            autoFocus
+                            fullWidth
+                            label="Evaluation Name"
+                            placeholder={
+                                evaluationType === "employee_goal_kpi"
+                                    ? "Q2 2026 Goal & KPI Evaluation"
+                                    : "Q2 2026 Employee Evaluation"
+                            }
+                            value={evaluationName}
+                            onChange={(event) =>
+                                setEvaluationName(event.target.value)
+                            }
+                        />
+
+                    )}
 
                 </Stack>
 
@@ -86,19 +147,18 @@ export default function CreateEvaluationDialog({
             <DialogActions>
 
                 <Button onClick={handleCancel}>
-
                     Cancel
-
                 </Button>
 
                 <Button
                     variant="contained"
                     onClick={handleCreate}
-                    disabled={!evaluationName.trim()}
+                    disabled={
+                        !evaluationType ||
+                        !evaluationName.trim()
+                    }
                 >
-
                     Create
-
                 </Button>
 
             </DialogActions>

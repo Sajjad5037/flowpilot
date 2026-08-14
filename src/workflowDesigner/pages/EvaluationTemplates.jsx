@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
 import {
     Box,
     Button,
@@ -14,21 +14,58 @@ import CreateEvaluationDialog from "../dialogs/CreateEvaluationDialog";
 
 export default function EvaluationTemplates() {
 
+    const navigate = useNavigate();
+
     const [evaluations, setEvaluations] = useState([]);
 
     const [dialogOpen, setDialogOpen] = useState(false);
 
-    function handleCreate(workflow) {
+    function handleCreate(evaluation) {
 
-        setEvaluations(prev => [
+    const workflow = {
 
-            ...prev,
+        id: crypto.randomUUID(),
 
-            workflow
+        name: evaluation.name,
 
-        ]);
+        type: evaluation.type,
+
+        stages: {
+
+            employee: [],
+            supervisor: [],
+            hr: []
+
+        }
+
+    };
+
+    // Existing Employee Goal & KPI workflow
+    if (evaluation.type === "employee_goal_kpi") {
+
+        navigate(
+            `/workflow-editor/${workflow.id}`,
+            {
+                state: workflow
+            }
+        );
+
+        return;
 
     }
+
+    // New Employee Evaluation workflow
+    if (evaluation.type === "employee_evaluation") {
+
+        console.log(
+            "NEW EMPLOYEE EVALUATION BUILDER",
+            workflow
+        );
+
+        return;
+    }
+
+}
 
     return (
 

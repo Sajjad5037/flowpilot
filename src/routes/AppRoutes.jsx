@@ -22,6 +22,8 @@ import DemoScenarios from "../pages/DemoScenarios";
 import ReviewCycles from "../pages/ReviewCycles";
 import EvaluationTemplateBuilder from "../pages/EvaluationTemplateBuilder";
 import PublicEvaluation from "../pages/PublicEvaluation";
+import EmployeeEvaluationBuilder
+    from "../workflowDesigner/employeeEvaluation/EmployeeEvaluationBuilder";
 function Layout({ children }) {
   return (
     <MainLayout
@@ -108,6 +110,14 @@ export default function AppRoutes() {
           element={
               <Layout>
                   <WorkflowEditor />
+              </Layout>
+          }
+      />
+      <Route
+          path="/employee-evaluation-builder/:id"
+          element={
+              <Layout>
+                  <EmployeeEvaluationBuilder />
               </Layout>
           }
       />
