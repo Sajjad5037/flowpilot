@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
     Box,
     Button,
@@ -22,7 +24,14 @@ const previewProjects = [
 export default function ExtraProjects({
     component,
     previewMode = "employee",
+    responses = {},
+    onResponsesChange,
+    employeeResponses = {},
 }) {
+
+    const [projects, setProjects] = useState(
+        responses?.extra_projects || previewProjects
+    );
 
     /*
      * This component is employee-facing only.
@@ -154,7 +163,7 @@ export default function ExtraProjects({
                     </Box>
 
 
-                    {previewProjects.map(
+                    {(employeeResponses?.extra_projects || []).map(
                         (project, index) => (
 
                             <Box
@@ -240,7 +249,7 @@ export default function ExtraProjects({
                         fontWeight={700}
                         color="#0F172A"
                     >
-                        3. Extra Projects or
+                        Extra Projects or
                         Accomplishments
                     </Typography>
 
@@ -263,6 +272,17 @@ export default function ExtraProjects({
                 <Button
                     variant="outlined"
                     size="small"
+                    onClick={() => {
+                        setProjects((prev) => [
+                            ...prev,
+                            {
+                                id: `project-${Date.now()}`,
+                                description: "",
+                                startDate: "",
+                                endDate: "",
+                            },
+                        ]);
+                    }}
                 >
                     + Add Another Project
                 </Button>
@@ -272,7 +292,7 @@ export default function ExtraProjects({
 
             <Stack spacing={1.5}>
 
-                {previewProjects.map(
+                {projects.map(
                     (project) => (
 
                         <Box
@@ -287,8 +307,29 @@ export default function ExtraProjects({
                                     "#F8FAFC",
 
                                 p: 1.5,
+                                position: "relative",
+                                pr: 6,
                             }}
                         >
+
+                            <IconButton
+                                size="small"
+                                onClick={() => {
+                                    setProjects((prev) =>
+                                        prev.filter(
+                                            (row) => row.id !== project.id
+                                        )
+                                    );
+                                }}
+                                sx={{
+                                    position: "absolute",
+                                    top: 8,
+                                    right: 8,
+                                    color: "#EF4444",
+                                }}
+                            >
+                                ×
+                            </IconButton>
 
                             <Box
                                 sx={{
@@ -303,23 +344,59 @@ export default function ExtraProjects({
 
                                 <ProjectField
                                     label="Project Name / Description"
-                                    value={
-                                        project.description
-                                    }
+                                    value={project.description}
+                                    onChange={(value) => {
+                                        const updatedProjects = projects.map((row) =>
+                                            row.id === project.id
+                                                ? { ...row, description: value }
+                                                : row
+                                        );
+
+                                        setProjects(updatedProjects);
+
+                                        onResponsesChange?.({
+                                            ...responses,
+                                            extra_projects: updatedProjects,
+                                        });
+                                    }}
                                 />
 
                                 <ProjectField
                                     label="Start Date"
-                                    value={
-                                        project.startDate
-                                    }
+                                    value={project.startDate}
+                                    onChange={(value) => {
+                                        const updatedProjects = projects.map((row) =>
+                                            row.id === project.id
+                                                ? { ...row, startDate: value }
+                                                : row
+                                        );
+
+                                        setProjects(updatedProjects);
+
+                                        onResponsesChange?.({
+                                            ...responses,
+                                            extra_projects: updatedProjects,
+                                        });
+                                    }}
                                 />
 
                                 <ProjectField
                                     label="End Date"
-                                    value={
-                                        project.endDate
-                                    }
+                                    value={project.endDate}
+                                    onChange={(value) => {
+                                        const updatedProjects = projects.map((row) =>
+                                            row.id === project.id
+                                                ? { ...row, endDate: value }
+                                                : row
+                                        );
+
+                                        setProjects(updatedProjects);
+
+                                        onResponsesChange?.({
+                                            ...responses,
+                                            extra_projects: updatedProjects,
+                                        });
+                                    }}
                                 />
 
                             </Box>
@@ -346,6 +423,7 @@ export default function ExtraProjects({
 function ProjectField({
     label,
     value,
+    onChange,
 }) {
 
     return (
@@ -370,9 +448,9 @@ function ProjectField({
                 size="small"
                 value={value}
                 variant="outlined"
-                InputProps={{
-                    readOnly: true,
-                }}
+                onChange={(event) =>
+                    onChange?.(event.target.value)
+                }
             />
 
         </Box>

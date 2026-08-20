@@ -16,6 +16,10 @@ const previewSupervisorResponse =
 export default function DiscussionNotesFeedback({
     component,
     previewMode = "employee",
+    responses = {},
+    onResponsesChange,
+    employeeResponses = {},
+    supervisorResponses = {},
 }) {
 
     /*
@@ -39,7 +43,7 @@ export default function DiscussionNotesFeedback({
                     fontWeight={700}
                     color="#0F172A"
                 >
-                    4. Employee Discussion Notes & Feedback
+                    Discussion Notes & Feedback
                 </Typography>
 
 
@@ -75,9 +79,18 @@ export default function DiscussionNotesFeedback({
                         fullWidth
                         multiline
                         minRows={4}
-                        defaultValue={
-                            previewEmployeeResponse
+                        value={
+                            responses?.discussion_notes_feedback?.employee_response || ""
                         }
+                        onChange={(event) => {
+                            onResponsesChange?.({
+                                ...responses,
+                                discussion_notes_feedback: {
+                                    ...(responses?.discussion_notes_feedback || {}),
+                                    employee_response: event.target.value,
+                                },
+                            });
+                        }}
                         variant="outlined"
                         placeholder="Enter your notes or feedback..."
                         sx={{
@@ -123,7 +136,7 @@ export default function DiscussionNotesFeedback({
                     fontWeight={700}
                     color="#0F172A"
                 >
-                    3. Supervisor Discussion Notes & Feedback
+                    Discussion Notes & Feedback
                 </Typography>
 
 
@@ -159,9 +172,18 @@ export default function DiscussionNotesFeedback({
                         fullWidth
                         multiline
                         minRows={4}
-                        defaultValue={
-                            previewSupervisorResponse
+                        value={
+                            responses?.discussion_notes_feedback?.supervisor_response || ""
                         }
+                        onChange={(event) => {
+                            onResponsesChange?.({
+                                ...responses,
+                                discussion_notes_feedback: {
+                                    ...(responses?.discussion_notes_feedback || {}),
+                                    supervisor_response: event.target.value,
+                                },
+                            });
+                        }}
                         variant="outlined"
                         placeholder="Enter your notes or feedback..."
                         sx={{
@@ -207,7 +229,7 @@ export default function DiscussionNotesFeedback({
                     fontWeight={700}
                     color="#0F172A"
                 >
-                    4. Discussion Notes & Feedback
+                    Discussion Notes & Feedback
                 </Typography>
 
 
@@ -264,12 +286,17 @@ export default function DiscussionNotesFeedback({
                             }}
                         >
 
+                            {console.log(
+                                "HR SUPERVISOR RESPONSES:",
+                                supervisorResponses
+                            )}
+
                             <TextField
                                 fullWidth
                                 multiline
                                 minRows={3}
                                 defaultValue={
-                                    previewEmployeeResponse
+                                    employeeResponses?.discussion_notes_feedback?.employee_response || ""
                                 }
                                 variant="outlined"
                                 sx={{
@@ -315,8 +342,8 @@ export default function DiscussionNotesFeedback({
                                 fullWidth
                                 multiline
                                 minRows={3}
-                                defaultValue={
-                                    previewSupervisorResponse
+                                value={
+                                    supervisorResponses?.discussion_notes_feedback?.supervisor_response || ""
                                 }
                                 variant="outlined"
                                 sx={{

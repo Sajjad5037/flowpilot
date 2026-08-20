@@ -4,6 +4,7 @@ import {
     Divider,
     FormControl,
     InputLabel,
+    IconButton,
     MenuItem,
     Paper,
     Select,
@@ -11,6 +12,8 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
+
+import DeleteIcon from "@mui/icons-material/Delete";
 
 
 const previewKpis = [
@@ -22,6 +25,8 @@ const previewKpis = [
         may: "80%",
         june: "38%",
         q2Average: "63.30%",
+        comments:
+            "Strong performance across Q2, consistently meeting expectations.",
     },
     {
         id: "kpi-2",
@@ -31,6 +36,8 @@ const previewKpis = [
         may: "66.7%",
         june: "54.5%",
         q2Average: "57.90%",
+        comments:
+            "Well above 50% baseline throughout the quarter.",
     },
     {
         id: "kpi-3",
@@ -40,6 +47,8 @@ const previewKpis = [
         may: "100%",
         june: "100%",
         q2Average: "100%",
+        comments:
+            "100% retention achieved for both Colton and Bingham.",
     },
     {
         id: "kpi-4",
@@ -49,6 +58,8 @@ const previewKpis = [
         may: "N/A",
         june: "11 days",
         q2Average: "Met Target",
+        comments:
+            "Fast turnaround time on David's recruitment process.",
     },
 ];
 
@@ -56,15 +67,71 @@ const previewKpis = [
 export default function KPIResults({
     component,
     previewMode = "employee",
+    finalizedKpis = [],
+    reviewCycle,
+    reviewCycleMonths = [],
+    responses = {},
+    onResponsesChange,
+    hrResponses = {},
 }) {
 
     const settings = component?.settings || {};
+    const months =
+        reviewCycleMonths.length === 3
+            ? reviewCycleMonths
+            : ["January", "February", "March"];
+
+    const quarter =
+        reviewCycle?.match(/^Q\d+/)?.[0] || "Q1";
+
+    const averageLabel = `${quarter} Average`;
+    const monthKeys = months.map(
+        month => month.toLowerCase()
+    );
+
+    const kpiResponses =
+        responses?.kpi_results || {};
+
+    const displayedKpiResponses =
+        previewMode === "employee" ||
+        previewMode === "supervisor"
+            ? hrResponses?.kpi_results || {}
+            : kpiResponses;
+
+    function updateKpiMonth(
+        kpiId,
+        monthKey,
+        value
+    ) {
+        if (!onResponsesChange) {
+            return;
+        }
+
+        onResponsesChange({
+            ...responses,
+            kpi_results: {
+                ...kpiResponses,
+                [kpiId]: {
+                    ...(kpiResponses[kpiId] || {}),
+                    [monthKey]: value,
+                },
+            },
+        });
+    }
 
 
     function renderKpiTable({
         editable = false,
         showComments = false,
+        showActions = false,
+        showFooterActions = editable,
     } = {}) {
+
+        const gridTemplateColumns = showComments
+            ? "1.2fr 1.5fr 0.8fr 0.8fr 0.8fr 1fr 2.2fr 0.6fr"
+            : "1.5fr 1.4fr 0.8fr 0.8fr 0.8fr 1fr";
+
+        const minWidth = showComments ? 1200 : 950;
 
         return (
             <Box>
@@ -80,10 +147,9 @@ export default function KPIResults({
 
                     <Box
                         sx={{
-                            minWidth: 950,
+                            minWidth,
                             display: "grid",
-                            gridTemplateColumns:
-                                "1.5fr 1.4fr 0.8fr 0.8fr 0.8fr 1fr",
+                            gridTemplateColumns,
                             backgroundColor: "grey.100",
                             borderBottom: "1px solid",
                             borderColor: "divider",
@@ -98,34 +164,51 @@ export default function KPIResults({
                             Expectation
                         </HeaderCell>
 
-                        <HeaderCell>
-                            April
-                        </HeaderCell>
+                        {months.map(
+                            month => (
+                                <HeaderCell key={month}>
+                                    {month}
+                                </HeaderCell>
+                            )
+                        )}
 
                         <HeaderCell>
-                            May
+                            {averageLabel}
                         </HeaderCell>
 
-                        <HeaderCell>
-                            June
-                        </HeaderCell>
+                        {showComments && (
+                            <HeaderCell>
+                                Comments & Notes
+                            </HeaderCell>
+                        )}
 
-                        <HeaderCell>
-                            Q2 Average
-                        </HeaderCell>
+                        {showActions && (
+                            <HeaderCell>
+                                Action
+                            </HeaderCell>
+                        )}
 
                     </Box>
 
 
-                    {previewKpis.map((kpi) => (
+                    {(
+                        finalizedKpis.length > 0
+                            ? finalizedKpis.map((kpi) => ({
+                                id: `finalized-kpi-${kpi.id}`,
+                                kpiId: kpi.id,
+                                title: kpi.title,
+                                expectation: kpi.expectation,
+                                comments: "",
+                            }))
+                            : previewKpis
+                    ).map((kpi) => (
 
                         <Box
                             key={kpi.id}
                             sx={{
-                                minWidth: 950,
+                                minWidth,
                                 display: "grid",
-                                gridTemplateColumns:
-                                    "1.5fr 1.4fr 0.8fr 0.8fr 0.8fr 1fr",
+                                gridTemplateColumns,
                                 borderBottom: "1px solid",
                                 borderColor: "divider",
                             }}
@@ -146,7 +229,6 @@ export default function KPIResults({
                                 )}
 
                             </BodyCell>
-
 
                             <BodyCell>
 
@@ -171,11 +253,20 @@ export default function KPIResults({
                                     <TextField
                                         fullWidth
                                         size="small"
-                                        defaultValue={kpi.april}
+                                        value={
+                                            kpiResponses?.[kpi.kpiId]?.[monthKeys[0]] || ""
+                                        }
+                                        onChange={(event) =>
+                                            updateKpiMonth(
+                                                kpi.kpiId,
+                                                monthKeys[0],
+                                                event.target.value
+                                            )
+                                        }
                                     />
                                 ) : (
                                     <Typography variant="body2">
-                                        {kpi.april}
+                                        {displayedKpiResponses?.[kpi.kpiId]?.[monthKeys[0]] || ""}
                                     </Typography>
                                 )}
 
@@ -188,11 +279,20 @@ export default function KPIResults({
                                     <TextField
                                         fullWidth
                                         size="small"
-                                        defaultValue={kpi.may}
+                                        value={
+                                            kpiResponses?.[kpi.kpiId]?.[monthKeys[1]] || ""
+                                        }
+                                        onChange={(event) =>
+                                            updateKpiMonth(
+                                                kpi.kpiId,
+                                                monthKeys[1],
+                                                event.target.value
+                                            )
+                                        }
                                     />
                                 ) : (
                                     <Typography variant="body2">
-                                        {kpi.may}
+                                        {displayedKpiResponses?.[kpi.kpiId]?.[monthKeys[1]] || ""}
                                     </Typography>
                                 )}
 
@@ -205,11 +305,20 @@ export default function KPIResults({
                                     <TextField
                                         fullWidth
                                         size="small"
-                                        defaultValue={kpi.june}
+                                        value={
+                                            kpiResponses?.[kpi.kpiId]?.[monthKeys[2]] || ""
+                                        }
+                                        onChange={(event) =>
+                                            updateKpiMonth(
+                                                kpi.kpiId,
+                                                monthKeys[2],
+                                                event.target.value
+                                            )
+                                        }
                                     />
                                 ) : (
                                     <Typography variant="body2">
-                                        {kpi.june}
+                                        {displayedKpiResponses?.[kpi.kpiId]?.[monthKeys[2]] || ""}
                                     </Typography>
                                 )}
 
@@ -227,6 +336,30 @@ export default function KPIResults({
 
                             </BodyCell>
 
+                            {showComments && (
+                                <BodyCell>
+                                    <TextField
+                                        fullWidth
+                                        multiline
+                                        minRows={2}
+                                        size="small"
+                                        defaultValue={kpi.comments}
+                                    />
+                                </BodyCell>
+                            )}
+
+                            {showActions && (
+                                <BodyCell>
+                                    <IconButton
+                                        color="error"
+                                        size="small"
+                                        aria-label={`Delete ${kpi.title}`}
+                                    >
+                                        <DeleteIcon fontSize="small" />
+                                    </IconButton>
+                                </BodyCell>
+                            )}
+
                         </Box>
 
                     ))}
@@ -234,7 +367,7 @@ export default function KPIResults({
                 </Box>
 
 
-                {editable && (
+                {showFooterActions && (
                     <Stack
                         direction="row"
                         spacing={1}
@@ -361,90 +494,157 @@ export default function KPIResults({
         return (
             <Paper
                 variant="outlined"
-                sx={{ p: 3 }}
+                sx={{
+                    p: 3,
+                    borderRadius: 2,
+                }}
             >
 
-                <Typography
-                    variant="h6"
-                    fontWeight={600}
-                    gutterBottom
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    spacing={2}
+                    sx={{ mb: 2 }}
                 >
-                    Quarterly KPI Results
-                </Typography>
 
-                <Typography
-                    variant="body2"
-                    color="text.secondary"
-                    sx={{
-                        mb: 3,
-                        fontStyle: "italic",
-                    }}
-                >
-                    KPIs are based on the final KPI titles and expectations
-                    agreed upon in the previous KPI-setting meeting and
-                    will be loaded automatically into the evaluation.
-                </Typography>
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={2}
+                    >
 
+                        <Typography
+                            variant="h6"
+                            fontWeight={700}
+                        >
+                            2. KPI Results for {quarter}
+                        </Typography>
+
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                px: 1.5,
+                                py: 0.75,
+                                border: "1px solid #D6E0EC",
+                                borderRadius: 1.5,
+                                color: "#1E3A5F",
+                            }}
+                        >
+                            Section Weight: <strong>50%</strong>
+                        </Typography>
+
+                    </Stack>
+
+                    <Button
+                        variant="outlined"
+                        size="small"
+                    >
+                        + Add KPI
+                    </Button>
+
+                </Stack>
 
                 {renderKpiTable({
                     editable: true,
+                    showComments: true,
+                    showActions: true,
+                    showFooterActions: false,
                 })}
-
 
                 <Divider sx={{ my: 3 }} />
 
+                <Typography
+                    variant="h6"
+                    fontWeight={700}
+                    gutterBottom
+                    sx={{
+                        textTransform: "uppercase",
+                    }}
+                >
+                    Overall KPI Results Evaluation
+                </Typography>
 
-                <Stack spacing={2}>
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: {
+                            xs: "1fr",
+                            sm: "repeat(2, 1fr)",
+                        },
+                        gap: 2,
+                    }}
+                >
 
-                    <TextField
-                        fullWidth
-                        multiline
-                        minRows={3}
-                        label="HR Comments"
-                        placeholder="Enter HR comments..."
+                    <RatingSummaryCard
+                        label="Employee Selection"
+                        value="4. Above Expectation"
                     />
 
+                    <RatingSummaryCard
+                        label="Supervisor Selection"
+                        value="4. Above Expectation"
+                    />
 
-                    <FormControl fullWidth size="small">
+                    <Paper
+                        variant="outlined"
+                        sx={{
+                            p: 2,
+                            borderRadius: 2,
+                        }}
+                    >
 
-                        <InputLabel>
-                            Final Agreed KPI Rating
-                        </InputLabel>
-
-                        <Select
-                            label="Final Agreed KPI Rating"
-                            defaultValue=""
+                        <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 1 }}
                         >
+                            Final Agreed Rating
+                        </Typography>
 
-                            <MenuItem value="">
-                                Select rating
-                            </MenuItem>
+                        <FormControl fullWidth size="small">
 
-                            <MenuItem value="1">
-                                1. Poor
-                            </MenuItem>
+                            <Select
+                                aria-label="Final Agreed Rating"
+                                defaultValue="4"
+                            >
 
-                            <MenuItem value="2">
-                                2. Below Expectation
-                            </MenuItem>
+                                <MenuItem value="1">
+                                    1. Poor
+                                </MenuItem>
 
-                            <MenuItem value="3">
-                                3. Meets Expectation
-                            </MenuItem>
+                                <MenuItem value="2">
+                                    2. Below Expectation
+                                </MenuItem>
 
-                            <MenuItem value="4">
-                                4. Above Expectation
-                            </MenuItem>
+                                <MenuItem value="3">
+                                    3. Meets Expectation
+                                </MenuItem>
 
-                            <MenuItem value="5">
-                                5. Fully Meets
-                            </MenuItem>
+                                <MenuItem value="4">
+                                    4. Above Expectation
+                                </MenuItem>
 
-                        </Select>
+                                <MenuItem value="5">
+                                    5. Fully Meets
+                                </MenuItem>
 
-                    </FormControl>
+                            </Select>
 
-                </Stack>
+                        </FormControl>
+
+                    </Paper>
+
+                    <RatingSummaryCard
+                        label="KPI Section Points"
+                        value="37.5"
+                        valueSx={{
+                            textAlign: "center",
+                            fontSize: "1.4rem",
+                        }}
+                    />
+
+                </Box>
 
             </Paper>
         );
@@ -559,4 +759,43 @@ function BodyCell({ children }) {
             {children}
         </Box>
     );
+}
+
+
+function RatingSummaryCard({
+    label,
+    value,
+    valueSx,
+}) {
+
+    return (
+
+        <Paper
+            variant="outlined"
+            sx={{
+                p: 2,
+                borderRadius: 2,
+            }}
+        >
+
+            <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ mb: 1 }}
+            >
+                {label}
+            </Typography>
+
+            <Typography
+                variant="body1"
+                fontWeight={700}
+                sx={valueSx}
+            >
+                {value}
+            </Typography>
+
+        </Paper>
+
+    );
+
 }

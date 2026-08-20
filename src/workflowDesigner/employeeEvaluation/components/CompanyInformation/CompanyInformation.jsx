@@ -1,7 +1,7 @@
 import {
+    Box,
     Card,
     CardContent,
-    Grid,
     Stack,
     Typography,
 } from "@mui/material";
@@ -71,217 +71,263 @@ export default function CompanyInformation({
                 },
             ];
 
-
     return (
-
-        <Grid
-            container
-            spacing={2}
+        <Box
+            sx={{
+                width: "100%",
+                py: 0,
+            }}
         >
 
-            {/* ================================= */}
-            {/* MISSION STATEMENT                 */}
-            {/* ================================= */}
-
-            <Grid
-                item
-                xs={12}
-                md={4}
+            <Box
+                sx={{
+                    width: "100%",
+                    display: "grid",
+                    gridTemplateColumns: {
+                        xs: "1fr",
+                        md: "repeat(3, minmax(0, 1fr))",
+                    },
+                    gap: 3,
+                    alignItems: "stretch",
+                }}
             >
 
-                <Card
-                    elevation={0}
-                    sx={{
-                        height: "100%",
-                        border:
-                            "1px solid #D9E2EC",
-                        borderRadius: 2.5,
-                        bgcolor: "#FFFFFF",
-                    }}
-                >
+                {/* ================================ */}
+                {/* MISSION STATEMENT                 */}
+                {/* ================================ */}
 
-                    <CardContent
+                    <Card
+                        elevation={0}
                         sx={{
-                            p: 2,
-                            "&:last-child": {
-                                pb: 2,
-                            },
+                            width: "100%",
+                            height: "100%",
+                            minWidth: 0,
+                            minHeight: 235,
+
+                            display: "flex",
+
+                            backgroundColor: "#FFFFFF",
+
+                            border:
+                                "1px solid #D9E2EC",
+
+                            borderRadius: "12px",
+
+                            boxShadow:
+                                "0 2px 8px rgba(15, 23, 42, 0.06)",
                         }}
                     >
 
-                        <Typography
-                            fontSize={14}
-                            fontWeight={700}
-                            color="#7C3AED"
-                            mb={1}
+                        <CardContent
+                            sx={{
+                                width: "100%",
+                                p: 2.5,
+
+                                "&:last-child": {
+                                    pb: 2.5,
+                                },
+                            }}
                         >
-                            Mission Statement
-                        </Typography>
+
+                            <Typography
+                                sx={{
+                                    fontSize: 14,
+                                    fontWeight: 700,
+                                    color: "#7C3AED",
+                                    mb: 1.25,
+                                }}
+                            >
+                                Mission Statement
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    fontSize: 13,
+                                    lineHeight: 1.7,
+                                    color: "#334155",
+                                }}
+                            >
+                                {missionStatement}
+                            </Typography>
+
+                        </CardContent>
+
+                    </Card>
 
 
-                        <Typography
-                            variant="body2"
-                            color="#334155"
-                            lineHeight={1.65}
-                            fontSize={13}
-                        >
-                            {missionStatement}
-                        </Typography>
+                {/* ================================ */}
+                {/* CORE VALUES                       */}
+                {/* ================================ */}
 
-                    </CardContent>
-
-                </Card>
-
-            </Grid>
-
-
-            {/* ================================= */}
-            {/* CORE VALUES                       */}
-            {/* ================================= */}
-
-            <Grid
-                item
-                xs={12}
-                md={4}
-            >
-
-                <Card
-                    elevation={0}
-                    sx={{
-                        height: "100%",
-                        border:
-                            "1px solid #D9E2EC",
-                        borderRadius: 2.5,
-                        bgcolor: "#FFFFFF",
-                    }}
-                >
-
-                    <CardContent
+                    <Card
+                        elevation={0}
                         sx={{
-                            p: 2,
-                            "&:last-child": {
-                                pb: 2,
-                            },
+                            width: "100%",
+                            height: "100%",
+                            minWidth: 0,
+                            minHeight: 235,
+
+                            display: "flex",
+
+                            backgroundColor: "#FFFFFF",
+
+                            border:
+                                "1px solid #D9E2EC",
+
+                            borderRadius: "12px",
+
+                            boxShadow:
+                                "0 2px 8px rgba(15, 23, 42, 0.06)",
                         }}
                     >
 
-                        <Typography
-                            fontSize={14}
-                            fontWeight={700}
-                            color="#7C3AED"
-                            mb={1}
+                        <CardContent
+                            sx={{
+                                width: "100%",
+                                p: 2.5,
+
+                                "&:last-child": {
+                                    pb: 2.5,
+                                },
+                            }}
                         >
-                            Core Values
-                        </Typography>
+
+                            <Typography
+                                sx={{
+                                    fontSize: 14,
+                                    fontWeight: 700,
+                                    color: "#7C3AED",
+                                    mb: 1.25,
+                                }}
+                            >
+                                Core Values
+                            </Typography>
+
+                            <Stack spacing={0.8}>
+
+                                {coreValues.map(
+                                    (value, index) => (
+
+                                        <Typography
+                                            key={index}
+                                            sx={{
+                                                fontSize: 13,
+                                                lineHeight: 1.55,
+                                                color: "#334155",
+                                            }}
+                                        >
+
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    fontWeight: 700,
+                                                    color: "#334155",
+                                                }}
+                                            >
+                                                {value.name}:
+                                            </Box>{" "}
+
+                                            {value.description}
+
+                                        </Typography>
+
+                                    )
+                                )}
+
+                            </Stack>
+
+                        </CardContent>
+
+                    </Card>
 
 
-                        <Stack spacing={0.7}>
+                {/* ================================ */}
+                {/* SELF-RATING GUIDE                 */}
+                {/* ================================ */}
 
-                            {coreValues.map(
-                                (value, index) => (
-
-                                    <Typography
-                                        key={index}
-                                        variant="body2"
-                                        color="#334155"
-                                        lineHeight={1.5}
-                                        fontSize={13}
-                                    >
-
-                                        <strong>
-                                            {value.name}:
-                                        </strong>{" "}
-
-                                        {value.description}
-
-                                    </Typography>
-
-                                )
-                            )}
-
-                        </Stack>
-
-                    </CardContent>
-
-                </Card>
-
-            </Grid>
-
-
-            {/* ================================= */}
-            {/* SELF-RATING GUIDE                 */}
-            {/* ================================= */}
-
-            <Grid
-                item
-                xs={12}
-                md={4}
-            >
-
-                <Card
-                    elevation={0}
-                    sx={{
-                        height: "100%",
-                        border:
-                            "1px solid #D9E2EC",
-                        borderRadius: 2.5,
-                        bgcolor: "#FFFFFF",
-                    }}
-                >
-
-                    <CardContent
+                    <Card
+                        elevation={0}
                         sx={{
-                            p: 2,
-                            "&:last-child": {
-                                pb: 2,
-                            },
+                            width: "100%",
+                            height: "100%",
+                            minWidth: 0,
+                            minHeight: 235,
+
+                            display: "flex",
+
+                            backgroundColor: "#FFFFFF",
+
+                            border:
+                                "1px solid #D9E2EC",
+
+                            borderRadius: "12px",
+
+                            boxShadow:
+                                "0 2px 8px rgba(15, 23, 42, 0.06)",
                         }}
                     >
 
-                        <Typography
-                            fontSize={14}
-                            fontWeight={700}
-                            color="#7C3AED"
-                            mb={1}
+                        <CardContent
+                            sx={{
+                                width: "100%",
+                                p: 2.5,
+
+                                "&:last-child": {
+                                    pb: 2.5,
+                                },
+                            }}
                         >
-                            Self-Rating Guide
-                        </Typography>
 
+                            <Typography
+                                sx={{
+                                    fontSize: 14,
+                                    fontWeight: 700,
+                                    color: "#7C3AED",
+                                    mb: 1.25,
+                                }}
+                            >
+                                Self-Rating Guide
+                            </Typography>
 
-                        <Stack spacing={0.5}>
+                            <Stack spacing={0.65}>
 
-                            {ratingGuide.map(
-                                (item, index) => (
+                                {ratingGuide.map(
+                                    (item, index) => (
 
-                                    <Typography
-                                        key={index}
-                                        variant="body2"
-                                        color="#334155"
-                                        lineHeight={1.45}
-                                        fontSize={12.5}
-                                    >
+                                        <Typography
+                                            key={index}
+                                            sx={{
+                                                fontSize: 12.5,
+                                                lineHeight: 1.5,
+                                                color: "#334155",
+                                            }}
+                                        >
 
-                                        <strong>
-                                            {item.rating}:
-                                        </strong>{" "}
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    fontWeight: 700,
+                                                    color: "#334155",
+                                                }}
+                                            >
+                                                {item.rating}:
+                                            </Box>{" "}
 
-                                        {item.description}
+                                            {item.description}
 
-                                    </Typography>
+                                        </Typography>
 
-                                )
-                            )}
+                                    )
+                                )}
 
-                        </Stack>
+                            </Stack>
 
-                    </CardContent>
+                        </CardContent>
 
-                </Card>
+                    </Card>
 
-            </Grid>
+            </Box>
 
-        </Grid>
-
+        </Box>
     );
-
 }

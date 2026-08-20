@@ -82,6 +82,24 @@ import Q3GoalsPlanningProperties
 import Q3GoalsPlanningPreview
     from "../components/Q3GoalsPlanning/Q3GoalsPlanningPreview";
 
+import ProfessionalAttributesCoreValues
+    from "../components/ProfessionalAttributesCoreValues/ProfessionalAttributesCoreValues";
+
+import ProfessionalAttributesCoreValuesProperties
+    from "../components/ProfessionalAttributesCoreValues/ProfessionalAttributesCoreValuesProperties";
+
+import ProfessionalAttributesCoreValuesPreview
+    from "../components/ProfessionalAttributesCoreValues/ProfessionalAttributesCoreValuesPreview";
+
+import Q3FeedbackProposedGoals
+    from "../components/Q3FeedbackProposedGoals/Q3FeedbackProposedGoals";
+
+import Q3FeedbackProposedGoalsProperties
+    from "../components/Q3FeedbackProposedGoals/Q3FeedbackProposedGoalsProperties";
+
+import Q3FeedbackProposedGoalsPreview
+    from "../components/Q3FeedbackProposedGoals/Q3FeedbackProposedGoalsPreview";
+
 export const EMPLOYEE_EVALUATION_REGISTRY = {
 
     /*
@@ -269,7 +287,7 @@ export const EMPLOYEE_EVALUATION_REGISTRY = {
             "Allows employees and supervisors to propose KPI changes and HR to consolidate and finalize Q3 KPIs.",
         enabled: true,
         singleton: true,
-        stages: ["employee"],
+        stages: ["employee", "supervisor", "hr"],
         component: KPIReviewPlanning,
         properties: KPIReviewPlanningProperties,
         preview: KPIReviewPlanningPreview,
@@ -336,6 +354,35 @@ export const EMPLOYEE_EVALUATION_REGISTRY = {
             DiscussionNotesFeedbackPreview,
 
     },
+    q3_feedback_proposed_goals: {
+
+        id: "q3_feedback_proposed_goals",
+
+        name: "Q3 Feedback & Proposed Goals",
+
+        category: "Employee",
+
+        description:
+            "Allows employees to provide feedback and propose goals for Q3.",
+
+        enabled: true,
+
+        singleton: true,
+
+        stages: [
+            "employee"
+        ],
+
+        component:
+            Q3FeedbackProposedGoals,
+
+        properties:
+            Q3FeedbackProposedGoalsProperties,
+
+        preview:
+            Q3FeedbackProposedGoalsPreview,
+
+    },
     q3_goals_planning: {
 
         id: "q3_goals_planning",
@@ -363,6 +410,35 @@ export const EMPLOYEE_EVALUATION_REGISTRY = {
 
         preview:
             Q3GoalsPlanningPreview,
+
+    },
+    professional_attributes_core_values: {
+
+        id: "professional_attributes_core_values",
+
+        name: "Professional Attributes & Core Values",
+
+        category: "Performance",
+
+        description:
+            "Collects the professional attributes and core values the employee should work on.",
+
+        enabled: true,
+
+        singleton: true,
+
+        stages: [
+            "supervisor"
+        ],
+
+        component:
+            ProfessionalAttributesCoreValues,
+
+        properties:
+            ProfessionalAttributesCoreValuesProperties,
+
+        preview:
+            ProfessionalAttributesCoreValuesPreview,
 
     },
     

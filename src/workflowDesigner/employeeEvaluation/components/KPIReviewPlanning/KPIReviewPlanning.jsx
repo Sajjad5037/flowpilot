@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import {
     Box,
     Button,
@@ -20,17 +22,16 @@ const previewKpis = [
     {
         id: "kpi-1",
 
-        // Current KPI — eventually loaded from DB for HR
         currentTitle: "R1 Pass",
         currentExpectation: "25%",
 
-        // Employee proposal
         employeeProposalTitle: "R1 Pass Rate",
         employeeSuggestedExpectation: "35%",
+        employeeProposalChange: "35%",
 
-        // Supervisor proposal
         supervisorProposalTitle: "R1 Pass Rate",
         supervisorSuggestedExpectation: "30%",
+        supervisorProposalChange: "30%",
     },
 
     {
@@ -41,9 +42,11 @@ const previewKpis = [
 
         employeeProposalTitle: "R2 Pass Rate",
         employeeSuggestedExpectation: "55%",
+        employeeProposalChange: "55%",
 
         supervisorProposalTitle: "R2 Pass Rate",
         supervisorSuggestedExpectation: "50%",
+        supervisorProposalChange: "50%",
     },
 
     {
@@ -54,9 +57,11 @@ const previewKpis = [
 
         employeeProposalTitle: "90-Day Retention Rate",
         employeeSuggestedExpectation: "70%",
+        employeeProposalChange: "70%",
 
         supervisorProposalTitle: "90-Day Retention Rate",
         supervisorSuggestedExpectation: "75%",
+        supervisorProposalChange: "75%",
     },
 
     {
@@ -68,9 +73,11 @@ const previewKpis = [
 
         employeeProposalTitle: "Days to Hire",
         employeeSuggestedExpectation: "25 days",
+        employeeProposalChange: "25 days",
 
         supervisorProposalTitle: "Time To Hire",
         supervisorSuggestedExpectation: "25 days",
+        supervisorProposalChange: "25 days",
     },
 
     {
@@ -83,9 +90,13 @@ const previewKpis = [
         employeeProposalTitle: "Head Hunting Scripts",
         employeeSuggestedExpectation:
             "Continue testing multiple scripts",
+        employeeProposalChange:
+            "Continue testing multiple scripts",
 
         supervisorProposalTitle: "Head Hunting Script",
         supervisorSuggestedExpectation:
+            "2+ scripts per role",
+        supervisorProposalChange:
             "2+ scripts per role",
     },
 ];
@@ -93,9 +104,66 @@ const previewKpis = [
 export default function KPIReviewPlanning({
     component,
     previewMode = "employee",
+    responses = {},
+    onResponsesChange,
+    employeeResponses = {},
+    supervisorResponses = {},
+    hrResponses = {},
 }) {
 
     const settings = component?.settings || {};
+    const employeeProposals =
+        employeeResponses?.kpi_review_planning?.employee_proposals || [];
+
+    const supervisorProposals =
+        supervisorResponses?.kpi_review_planning?.supervisor_proposals || [];
+
+    const hrMatrixRows = Array.from(
+        {
+            length: Math.max(
+                employeeProposals.length,
+                supervisorProposals.length
+            ),
+        },
+        (_, index) => ({
+            id: `hr-row-${index}`,
+            employee: employeeProposals[index] || {
+                title: "",
+                proposed: "",
+            },
+            supervisor: supervisorProposals[index] || {
+                title: "",
+                proposed: "",
+            },
+        })
+    );
+    const [finalAgreedKpis, setFinalAgreedKpis] = useState(
+        hrResponses?.kpi_review_planning?.final_agreed_kpis || []
+    );
+    const [employeeKpis, setEmployeeKpis] = useState([
+        {
+            id: "employee-1",
+            title: "",
+            proposed: "",
+        },
+        {
+            id: "employee-2",
+            title: "",
+            proposed: "",
+        },
+    ]);
+    const [supervisorKpis, setSupervisorKpis] = useState([
+        {
+            id: "supervisor-1",
+            title: "",
+            proposed: "",
+        },
+        {
+            id: "supervisor-2",
+            title: "",
+            proposed: "",
+        },
+    ]);
 
 
     /*
@@ -144,18 +212,51 @@ export default function KPIReviewPlanning({
                 </Typography>
 
 
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                >
+                    This section is for the employee to propose KPI title or
+                    expectation changes before supervisor review.
+                </Typography>
+
                 <ProposalHeader
                     firstColumn="Proposed KPI Change Title"
                     secondColumn="Employee Proposed Change"
                 />
 
 
-                {previewKpis.slice(0, 2).map((kpi) => (
+                {employeeKpis.map((kpi) => (
 
                     <ProposalRow
                         key={kpi.id}
-                        title={kpi.employeeProposalTitle}
-                        proposed={kpi.employeeProposalChange}
+                        title={kpi.title}
+                        proposed={kpi.proposed}
+                        onDelete={() => {
+                            setEmployeeKpis((prev) =>
+                                prev.filter((row) => row.id !== kpi.id)
+                            );
+                        }}
+                        onChange={(field, value) => {
+                            const updatedRows = employeeKpis.map((row) =>
+                                row.id === kpi.id
+                                    ? { ...row, [field]: value }
+                                    : row
+                            );
+
+                            setEmployeeKpis(updatedRows);
+
+                            if (typeof onResponsesChange === "function") {
+                                onResponsesChange({
+                                    ...responses,
+                                    kpi_review_planning: {
+                                        ...(responses?.kpi_review_planning || {}),
+                                        employee_proposals: updatedRows,
+                                    },
+                                });
+                            }
+                        }}
                     />
 
                 ))}
@@ -166,6 +267,16 @@ export default function KPIReviewPlanning({
                     <Button
                         variant="outlined"
                         size="small"
+                        onClick={() => {
+                            setEmployeeKpis((prev) => [
+                                ...prev,
+                                {
+                                    id: `employee-${Date.now()}-${Math.random()}`,
+                                    title: "",
+                                    proposed: "",
+                                },
+                            ]);
+                        }}
                     >
                         + Add KPI
                     </Button>
@@ -219,18 +330,51 @@ export default function KPIReviewPlanning({
                 </Typography>
 
 
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mb: 2 }}
+                >
+                    Review the employee proposal and confirm or adjust the KPI
+                    target before HR sees the final recommendation.
+                </Typography>
+
                 <ProposalHeader
                     firstColumn="Proposed KPI Change Title"
                     secondColumn="Supervisor Proposed Change"
                 />
 
 
-                {previewKpis.slice(0, 2).map((kpi) => (
+                {supervisorKpis.map((kpi) => (
 
                     <ProposalRow
                         key={kpi.id}
-                        title={kpi.supervisorProposalTitle}
-                        proposed={kpi.supervisorProposalChange}
+                        title={kpi.title}
+                        proposed={kpi.proposed}
+                        onDelete={() => {
+                            setSupervisorKpis((prev) =>
+                                prev.filter((row) => row.id !== kpi.id)
+                            );
+                        }}
+                        onChange={(field, value) => {
+                            const updatedRows = supervisorKpis.map((row) =>
+                                row.id === kpi.id
+                                    ? { ...row, [field]: value }
+                                    : row
+                            );
+
+                            setSupervisorKpis(updatedRows);
+
+                            if (typeof onResponsesChange === "function") {
+                                onResponsesChange({
+                                    ...responses,
+                                    kpi_review_planning: {
+                                        ...(responses?.kpi_review_planning || {}),
+                                        supervisor_proposals: updatedRows,
+                                    },
+                                });
+                            }
+                        }}
                     />
 
                 ))}
@@ -241,6 +385,16 @@ export default function KPIReviewPlanning({
                     <Button
                         variant="outlined"
                         size="small"
+                        onClick={() => {
+                            setSupervisorKpis((prev) => [
+                                ...prev,
+                                {
+                                    id: `supervisor-${Date.now()}-${Math.random()}`,
+                                    title: "",
+                                    proposed: "",
+                                },
+                            ]);
+                        }}
                     >
                         + Add KPI
                     </Button>
@@ -292,8 +446,8 @@ export default function KPIReviewPlanning({
                 color="text.secondary"
                 sx={{ mb: 3 }}
             >
-                Consolidated matrix to review suggestions and
-                finalize expectations for Q3.
+                This HR view compares the employee and supervisor proposals side
+                by side before the final Q3 KPI targets are agreed.
             </Typography>
 
 
@@ -319,18 +473,16 @@ export default function KPIReviewPlanning({
 
     <Box
         sx={{
-            overflowX: "auto",
+            width: "100%",
         }}
     >
 
         <Box
             sx={{
-                minWidth: 1150,
-
                 display: "grid",
 
                 gridTemplateColumns:
-                    "1.05fr 1.65fr 1.35fr 1.15fr 1.35fr 1.15fr",
+                    "minmax(0, 1.05fr) minmax(0, 1.65fr) minmax(0, 1.35fr) minmax(0, 1.15fr) minmax(0, 1.35fr) minmax(0, 1.15fr)",
 
                 backgroundColor: "#F4F7FB",
 
@@ -368,25 +520,23 @@ export default function KPIReviewPlanning({
 
         {/* Table Rows */}
 
-        {previewKpis.map((kpi, index) => (
+        {hrMatrixRows.map((row, index) => (
 
     <Box
-        key={kpi.id}
+        key={row.id}
         sx={{
-            minWidth: 1150,
-
             display: "grid",
 
             gridTemplateColumns:
-                "1.05fr 1.65fr 1.35fr 1.15fr 1.35fr 1.15fr",
+                "minmax(0, 1.05fr) minmax(0, 1.65fr) minmax(0, 1.35fr) minmax(0, 1.15fr) minmax(0, 1.35fr) minmax(0, 1.15fr)",
 
             backgroundColor:
                 index % 2 === 0
                     ? "#FFFFFF"
                     : "#FAFCFE",
 
-            borderBottom:
-                index === previewKpis.length - 1
+                borderBottom:
+                index === hrMatrixRows.length - 1
                     ? "none"
                     : "1px solid #E2E8F0",
         }}
@@ -399,7 +549,7 @@ export default function KPIReviewPlanning({
             <TextField
                 fullWidth
                 size="small"
-                defaultValue={kpi.currentTitle}
+                defaultValue={previewKpis[index]?.currentTitle || ""}
                 variant="outlined"
             />
 
@@ -413,7 +563,7 @@ export default function KPIReviewPlanning({
             <TextField
                 fullWidth
                 size="small"
-                defaultValue={kpi.currentExpectation}
+                defaultValue={previewKpis[index]?.currentExpectation || ""}
                 variant="outlined"
                 multiline
                 minRows={1}
@@ -430,7 +580,7 @@ export default function KPIReviewPlanning({
                 fullWidth
                 size="small"
                 defaultValue={
-                    kpi.employeeProposalTitle
+                    row.employee.title
                 }
                 variant="outlined"
             />
@@ -446,7 +596,7 @@ export default function KPIReviewPlanning({
                 fullWidth
                 size="small"
                 defaultValue={
-                    kpi.employeeSuggestedExpectation
+                    row.employee.proposed
                 }
                 variant="outlined"
             />
@@ -462,7 +612,7 @@ export default function KPIReviewPlanning({
                 fullWidth
                 size="small"
                 defaultValue={
-                    kpi.supervisorProposalTitle
+                    row.supervisor.title
                 }
                 variant="outlined"
             />
@@ -478,7 +628,7 @@ export default function KPIReviewPlanning({
                 fullWidth
                 size="small"
                 defaultValue={
-                    kpi.supervisorSuggestedExpectation
+                    row.supervisor.proposed
                 }
                 variant="outlined"
             />
@@ -521,6 +671,16 @@ export default function KPIReviewPlanning({
                     <Button
                         variant="outlined"
                         size="small"
+                        onClick={() => {
+                            setFinalAgreedKpis((prev) => [
+                                ...prev,
+                                {
+                                    id: `final-${Date.now()}-${Math.random()}`,
+                                    title: "",
+                                    expectation: "",
+                                },
+                            ]);
+                        }}
                     >
                         + Add KPI
                     </Button>
@@ -530,7 +690,6 @@ export default function KPIReviewPlanning({
 
                 <Box
                     sx={{
-                        overflowX: "auto",
                         border: "1px solid",
                         borderColor: "primary.light",
                         borderRadius: 1,
@@ -539,9 +698,8 @@ export default function KPIReviewPlanning({
 
                     <Box
                         sx={{
-                            minWidth: 700,
                             display: "grid",
-                            gridTemplateColumns: "1fr 2fr auto",
+                            gridTemplateColumns: "minmax(0, 1fr) minmax(0, 2fr) auto",
                             backgroundColor: "primary.50",
                             borderBottom: "1px solid",
                             borderColor: "primary.light",
@@ -563,14 +721,13 @@ export default function KPIReviewPlanning({
                     </Box>
 
 
-                    {previewKpis.map((kpi) => (
+                    {finalAgreedKpis.map((kpi) => (
 
                         <Box
                             key={kpi.id}
                             sx={{
-                                minWidth: 800,
                                 display: "grid",
-                                gridTemplateColumns: "1fr 2fr auto",
+                                gridTemplateColumns: "minmax(0, 1fr) minmax(0, 2fr) auto",
                                 borderBottom: "1px solid",
                                 borderColor: "primary.light",
                             }}
@@ -581,7 +738,26 @@ export default function KPIReviewPlanning({
                                 <TextField
                                     fullWidth
                                     size="small"
-                                    defaultValue={kpi.currentTitle}
+                                    value={kpi.title}
+                                    onChange={(event) => {
+                                        const updatedRows = finalAgreedKpis.map((row) =>
+                                            row.id === kpi.id
+                                                ? { ...row, title: event.target.value }
+                                                : row
+                                        );
+
+                                        setFinalAgreedKpis(updatedRows);
+
+                                        if (typeof onResponsesChange === "function") {
+                                            onResponsesChange({
+                                                ...responses,
+                                                kpi_review_planning: {
+                                                    ...(responses?.kpi_review_planning || {}),
+                                                    final_agreed_kpis: updatedRows,
+                                                },
+                                            });
+                                        }
+                                    }}
                                 />
 
                             </BodyCell>
@@ -592,7 +768,26 @@ export default function KPIReviewPlanning({
                                 <TextField
                                     fullWidth
                                     size="small"
-                                    defaultValue={kpi.currentExpectation}
+                                    value={kpi.expectation}
+                                    onChange={(event) => {
+                                        const updatedRows = finalAgreedKpis.map((row) =>
+                                            row.id === kpi.id
+                                                ? { ...row, expectation: event.target.value }
+                                                : row
+                                        );
+
+                                        setFinalAgreedKpis(updatedRows);
+
+                                        if (typeof onResponsesChange === "function") {
+                                            onResponsesChange({
+                                                ...responses,
+                                                kpi_review_planning: {
+                                                    ...(responses?.kpi_review_planning || {}),
+                                                    final_agreed_kpis: updatedRows,
+                                                },
+                                            });
+                                        }
+                                    }}
                                 />
 
                             </BodyCell>
@@ -604,6 +799,13 @@ export default function KPIReviewPlanning({
                                     color="error"
                                     size="small"
                                     aria-label="Delete KPI"
+                                    onClick={() => {
+                                        setFinalAgreedKpis((prev) =>
+                                            prev.filter(
+                                                (row) => row.id !== kpi.id
+                                            )
+                                        );
+                                    }}
                                 >
                                     ×
                                 </IconButton>
@@ -635,7 +837,16 @@ export default function KPIReviewPlanning({
 
                     <Select
                         label="Final Q3 KPI Rating"
-                        defaultValue=""
+                        value={responses?.kpi_review_planning?.final_q3_kpi_rating || ""}
+                        onChange={(event) => {
+                            onResponsesChange?.({
+                                ...responses,
+                                kpi_review_planning: {
+                                    ...(responses?.kpi_review_planning || {}),
+                                    final_q3_kpi_rating: event.target.value,
+                                },
+                            });
+                        }}
                     >
 
                         <MenuItem value="">
@@ -730,6 +941,8 @@ function ProposalHeader({
 function ProposalRow({
     title,
     proposed,
+    onDelete,
+    onChange,
 }) {
 
     return (
@@ -746,14 +959,20 @@ function ProposalRow({
             <TextField
                 fullWidth
                 size="small"
-                defaultValue={title}
+                value={title}
+                onChange={(event) =>
+                    onChange?.("title", event.target.value)
+                }
             />
 
 
             <TextField
                 fullWidth
                 size="small"
-                defaultValue={proposed}
+                value={proposed}
+                onChange={(event) =>
+                    onChange?.("proposed", event.target.value)
+                }
             />
 
 
@@ -761,6 +980,7 @@ function ProposalRow({
                 color="error"
                 size="small"
                 aria-label="Delete KPI"
+                onClick={onDelete}
             >
                 ×
             </IconButton>
@@ -782,6 +1002,8 @@ function HeaderCell({ children }) {
         <Box
             sx={{
                 p: 1.5,
+                minWidth: 0,
+                overflowWrap: "anywhere",
 
                 minHeight: 62,
 
@@ -814,6 +1036,9 @@ function BodyCell({ children }) {
         <Box
             sx={{
                 p: 1.5,
+                minWidth: 0,
+                width: "100%",
+                overflowWrap: "anywhere",
 
                 minHeight: 72,
 

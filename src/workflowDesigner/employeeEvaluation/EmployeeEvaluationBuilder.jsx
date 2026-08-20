@@ -24,6 +24,9 @@ import EvaluationPreview
 import EvaluationStageTabs
     from "./components/EvaluationStageTabs";
 
+import evaluationTemplateService
+    from "../../services/evaluationTemplateService";
+
 
 export default function EmployeeEvaluationBuilder() {
 
@@ -65,22 +68,45 @@ export default function EmployeeEvaluationBuilder() {
 
         if (incomingWorkflow) {
 
+            const incomingStages = incomingWorkflow.stages || {};
+
+            const employeeComponents =
+                incomingStages.employee || [];
+
+            const misplacedKpiComponent = [
+                ...(incomingStages.supervisor || []),
+                ...(incomingStages.hr || incomingStages.system || []),
+            ].find(
+                component =>
+                    component.id === "kpi_review_planning"
+            );
+
+            const normalizedEmployeeComponents =
+                employeeComponents.some(
+                    component =>
+                        component.id === "kpi_review_planning"
+                )
+                    ? employeeComponents
+                    : misplacedKpiComponent
+                    ? [
+                        ...employeeComponents,
+                        misplacedKpiComponent,
+                    ]
+                    : employeeComponents;
+
             return {
 
                 ...incomingWorkflow,
 
                 stages: {
 
-                    employee:
-                        incomingWorkflow.stages?.employee || [],
+                    employee: normalizedEmployeeComponents,
 
                     supervisor:
-                        incomingWorkflow.stages?.supervisor || [],
+                        incomingStages.supervisor || [],
 
                     hr:
-                        incomingWorkflow.stages?.hr ||
-                        incomingWorkflow.stages?.system ||
-                        []
+                        incomingStages.hr || incomingStages.system || []
 
                 }
 
@@ -117,6 +143,68 @@ export default function EmployeeEvaluationBuilder() {
      * builder stage.
      */
     function handleAddComponent(component) {
+
+        if (component.id === "kpi_review_planning") {
+
+            const employeeComponent = {
+                ...component,
+                stages: ["employee", "supervisor", "hr"],
+                instanceId: crypto.randomUUID(),
+            };
+
+            const supervisorComponent = {
+                ...component,
+                stages: ["employee", "supervisor", "hr"],
+                instanceId: crypto.randomUUID(),
+            };
+
+            const hrComponent = {
+                ...component,
+                stages: ["employee", "supervisor", "hr"],
+                instanceId: crypto.randomUUID(),
+            };
+
+            setWorkflow(prev => ({
+                ...prev,
+                stages: {
+                    ...prev.stages,
+
+                    employee: [
+                        ...(prev.stages.employee || []).filter(
+                            existing =>
+                                existing.id !== "kpi_review_planning"
+                        ),
+                        employeeComponent,
+                    ],
+
+                    supervisor: [
+                        ...(prev.stages.supervisor || []).filter(
+                            existing =>
+                                existing.id !== "kpi_review_planning"
+                        ),
+                        supervisorComponent,
+                    ],
+
+                    hr: [
+                        ...(prev.stages.hr || []).filter(
+                            existing =>
+                                existing.id !== "kpi_review_planning"
+                        ),
+                        hrComponent,
+                    ],
+                },
+            }));
+
+            setSelectedComponent(
+                currentStage === "supervisor"
+                    ? supervisorComponent
+                    : currentStage === "hr"
+                    ? hrComponent
+                    : employeeComponent
+            );
+
+            return;
+        }
 
         const newComponent = {
 
@@ -211,6 +299,35 @@ export default function EmployeeEvaluationBuilder() {
     }
 
 
+    async function handleSaveDraft() {
+
+        try {
+
+            await evaluationTemplateService.create({
+
+                name: workflow.name,
+
+                workflow_type: "employee_evaluation",
+
+                workflow_json: workflow
+
+            });
+
+            alert(
+                "Employee Evaluation template saved successfully."
+            );
+
+        } catch (error) {
+
+            alert(
+                "Unable to save Employee Evaluation template."
+            );
+
+        }
+
+    }
+
+
     return (
 
         <Box
@@ -281,6 +398,7 @@ export default function EmployeeEvaluationBuilder() {
 
                         <Button
                             variant="contained"
+                            onClick={handleSaveDraft}
                         >
                             Save Draft
                         </Button>

@@ -11,6 +11,11 @@ import {
 export default function GoalSelfEvaluation({
     component,
     previewMode = "employee",
+    reviewCycleMonths = ["April", "May", "June"],
+    finalizedGoals = [],
+    responses = {},
+    onResponsesChange,
+    employeeResponses = {},
 }) {
 
     const settings =
@@ -70,10 +75,37 @@ export default function GoalSelfEvaluation({
 
         };
 
+    const months =
+        Array.isArray(reviewCycleMonths) &&
+        reviewCycleMonths.length === 3
+            ? reviewCycleMonths
+            : ["April", "May", "June"];
+
 
     const employeeRating =
-        settings.employeeRating ||
-        "4. Above Expectation";
+        previewMode === "hr"
+            ? employeeResponses?.goal_self_evaluation?.employee_rating ?? ""
+            : previewMode === "employee"
+            ? responses?.goal_self_evaluation?.employee_rating ?? ""
+            : "";
+
+    const handleEmployeeRatingChange = (event) => {
+
+        const value = event.target.value;
+
+        if (typeof onResponsesChange !== "function") {
+            return;
+        }
+
+        onResponsesChange({
+            ...responses,
+            goal_self_evaluation: {
+                ...(responses?.goal_self_evaluation || {}),
+                employee_rating: value,
+            },
+        });
+
+    };
 
 
     const supervisorRating =
@@ -138,6 +170,11 @@ export default function GoalSelfEvaluation({
 
     if (previewMode === "employee") {
 
+        const employeeGoals =
+            Array.isArray(finalizedGoals) && finalizedGoals.length > 0
+                ? finalizedGoals
+                : [previewGoal];
+
         return (
 
             <Box>
@@ -169,40 +206,46 @@ export default function GoalSelfEvaluation({
                 </Box>
 
 
-                <Box
-                    sx={{
-                        mb: 4,
-                    }}
-                >
+                {employeeGoals.map((goal, index) => (
 
-                    <Typography
+                    <Box
+                        key={goal.id || index}
                         sx={{
-                            fontSize: 14,
-                            fontWeight: 700,
-                            mb: 1.5,
+                            mb: 4,
                         }}
                     >
-                        Goal #1
-                    </Typography>
+
+                        <Typography
+                            sx={{
+                                fontSize: 14,
+                                fontWeight: 700,
+                                mb: 1.5,
+                            }}
+                        >
+                            Goal #{index + 1}
+                        </Typography>
 
 
-                    <GoalProgressTable
-                        targetDescription={
-                            previewGoal.targetDescription
-                        }
-                        monthlyProgress={
-                            monthlyProgress
-                        }
-                        showTargetDescription={
-                            showTargetDescription
-                        }
-                        showMonthlyProgress={
-                            showMonthlyProgress
-                        }
-                    />
+                        <GoalProgressTable
+                            targetDescription={
+                                goal.description ||
+                                goal.targetDescription ||
+                                "--"
+                            }
+                            monthlyProgress={
+                                monthlyProgress
+                            }
+                            showTargetDescription={
+                                showTargetDescription
+                            }
+                            showMonthlyProgress={
+                                showMonthlyProgress
+                            }
+                            months={months}
+                        />
 
 
-                    {allowEmployeeRating && (
+                        {allowEmployeeRating && (
 
                         <Box
                             sx={{
@@ -228,6 +271,7 @@ export default function GoalSelfEvaluation({
                                 fullWidth
                                 size="small"
                                 value={employeeRating}
+                                onChange={handleEmployeeRatingChange}
                             >
 
                                 {ratingOptions.map(
@@ -262,9 +306,11 @@ export default function GoalSelfEvaluation({
 
                         </Box>
 
-                    )}
+                        )}
 
-                </Box>
+                    </Box>
+
+                ))}
 
             </Box>
 
@@ -645,6 +691,7 @@ function GoalProgressTable({
     monthlyProgress,
     showTargetDescription = true,
     showMonthlyProgress = true,
+    months = ["April", "May", "June"],
 }) {
 
     return (
@@ -732,7 +779,7 @@ function GoalProgressTable({
                 />
 
 
-                {["April", "May", "June"].map(
+                {months.map(
                     month => (
 
                         <Box
@@ -742,7 +789,7 @@ function GoalProgressTable({
                                 bgcolor: "#F8FAFC",
                                 textAlign: "center",
                                 borderRight:
-                                    month !== "June"
+                                    month !== months[months.length - 1]
                                         ? "1px solid #CBD5E1"
                                         : "none",
                             }}
@@ -784,7 +831,7 @@ function GoalProgressTable({
                 </Box>
 
 
-                {["April", "May", "June"].map(
+                {months.map(
                     month => (
 
                         <Box
@@ -793,7 +840,7 @@ function GoalProgressTable({
                                 p: 1.5,
                                 minHeight: 80,
                                 borderRight:
-                                    month !== "June"
+                                    month !== months[months.length - 1]
                                         ? "1px solid #CBD5E1"
                                         : "none",
                             }}

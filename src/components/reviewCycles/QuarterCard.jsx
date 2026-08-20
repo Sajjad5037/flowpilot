@@ -79,8 +79,10 @@ const QuarterCard = ({ quarter, reviewPeriod, sendDate, onSave }) => {
             fullWidth
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            InputLabelProps={{
-              shrink: true,
+            slotProps={{
+              inputLabel: {
+                shrink: true,
+              },
             }}
           />
 

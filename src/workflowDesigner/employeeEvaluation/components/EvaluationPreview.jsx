@@ -61,6 +61,15 @@ export default function EvaluationPreview({
         );
 
 
+    const sharedSupervisorComponents =
+        supervisorComponents.filter(
+            component =>
+                [
+                    "q3_goals_planning",
+                ].includes(component.id)
+        );
+
+
     /*
      * ==========================================
      * BUILD THE ACTUAL FORM COMPONENTS
@@ -86,7 +95,17 @@ export default function EvaluationPreview({
 
         if (previewMode === "employee") {
 
-            return employeeComponents;
+            return [
+                ...employeeComponents,
+                ...sharedSupervisorComponents.filter(
+                    supervisorComponent =>
+                        !employeeComponents.some(
+                            employeeComponent =>
+                                employeeComponent.instanceId ===
+                                supervisorComponent.instanceId
+                        )
+                ),
+            ];
 
         }
 

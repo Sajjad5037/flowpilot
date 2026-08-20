@@ -23,16 +23,13 @@ const previewGoals = [
 ];
 
 
-const previewEmployeeImprovement =
-    "Open to suggestions and feedback during evaluation meeting.";
-
-const previewEmployeeSupport =
-    "The support has been there. The main focus now is ensuring the hiring process is consistently followed across all departments.";
-
-
 export default function Q3GoalsPlanning({
     component,
     previewMode = "employee",
+    responses = {},
+    onResponsesChange,
+    employeeResponses = {},
+    supervisorResponses = {},
 }) {
 
     /*
@@ -51,120 +48,18 @@ export default function Q3GoalsPlanning({
                 }}
             >
 
-                <Typography
-                    variant="h6"
-                    fontWeight={700}
-                    color="#0F172A"
-                    sx={{
-                        textDecoration:
-                            "underline",
-                    }}
-                >
-                    Q3 Feedback & Proposed Goals
-                </Typography>
-
-
-                <Stack
-                    spacing={2.5}
-                    sx={{
-                        mt: 2.5,
-                    }}
-                >
-
-                    {/* Improvement */}
-
-                    <Box>
-
-                        <Typography
-                            variant="body2"
-                            fontWeight={700}
-                            color="#0F172A"
-                            sx={{
-                                mb: 0.75,
-                            }}
-                        >
-                            What can you improve on moving
-                            forward in Q3?
-                        </Typography>
-
-
-                        <TextField
-                            fullWidth
-                            multiline
-                            minRows={3}
-                            defaultValue={
-                                previewEmployeeImprovement
-                            }
-                            placeholder="Enter your response..."
-                            size="small"
-                            sx={{
-                                "& .MuiOutlinedInput-root": {
-                                    borderRadius: 1.5,
-                                    backgroundColor:
-                                        "#FFFFFF",
-                                },
-
-                                "& .MuiInputBase-input": {
-                                    fontSize: "0.82rem",
-                                },
-                            }}
-                        />
-
-                    </Box>
-
-
-                    {/* Support */}
-
-                    <Box>
-
-                        <Typography
-                            variant="body2"
-                            fontWeight={700}
-                            color="#0F172A"
-                            sx={{
-                                mb: 0.75,
-                            }}
-                        >
-                            What support or assistance do you
-                            need from your supervisor?
-                        </Typography>
-
-
-                        <TextField
-                            fullWidth
-                            multiline
-                            minRows={4}
-                            defaultValue={
-                                previewEmployeeSupport
-                            }
-                            placeholder="Enter your response..."
-                            size="small"
-                            sx={{
-                                "& .MuiOutlinedInput-root": {
-                                    borderRadius: 1.5,
-                                    backgroundColor:
-                                        "#FFFFFF",
-                                },
-
-                                "& .MuiInputBase-input": {
-                                    fontSize: "0.82rem",
-                                },
-                            }}
-                        />
-
-                    </Box>
-
-
-                    {/* Goals */}
-
-                    <GoalSection
-                        title="Proposed Goals for Q3"
-                        buttonLabel="+ Add Goal"
-                        goals={previewGoals}
-                        field="employeeGoal"
-                    />
-
-                </Stack>
+                <GoalSection
+                    title="Proposed Goals for Q3"
+                    buttonLabel="+ Add Goal"
+                    goals={
+                        responses?.q3_goals_planning?.employee_goals?.length
+                            ? responses.q3_goals_planning.employee_goals
+                            : previewGoals
+                    }
+                    field="employeeGoal"
+                    responses={responses}
+                    onResponsesChange={onResponsesChange}
+                />
 
             </Box>
 
@@ -180,6 +75,20 @@ export default function Q3GoalsPlanning({
 
     if (previewMode === "supervisor") {
 
+        const supervisorGoals =
+            responses?.q3_goals_planning?.supervisor_goals || [];
+
+        const employeeGoals =
+            employeeResponses?.q3_goals_planning?.employee_goals || [];
+
+        const goalsToRender =
+            supervisorGoals.length
+                ? supervisorGoals
+                : employeeGoals.map((goal) => ({
+                    id: `supervisor-goal-${goal.id}`,
+                    description: "",
+                }));
+
         return (
 
             <Box
@@ -190,41 +99,49 @@ export default function Q3GoalsPlanning({
 
                 <Stack
                     direction="row"
-                    alignItems="flex-start"
+                    alignItems="center"
                     justifyContent="space-between"
                     spacing={2}
+                    sx={{
+                        mb: 1.5,
+                    }}
                 >
 
-                    <Box>
-
-                        <Typography
-                            variant="h6"
-                            fontWeight={700}
-                            color="#0F172A"
-                        >
-                            4. Supervisor Proposed Goals for Q3
-                        </Typography>
-
-
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{
-                                mt: 0.5,
-                            }}
-                        >
-                            Set initial proposed targets for Q3
-                            discussion.
-                        </Typography>
-
-                    </Box>
-
+                    <Typography
+                        variant="h6"
+                        fontWeight={700}
+                        color="#0F172A"
+                    >
+                        Proposed Goals for Q3
+                    </Typography>
 
                     <Button
                         variant="outlined"
                         size="small"
+                        onClick={() => {
+
+                            const currentGoals =
+                                responses?.q3_goals_planning?.supervisor_goals || [];
+
+                            const newGoal = {
+                                id: `supervisor-goal-${Date.now()}`,
+                                description: "",
+                            };
+
+                            onResponsesChange?.({
+                                ...responses,
+                                q3_goals_planning: {
+                                    ...(responses?.q3_goals_planning || {}),
+                                    supervisor_goals: [
+                                        ...currentGoals,
+                                        newGoal,
+                                    ],
+                                },
+                            });
+
+                        }}
                     >
-                        + Add Proposed Goal
+                        + Add Goal
                     </Button>
 
                 </Stack>
@@ -232,20 +149,15 @@ export default function Q3GoalsPlanning({
 
                 <Stack
                     spacing={1.5}
-                    sx={{
-                        mt: 2,
-                    }}
                 >
 
-                    {previewGoals.map(
-                        (goal, index) => (
+                    {goalsToRender.map((goal, index) => (
 
                             <Box
                                 key={goal.id}
                                 sx={{
                                     display: "grid",
-                                    gridTemplateColumns:
-                                        "55px 1fr 38px",
+                                    gridTemplateColumns: "55px 1fr 38px",
                                     gap: 1,
                                     alignItems: "center",
                                 }}
@@ -263,9 +175,33 @@ export default function Q3GoalsPlanning({
                                 <TextField
                                     fullWidth
                                     size="small"
-                                    defaultValue={
-                                        goal.supervisorGoal
-                                    }
+                                    value={goal.description || ""}
+                                    onChange={(event) => {
+
+                                        const currentGoals =
+                                            responses?.q3_goals_planning?.supervisor_goals ||
+                                            goalsToRender;
+
+                                        const updatedGoals =
+                                            currentGoals.map((row, rowIndex) =>
+                                                rowIndex === index
+                                                    ? {
+                                                        ...row,
+                                                        description:
+                                                            event.target.value,
+                                                    }
+                                                    : row
+                                            );
+
+                                        onResponsesChange?.({
+                                            ...responses,
+                                            q3_goals_planning: {
+                                                ...(responses?.q3_goals_planning || {}),
+                                                supervisor_goals: updatedGoals,
+                                            },
+                                        });
+
+                                    }}
                                     sx={{
                                         "& .MuiOutlinedInput-root": {
                                             borderRadius: 1.5,
@@ -282,14 +218,33 @@ export default function Q3GoalsPlanning({
                                     color="error"
                                     size="small"
                                     aria-label="Delete goal"
+                                    onClick={() => {
+
+                                        const currentGoals =
+                                            responses?.q3_goals_planning?.supervisor_goals ||
+                                            goalsToRender;
+
+                                        const updatedGoals =
+                                            currentGoals.filter(
+                                                (_, rowIndex) => rowIndex !== index
+                                            );
+
+                                        onResponsesChange?.({
+                                            ...responses,
+                                            q3_goals_planning: {
+                                                ...(responses?.q3_goals_planning || {}),
+                                                supervisor_goals: updatedGoals,
+                                            },
+                                        });
+
+                                    }}
                                 >
                                     ×
                                 </IconButton>
 
                             </Box>
 
-                        )
-                    )}
+                        ))}
 
                 </Stack>
 
@@ -358,7 +313,7 @@ export default function Q3GoalsPlanning({
                     }}
                 >
 
-                    {previewGoals.map(
+                    {(employeeResponses?.q3_goals_planning?.employee_goals || []).map(
                         (goal, index) => (
 
                             <Box
@@ -411,9 +366,9 @@ export default function Q3GoalsPlanning({
                                 {/* Contractor Response */}
 
                                 <GoalResponseRow
-                                    label="Contractor response"
+                                    label="Employee response"
                                     value={
-                                        goal.employeeGoal
+                                        goal.description ?? ""
                                     }
                                 />
 
@@ -423,7 +378,11 @@ export default function Q3GoalsPlanning({
                                 <GoalResponseRow
                                     label="Supervisor response"
                                     value={
-                                        goal.supervisorGoal
+                                        supervisorResponses
+                                            ?.q3_goals_planning
+                                            ?.supervisor_goals
+                                            ?.[index]
+                                            ?.description ?? ""
                                     }
                                 />
 
@@ -529,6 +488,8 @@ function GoalSection({
     buttonLabel,
     goals,
     field,
+    responses = {},
+    onResponsesChange,
 }) {
 
     return (
@@ -556,6 +517,26 @@ function GoalSection({
                 <Button
                     variant="outlined"
                     size="small"
+                    onClick={() => {
+                        const currentGoals =
+                            responses?.q3_goals_planning?.employee_goals || [];
+
+                        const newGoal = {
+                            id: `employee-goal-${Date.now()}`,
+                            description: "",
+                        };
+
+                        onResponsesChange?.({
+                            ...responses,
+                            q3_goals_planning: {
+                                ...(responses?.q3_goals_planning || {}),
+                                employee_goals: [
+                                    ...currentGoals,
+                                    newGoal,
+                                ],
+                            },
+                        });
+                    }}
                 >
                     {buttonLabel}
                 </Button>
@@ -591,9 +572,27 @@ function GoalSection({
                             <TextField
                                 fullWidth
                                 size="small"
-                                defaultValue={
-                                    goal[field]
+                                value={
+                                    goal.description ?? goal.employeeGoal ?? ""
                                 }
+                                onChange={(event) => {
+                                    const updatedGoals = goals.map((row, rowIndex) =>
+                                        rowIndex === index
+                                            ? {
+                                                ...row,
+                                                description: event.target.value,
+                                            }
+                                            : row
+                                    );
+
+                                    onResponsesChange?.({
+                                        ...responses,
+                                        q3_goals_planning: {
+                                            ...(responses?.q3_goals_planning || {}),
+                                            employee_goals: updatedGoals,
+                                        },
+                                    });
+                                }}
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
                                         borderRadius: 1.5,
@@ -610,6 +609,22 @@ function GoalSection({
                                 color="error"
                                 size="small"
                                 aria-label="Delete goal"
+                                onClick={() => {
+                                    const currentGoals =
+                                        responses?.q3_goals_planning?.employee_goals || [];
+
+                                    const updatedGoals = currentGoals.filter(
+                                        (_, rowIndex) => rowIndex !== index
+                                    );
+
+                                    onResponsesChange?.({
+                                        ...responses,
+                                        q3_goals_planning: {
+                                            ...(responses?.q3_goals_planning || {}),
+                                            employee_goals: updatedGoals,
+                                        },
+                                    });
+                                }}
                             >
                                 ×
                             </IconButton>

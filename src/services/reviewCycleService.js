@@ -1,16 +1,21 @@
-import reviewCycles from "../mock/reviewCycles.json";
+import axios from "axios";
 
-export async function getReviewCycles() {
-  return reviewCycles;
+const API_BASE = import.meta.env.DEV
+  ? "http://127.0.0.1:8000"
+  : "https://nurpbackend-production.up.railway.app";
+
+export async function getReviewCycles(year) {
+  const response = await axios.get(`${API_BASE}/evaluation-cycles`, {
+    params: { year },
+  });
+
+  return response.data;
 }
 
 export async function updateReviewCycle(id, sendDate) {
-  console.log("Updating Review Cycle", {
-    id,
-    sendDate,
+  const response = await axios.put(`${API_BASE}/evaluation-cycles/${id}`, {
+    invitation_date: sendDate || null,
   });
 
-  return {
-    success: true,
-  };
+  return response.data;
 }

@@ -6,6 +6,8 @@ import {
 } from "../services/evaluationAssignmentService";
 import EmployeeFormPreview
 from "../workflowDesigner/components/EmployeeFormPreview/EmployeeFormPreview";
+import EmployeeEvaluationForm
+from "../workflowDesigner/employeeEvaluation/runtime/EmployeeEvaluationForm";
 import {
     Alert,
     Box,
@@ -126,29 +128,64 @@ export default function PublicEvaluation() {
 
         let dataToSubmit = {};
 
-        if (assignment.current_stage === "employee") {
+        if (
+            assignment?.workflow_json?.type === "employee_evaluation"
+        ) {
 
-            console.log("Employee Responses:");
-            console.log(employeeResponses);
+            if (assignment.access_stage === "employee") {
 
-            dataToSubmit = employeeResponses;
+                console.log("Employee Responses:");
+                console.log(employeeResponses);
+
+                dataToSubmit = employeeResponses;
+
+            }
+            else if (assignment.access_stage === "supervisor") {
+
+                console.log("Supervisor Responses:");
+                console.log(supervisorResponses);
+
+                dataToSubmit = supervisorResponses;
+
+            }
+            else if (assignment.access_stage === "hr") {
+
+                console.log("HR Responses:");
+                console.log(hrResponses);
+
+                dataToSubmit = hrResponses;
+
+            }
 
         }
-        else if (assignment.current_stage === "supervisor") {
+        else {
 
-            console.log("Supervisor Responses:");
-            console.log(supervisorResponses);
+            // Preserve the existing sequential workflow exactly.
 
-            dataToSubmit = supervisorResponses;
+            if (assignment.current_stage === "employee") {
 
-        }
-        else if (assignment.current_stage === "hr") {
+                console.log("Employee Responses:");
+                console.log(employeeResponses);
 
-            console.log("HR Responses:");
-            console.log(hrResponses);
+                dataToSubmit = employeeResponses;
 
-            dataToSubmit = hrResponses;
+            }
+            else if (assignment.current_stage === "supervisor") {
 
+                console.log("Supervisor Responses:");
+                console.log(supervisorResponses);
+
+                dataToSubmit = supervisorResponses;
+
+            }
+            else if (assignment.current_stage === "hr") {
+
+                console.log("HR Responses:");
+                console.log(hrResponses);
+
+                dataToSubmit = hrResponses;
+
+            }
         }
 
         console.log("------------------------------------");
@@ -160,7 +197,11 @@ export default function PublicEvaluation() {
 
             assignment.id,
 
-            dataToSubmit
+            dataToSubmit,
+
+            assignment?.workflow_json?.type === "employee_evaluation"
+                ? assignment.access_stage
+                : null
 
         );
 
@@ -280,6 +321,250 @@ export default function PublicEvaluation() {
 
     }
 
+    const isEmployeeEvaluation =
+        assignment?.workflow_json?.type === "employee_evaluation";
+
+    if (isEmployeeEvaluation) {
+
+        const reviewCycleTitle = getReviewCycleTitle(
+            assignment.review_cycle
+        );
+
+        return (
+
+            <Box
+                sx={{
+                    minHeight: "100vh",
+                    bgcolor: "#F1F5F9",
+                    px: {
+                        xs: 2,
+                        sm: 4,
+                    },
+                    py: {
+                        xs: 3,
+                        sm: 6,
+                    },
+                }}
+            >
+
+                <Box
+                    sx={{
+                        width: "100%",
+                        maxWidth: 1160,
+                        mx: "auto",
+                    }}
+                >
+
+                    <Box
+                        sx={{
+                            position: "relative",
+                            textAlign: "center",
+                            mb: 3,
+                            pr: {
+                                xs: 0,
+                                sm: 18,
+                            },
+                        }}
+                    >
+
+                        <Typography
+                            sx={{
+                                color: "#0F172A",
+                                fontSize: {
+                                    xs: 25,
+                                    sm: 32,
+                                },
+                                fontWeight: 800,
+                                letterSpacing: 1.5,
+                            }}
+                        >
+                            EMPLOYEE EVALUATION FORM
+                        </Typography>
+
+                        <Typography
+                            sx={{
+                                color: "#334155",
+                                fontSize: {
+                                    xs: 16,
+                                    sm: 20,
+                                },
+                                fontWeight: 700,
+                                letterSpacing: 1,
+                                mt: 1,
+                            }}
+                        >
+                            {reviewCycleTitle
+                                ? `${reviewCycleTitle} EVALUATION`
+                                : "EVALUATION"}
+                        </Typography>
+
+                        <Box
+                            component="img"
+                            src={nurpLogo}
+                            alt="NURP Logo"
+                            sx={{
+                                position: {
+                                    xs: "static",
+                                    sm: "absolute",
+                                },
+                                width: {
+                                    xs: 110,
+                                    sm: 135,
+                                },
+                                maxWidth: "100%",
+                                height: "auto",
+                                objectFit: "contain",
+                                right: 0,
+                                top: "50%",
+                                transform: {
+                                    xs: "none",
+                                    sm: "translateY(-50%)",
+                                },
+                                mt: {
+                                    xs: 2,
+                                    sm: 0,
+                                },
+                            }}
+                        />
+
+                    </Box>
+
+                    <Stack
+                        direction={{
+                            xs: "column",
+                            sm: "row",
+                        }}
+                        justifyContent="space-between"
+                        alignItems={{
+                            xs: "stretch",
+                            sm: "center",
+                        }}
+                        spacing={2}
+                        sx={{
+                            mb: 2.5,
+                        }}
+                    >
+
+                        <Stack
+                            direction="row"
+                            alignItems="center"
+                            spacing={1}
+                        >
+
+                            <Box
+                                sx={{
+                                    width: 10,
+                                    height: 10,
+                                    borderRadius: "50%",
+                                    bgcolor: "#F59E0B",
+                                }}
+                            />
+
+                            <Typography
+                                sx={{
+                                    color: "#475569",
+                                    fontSize: 14,
+                                    fontWeight: 600,
+                                }}
+                            >
+                                Status: {getEmployeeEvaluationStatus(assignment)}
+                            </Typography>
+
+                        </Stack>
+
+                        <Button
+                            variant="contained"
+                            onClick={() => {
+
+                                console.log("Save Draft");
+
+                            }}
+                            sx={{
+                                alignSelf: {
+                                    xs: "stretch",
+                                    sm: "auto",
+                                },
+                                px: 3,
+                                bgcolor: "#0F172A",
+                                "&:hover": {
+                                    bgcolor: "#1E293B",
+                                },
+                            }}
+                        >
+                            Save Evaluation
+                        </Button>
+
+                    </Stack>
+
+                    <Box
+                        sx={{
+                            borderBottom: "1px solid #CBD5E1",
+                            mb: 3,
+                        }}
+                    />
+
+                    <EmployeeEvaluationForm
+                        workflow={assignment.workflow_json}
+                        previewMode={assignment.access_stage || assignment.current_stage}
+                        employee={{
+                            full_name: assignment.employee_name,
+                            email: assignment.employee_email,
+                            supervisor_name: assignment.supervisor_name,
+                            department: assignment.department,
+                            review_cycle: assignment.review_cycle,
+                            review_cycle_months:
+                                assignment.review_cycle_months,
+                            finalized_goals: assignment.finalized_goals,
+                            finalized_kpis: assignment.finalized_kpis || [],
+                        }}
+                        responses={
+                            assignment.access_stage === "hr"
+                                ? hrResponses
+                                : assignment.access_stage === "supervisor"
+                                ? supervisorResponses
+                                : employeeResponses
+                        }
+                        onResponsesChange={
+                            assignment.access_stage === "hr"
+                                ? setHrResponses
+                                : assignment.access_stage === "supervisor"
+                                ? setSupervisorResponses
+                                : setEmployeeResponses
+                        }
+                        employeeResponses={assignment.employee_responses || {}}
+                        supervisorResponses={supervisorResponses}
+                        hrResponses={assignment.hr_responses || {}}
+                    />
+
+                    <Stack
+                        direction="row"
+                        justifyContent="flex-end"
+                        sx={{
+                            mt: 3,
+                        }}
+                    >
+
+                        <Button
+                            variant="contained"
+                            size="large"
+                            onClick={handleSubmitEvaluation}
+                            disabled={submitted}
+                        >
+                            {submitted
+                                ? "Evaluation Submitted"
+                                : "Submit Evaluation"}
+                        </Button>
+
+                    </Stack>
+
+                </Box>
+
+            </Box>
+
+        );
+
+    }
+
     return (
 
         <Box
@@ -343,16 +628,33 @@ export default function PublicEvaluation() {
 
                 </Box>
 
-                <EmployeeFormPreview
-                    workflow={assignment.workflow_json}
-                    previewMode={assignment.current_stage}
-                    employeeResponses={employeeResponses}
-                    supervisorResponses={supervisorResponses}
-                    hrResponses={hrResponses}
-                    setEmployeeResponses={setEmployeeResponses}
-                    setSupervisorResponses={setSupervisorResponses}
-                    setHrResponses={setHrResponses}
-                />
+                {assignment?.workflow_json?.type === "employee_evaluation" ? (
+
+                    <EmployeeEvaluationForm
+                        workflow={assignment.workflow_json}
+                        employee={{
+                            full_name: assignment.employee_name,
+                            email: assignment.employee_email,
+                            supervisor_name: assignment.supervisor_name,
+                            department: assignment.department,
+                            review_cycle: assignment.review_cycle,
+                        }}
+                    />
+
+                ) : (
+
+                    <EmployeeFormPreview
+                        workflow={assignment.workflow_json}
+                        previewMode={assignment.current_stage}
+                        employeeResponses={employeeResponses}
+                        supervisorResponses={supervisorResponses}
+                        hrResponses={hrResponses}
+                        setEmployeeResponses={setEmployeeResponses}
+                        setSupervisorResponses={setSupervisorResponses}
+                        setHrResponses={setHrResponses}
+                    />
+
+                )}
                 <Box
                     mt={4}
                     pt={3}
@@ -401,4 +703,24 @@ export default function PublicEvaluation() {
 
     );
 
+}
+
+function getReviewCycleTitle(reviewCycle) {
+    if (!reviewCycle) {
+        return "";
+    }
+
+    return reviewCycle.split(" (")[0];
+}
+
+function getEmployeeEvaluationStatus(assignment) {
+    if (assignment.current_stage === "employee") {
+        return "Pending Employee Input";
+    }
+
+    if (assignment.status === "completed") {
+        return "Completed";
+    }
+
+    return assignment.status || "Pending";
 }

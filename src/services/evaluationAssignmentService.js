@@ -76,13 +76,19 @@ export async function submitEvaluation(
 
     assignmentId,
 
-    responses
+    responses,
+
+    accessStage = null
 
 ) {
 
+    const url = accessStage
+        ? `${API_BASE}/evaluation-assignments/${assignmentId}/submit?access_stage=${accessStage}`
+        : `${API_BASE}/evaluation-assignments/${assignmentId}/submit`;
+
     const response = await axios.post(
 
-        `${API_BASE}/evaluation-assignments/${assignmentId}/submit`,
+        url,
 
         {
 

@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Grid,
+  Snackbar,
+  Typography,
+} from "@mui/material";
 
 import QuarterCard from "../../components/reviewCycles/QuarterCard";
 
@@ -10,14 +16,22 @@ import {
 
 export default function ReviewCycles() {
   const [reviewCycles, setReviewCycles] = useState([]);
+  const [feedback, setFeedback] = useState(null);
 
   useEffect(() => {
-    loadReviewCycles();
+    loadReviewCycles(new Date().getFullYear());
   }, []);
 
-  const loadReviewCycles = async () => {
-    const data = await getReviewCycles();
-    setReviewCycles(data);
+  const loadReviewCycles = async (year) => {
+    const data = await getReviewCycles(year);
+    setReviewCycles(
+      data.map((cycle) => ({
+        ...cycle,
+        quarter: `Q${cycle.quarter}`,
+        reviewPeriod: formatReviewPeriod(cycle.start_date, cycle.end_date),
+        sendDate: cycle.invitation_date || "",
+      }))
+    );
   };
 
   const handleSave = async ({ quarter, sendDate }) => {
@@ -27,7 +41,17 @@ export default function ReviewCycles() {
 
     if (!cycle) return;
 
-    await updateReviewCycle(cycle.id, sendDate);
+    try {
+      await updateReviewCycle(cycle.id, sendDate);
+    } catch (error) {
+      setFeedback({
+        severity: "error",
+        message:
+          error.response?.data?.detail ||
+          `Unable to save ${quarter} invitation date.`,
+      });
+      return;
+    }
 
     setReviewCycles((prev) =>
       prev.map((item) =>
@@ -39,6 +63,11 @@ export default function ReviewCycles() {
           : item
       )
     );
+
+    setFeedback({
+      severity: "success",
+      message: `${quarter} invitation date saved successfully.`,
+    });
   };
 
   return (
@@ -72,6 +101,39 @@ export default function ReviewCycles() {
           </Grid>
         ))}
       </Grid>
+
+      <Snackbar
+        open={Boolean(feedback)}
+        autoHideDuration={4000}
+        onClose={() => setFeedback(null)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        sx={{ mt: 8, mr: 2 }}
+      >
+        {feedback ? (
+          <Alert
+            onClose={() => setFeedback(null)}
+            severity={feedback.severity}
+            variant="filled"
+            sx={{ width: "100%" }}
+          >
+            {feedback.message}
+          </Alert>
+        ) : undefined}
+      </Snackbar>
     </Box>
   );
+}
+
+function formatReviewPeriod(startDate, endDate) {
+  return `${formatMonthDay(startDate)} – ${formatMonthDay(endDate)}`;
+}
+
+function formatMonthDay(value) {
+  const [year, month, day] = value.split("-").map(Number);
+  const monthName = new Date(year, month - 1, day).toLocaleString(
+    "en-US",
+    { month: "long" }
+  );
+
+  return `${monthName} ${day}`;
 }
