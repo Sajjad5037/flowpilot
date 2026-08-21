@@ -327,6 +327,12 @@ export default function GoalSelfEvaluation({
 
     if (previewMode === "supervisor") {
 
+        const supervisorGoals =
+            Array.isArray(finalizedGoals) &&
+            finalizedGoals.length > 0
+                ? finalizedGoals
+                : [previewGoal];
+
         return (
 
             <Box>
@@ -343,11 +349,14 @@ export default function GoalSelfEvaluation({
                 </Typography>
 
 
-                <Box
-                    sx={{
-                        mb: 4,
-                    }}
-                >
+                {supervisorGoals.map((goal, index) => (
+
+                    <Box
+                        key={goal.id || index}
+                        sx={{
+                            mb: 4,
+                        }}
+                    >
 
                     <Typography
                         sx={{
@@ -356,13 +365,15 @@ export default function GoalSelfEvaluation({
                             mb: 1.5,
                         }}
                     >
-                        Goal #1
+                        Goal #{index + 1}
                     </Typography>
 
 
                     <GoalProgressTable
                         targetDescription={
-                            previewGoal.targetDescription
+                            goal.description ||
+                            goal.targetDescription ||
+                            "--"
                         }
                         monthlyProgress={
                             monthlyProgress
@@ -373,6 +384,7 @@ export default function GoalSelfEvaluation({
                         showMonthlyProgress={
                             showMonthlyProgress
                         }
+                            months={months}
                     />
 
 
@@ -450,7 +462,9 @@ export default function GoalSelfEvaluation({
 
                     )}
 
-                </Box>
+                    </Box>
+
+                ))}
 
             </Box>
 
@@ -466,6 +480,12 @@ export default function GoalSelfEvaluation({
      */
 
     if (previewMode === "hr") {
+
+        const hrGoals =
+            Array.isArray(finalizedGoals) &&
+            finalizedGoals.length > 0
+                ? finalizedGoals
+                : [previewGoal];
 
         return (
 
@@ -513,12 +533,14 @@ export default function GoalSelfEvaluation({
                     }}
                 >
 
-                    <Box
-                        
-                        sx={{
-                            mb: 4,
-                        }}
-                    >
+                    {hrGoals.map((goal, index) => (
+
+                        <Box
+                            key={goal.id || index}
+                            sx={{
+                                mb: 4,
+                            }}
+                        >
 
                         <Stack
                             direction="row"
@@ -534,7 +556,7 @@ export default function GoalSelfEvaluation({
                                     color: "#7C3AED",
                                 }}
                             >
-                                Goal # 1
+                                Goal # {index + 1}
                             </Typography>
 
 
@@ -573,7 +595,9 @@ export default function GoalSelfEvaluation({
 
                         <HRGoalTable
                             targetDescription={
-                                previewGoal.targetDescription
+                                goal.description ||
+                                goal.targetDescription ||
+                                "--"
                             }
                             monthlyProgress={
                                 monthlyProgress
@@ -663,7 +687,9 @@ export default function GoalSelfEvaluation({
 
                         </Box>
 
-                    </Box>
+                        </Box>
+
+                    ))}
 
                 </Box>
 

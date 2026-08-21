@@ -23,6 +23,11 @@ export default function EvaluationAssignments() {
     const [template, setTemplate] = useState("");
     const [employees, setEmployees] = useState([]);
     const [templates, setTemplates] = useState([]);
+
+    const selectedEmployee = employees.find(
+        e => e.id === Number(employee)
+    );
+
     useEffect(() => {
 
         loadData();
@@ -95,7 +100,7 @@ export default function EvaluationAssignments() {
             fontWeight={700}
             mb={1}
         >
-            Evaluation Assignments
+            KPI and Goal Settings
         </Typography>
 
         <Typography
@@ -130,9 +135,10 @@ export default function EvaluationAssignments() {
                             fullWidth
                             label="Employee"
                             value={employee}
-                            onChange={(event) =>
-                                setEmployee(event.target.value)
-                            }
+                            onChange={(event) => {
+                                setEmployee(event.target.value);
+                                setTemplate("");
+                            }}
                         >
 
                             <MenuItem value="">
@@ -244,7 +250,21 @@ export default function EvaluationAssignments() {
                                 Select Evaluation Template
                             </MenuItem>
 
-                            {templates.map(template => (
+                            {templates
+                                .filter(template => {
+
+                                    if (!selectedEmployee) {
+                                        return true;
+                                    }
+
+                                    if (selectedEmployee.is_existing_employee) {
+                                        return template.workflow_type === "employee_evaluation";
+                                    }
+
+                                    return template.workflow_type === "goal_kpi_setting";
+
+                                })
+                                .map(template => (
 
                                 <MenuItem
                                     key={template.id}
@@ -253,7 +273,7 @@ export default function EvaluationAssignments() {
                                     {template.name}
                                 </MenuItem>
 
-                            ))}
+                                ))}
 
                         </TextField>
 

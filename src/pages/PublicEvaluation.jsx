@@ -330,6 +330,28 @@ export default function PublicEvaluation() {
             assignment.review_cycle
         );
 
+        const viewerStage =
+            assignment.access_stage || assignment.current_stage;
+
+        const formTitle =
+            viewerStage === "employee"
+                ? "EMPLOYEE EVALUATION FORM"
+                : viewerStage === "supervisor"
+                    ? "SUPERVISOR REVIEW FORM"
+                    : viewerStage === "hr"
+                        ? "HR Master Sheet"
+                        : "EMPLOYEE EVALUATION FORM";
+
+            console.log(
+                "FORM VIEWER DEBUG:",
+                {
+                    access_stage: assignment.access_stage,
+                    current_stage: assignment.current_stage,
+                    viewerStage,
+                    formTitle,
+                }
+            );
+
         return (
 
             <Box
@@ -378,7 +400,7 @@ export default function PublicEvaluation() {
                                 letterSpacing: 1.5,
                             }}
                         >
-                            EMPLOYEE EVALUATION FORM
+                            {formTitle}
                         </Typography>
 
                         <Typography

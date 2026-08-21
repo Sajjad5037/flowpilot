@@ -50,7 +50,7 @@ const mainMenu = [
     path: "/employees",
   },
   {
-    title: "Evaluation Assignments",
+    title: "Send Emails",
     icon: <Assignment />,
     path: "/evaluation-assignments",
   },
