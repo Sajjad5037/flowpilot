@@ -7,12 +7,17 @@ import {
     Stack,
     Typography,
 } from "@mui/material";
+import { useEffect, useState } from "react";
 
 import CloseIcon from "@mui/icons-material/Close";
 
 import {
     EMPLOYEE_EVALUATION_REGISTRY,
 } from "../registry/employeeEvaluationRegistry";
+
+import {
+    getEvaluationPreviewResponses,
+} from "../../../services/evaluationPreviewResponseService";
 
 
 export default function EvaluationPreview({
@@ -21,6 +26,68 @@ export default function EvaluationPreview({
     workflow,
     previewMode = "employee",
 }) {
+    console.log(
+            "EVALUATION PREVIEW MOUNTED",
+            {
+                open,
+                previewMode,
+                workflow,
+            }
+        );
+
+
+    const [previewResponses, setPreviewResponses] =
+        useState(null);
+
+    const [previewLoading, setPreviewLoading] =
+        useState(true);
+
+    const [previewError, setPreviewError] =
+        useState(false);
+
+    useEffect(() => {
+
+        if (open !== undefined && !open) {
+            return;
+        }
+
+        let isActive = true;
+
+        setPreviewLoading(true);
+        setPreviewError(false);
+
+        getEvaluationPreviewResponses()
+            .then((response) => {
+                console.log(
+                    "FORM BUILDER PREVIEW RESPONSE FROM API:",
+                    response
+                );
+
+                if (isActive) {
+                    setPreviewResponses(response);
+                }
+            })
+            .catch((error) => {
+                console.error(
+                    "FORM BUILDER PREVIEW API ERROR:",
+                    error
+                );
+
+                if (isActive) {
+                    setPreviewError(true);
+                }
+            })
+            .finally(() => {
+                if (isActive) {
+                    setPreviewLoading(false);
+                }
+            });
+
+        return () => {
+            isActive = false;
+        };
+
+    }, [open]);
 
     if (!workflow) {
         return null;
@@ -148,6 +215,32 @@ export default function EvaluationPreview({
 
     function renderForm() {
 
+        if (previewLoading) {
+            return (
+                <Typography
+                    sx={{
+                        py: 8,
+                        textAlign: "center",
+                    }}
+                >
+                    Loading preview...
+                </Typography>
+            );
+        }
+
+        if (previewError) {
+            return (
+                <Typography
+                    sx={{
+                        py: 8,
+                        textAlign: "center",
+                    }}
+                >
+                    Unable to load preview data.
+                </Typography>
+            );
+        }
+
         return (
 
             <Box
@@ -222,6 +315,22 @@ export default function EvaluationPreview({
                                             }
                                             previewMode={
                                                 previewMode
+                                            }
+                                            responses={
+                                                previewMode === "employee"
+                                                    ? previewResponses?.employee_responses || {}
+                                                    : previewMode === "supervisor"
+                                                    ? previewResponses?.supervisor_responses || {}
+                                                    : previewResponses?.hr_responses || {}
+                                            }
+                                            employeeResponses={
+                                                previewResponses?.employee_responses || {}
+                                            }
+                                            supervisorResponses={
+                                                previewResponses?.supervisor_responses || {}
+                                            }
+                                            hrResponses={
+                                                previewResponses?.hr_responses || {}
                                             }
                                         />
 

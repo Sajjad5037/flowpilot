@@ -222,6 +222,7 @@ export default function EmployeeEvaluationForm({
                     onResponsesChange={onResponsesChange}
                     employeeResponses={employeeResponses}
                     supervisorResponses={supervisorResponses}
+                    hrResponses={hrResponses}
                 />
 
             )}
@@ -236,6 +237,8 @@ export default function EmployeeEvaluationForm({
                     reviewCycleMonths={employee?.review_cycle_months || []}
                     responses={responses}
                     onResponsesChange={onResponsesChange}
+                    employeeResponses={employeeResponses}
+                    supervisorResponses={supervisorResponses}
                     hrResponses={hrResponses}
                 />
 
@@ -246,6 +249,7 @@ export default function EmployeeEvaluationForm({
                 <KPIReviewPlanning
                     component={kpiReviewPlanningComponent}
                     previewMode={previewMode}
+                    reviewCycle={employee?.review_cycle}
                     responses={responses}
                     onResponsesChange={onResponsesChange}
                     employeeResponses={employeeResponses}
@@ -264,6 +268,7 @@ export default function EmployeeEvaluationForm({
                     onResponsesChange={onResponsesChange}
                     employeeResponses={employeeResponses}
                     supervisorResponses={supervisorResponses}
+                    hrResponses={hrResponses}
                 />
 
             )}
@@ -277,6 +282,7 @@ export default function EmployeeEvaluationForm({
                     onResponsesChange={onResponsesChange}
                     employeeResponses={employeeResponses}
                     supervisorResponses={supervisorResponses}
+                    reviewCycle={employee?.review_cycle}
                 />
 
             )}
@@ -290,6 +296,7 @@ export default function EmployeeEvaluationForm({
                     onResponsesChange={onResponsesChange}
                     employeeResponses={employeeResponses}
                     supervisorResponses={supervisorResponses}
+                    reviewCycle={employee?.review_cycle}
                 />
 
             )}

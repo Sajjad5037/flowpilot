@@ -6,13 +6,6 @@ import {
     Typography,
 } from "@mui/material";
 
-
-const defaultSectionTitle =
-    "Q3 Feedback & Proposed Goals";
-
-const defaultQuestion1 =
-    "What can you improve on moving forward in Q3?";
-
 const defaultQuestion1Guidance =
     "Open to suggestions and feedback during evaluation meeting.";
 
@@ -30,15 +23,29 @@ export default function Q3FeedbackProposedGoals({
     onResponsesChange,
     employeeResponses = {},
     supervisorResponses = {},
+    reviewCycle,
 }) {
 
     const settings = component?.settings || {};
 
+    const currentQuarter =
+        reviewCycle?.match(/^Q[1-4]/)?.[0] || "";
+
+    const quarterNumber =
+        Number(currentQuarter.replace("Q", ""));
+
+    const nextQuarter =
+        quarterNumber
+            ? `Q${quarterNumber === 4 ? 1 : quarterNumber + 1}`
+            : "";
+
     const sectionTitle =
-        settings.sectionTitle || defaultSectionTitle;
+        settings.sectionTitle ||
+        `${nextQuarter} Feedback & Proposed Goals`;
 
     const question1 =
-        settings.question1 || defaultQuestion1;
+        settings.question1 ||
+        `What can you improve on moving forward in ${nextQuarter}?`;
 
     const question1Guidance =
         settings.question1Guidance || defaultQuestion1Guidance;
@@ -409,7 +416,7 @@ function HRFeedbackComparison({
 
                     <Box sx={{ p: 1.5 }}>
                         <Typography variant="body2">
-                            {employeeResponse}
+                            {employeeResponse || "Employee response pending."}
                         </Typography>
                     </Box>
 

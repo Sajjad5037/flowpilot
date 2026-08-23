@@ -126,7 +126,7 @@ export default function SelfAssessmentSupervisorPreview({
                                     <TextField
                                         fullWidth
                                         multiline
-                                        rows={5}
+                                        minRows={2}
                                         placeholder="Enter supervisor feedback..."
                                         value={
                                             responses?.self_assessment?.[question.id] || ""

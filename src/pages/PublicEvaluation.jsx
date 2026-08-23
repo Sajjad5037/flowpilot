@@ -525,6 +525,11 @@ export default function PublicEvaluation() {
                         }}
                     />
 
+                    {console.log("PUBLIC EVALUATION RESPONSES:", {
+                        employeeResponses: assignment.employee_responses,
+                        supervisorResponses,
+                        hrResponses: assignment.hr_responses,
+                    })}
                     <EmployeeEvaluationForm
                         workflow={assignment.workflow_json}
                         previewMode={assignment.access_stage || assignment.current_stage}
@@ -609,31 +614,6 @@ export default function PublicEvaluation() {
                     }}
                 >
 
-                    <Box>
-
-                        <Typography
-                            variant="h4"
-                            fontWeight={700}
-                            gutterBottom
-                        >
-                            Performance Evaluation
-                        </Typography>
-
-                        <Typography
-                            variant="h6"
-                            mb={1}
-                        >
-                            Employee: {assignment.employee_name}
-                        </Typography>
-
-                        <Typography
-                            color="primary"
-                        >
-                            Current Stage: {assignment.current_stage}
-                        </Typography>
-
-                    </Box>
-
                     <Box
                         component="img"
                         src={nurpLogo}
@@ -668,9 +648,16 @@ export default function PublicEvaluation() {
                     <EmployeeFormPreview
                         workflow={assignment.workflow_json}
                         previewMode={assignment.current_stage}
+                        reviewCycle={assignment.review_cycle}
                         employeeResponses={employeeResponses}
                         supervisorResponses={supervisorResponses}
                         hrResponses={hrResponses}
+                        employee={{
+                            full_name: assignment.employee_name,
+                            supervisor_name: assignment.supervisor_name,
+                            department: assignment.department,
+                            designation: assignment.designation,
+                        }}
                         setEmployeeResponses={setEmployeeResponses}
                         setSupervisorResponses={setSupervisorResponses}
                         setHrResponses={setHrResponses}

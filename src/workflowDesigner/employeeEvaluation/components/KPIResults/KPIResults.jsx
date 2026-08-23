@@ -72,6 +72,8 @@ export default function KPIResults({
     reviewCycleMonths = [],
     responses = {},
     onResponsesChange,
+    employeeResponses = {},
+    supervisorResponses = {},
     hrResponses = {},
 }) {
 
@@ -120,6 +122,36 @@ export default function KPIResults({
     }
 
 
+    function calculateKpiAverage(kpiId) {
+
+        const sourceResponses =
+            previewMode === "employee" ||
+            previewMode === "supervisor"
+                ? hrResponses?.kpi_results || {}
+                : kpiResponses;
+
+        const values = monthKeys
+            .map(
+                monthKey =>
+                    sourceResponses?.[kpiId]?.[monthKey]
+            )
+            .map(value => Number(value))
+            .filter(value => !Number.isNaN(value));
+
+        if (values.length === 0) {
+            return "";
+        }
+
+        const average =
+            values.reduce(
+                (sum, value) => sum + value,
+                0
+            ) / values.length;
+
+        return average.toFixed(2);
+    }
+
+
     function renderKpiTable({
         editable = false,
         showComments = false,
@@ -128,17 +160,19 @@ export default function KPIResults({
     } = {}) {
 
         const gridTemplateColumns = showComments
-            ? "1.2fr 1.5fr 0.8fr 0.8fr 0.8fr 1fr 2.2fr 0.6fr"
-            : "1.5fr 1.4fr 0.8fr 0.8fr 0.8fr 1fr";
+            ? "1.2fr 1.3fr 0.75fr 0.75fr 0.75fr 0.9fr 1.8fr 0.5fr"
+            : "1.4fr 1.3fr 0.8fr 0.8fr 0.8fr 0.9fr";
 
-        const minWidth = showComments ? 1200 : 950;
+        const minWidth = 0;
 
         return (
             <Box>
 
                 <Box
                     sx={{
-                        overflowX: "auto",
+                        width: "100%",
+                        minWidth: 0,
+                        overflowX: "hidden",
                         border: "1px solid",
                         borderColor: "divider",
                         borderRadius: 1,
@@ -147,7 +181,8 @@ export default function KPIResults({
 
                     <Box
                         sx={{
-                            minWidth,
+                            width: "100%",
+                            minWidth: 0,
                             display: "grid",
                             gridTemplateColumns,
                             backgroundColor: "grey.100",
@@ -206,7 +241,8 @@ export default function KPIResults({
                         <Box
                             key={kpi.id}
                             sx={{
-                                minWidth,
+                                width: "100%",
+                                minWidth: 0,
                                 display: "grid",
                                 gridTemplateColumns,
                                 borderBottom: "1px solid",
@@ -327,12 +363,59 @@ export default function KPIResults({
 
                             <BodyCell>
 
-                                <Typography
-                                    variant="body2"
-                                    fontWeight={600}
-                                >
-                                    {kpi.q2Average}
-                                </Typography>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    value={calculateKpiAverage(kpi.kpiId)}
+                                    InputProps={{
+                                        readOnly: true,
+                                    }}
+                                    sx={{
+                                        "& .MuiOutlinedInput-root": {
+                                            backgroundColor:
+                                                previewMode === "hr"
+                                                    ? "#FFFFFF"
+                                                    : "#F3F4F6",
+                                            cursor:
+                                                previewMode === "hr"
+                                                    ? "text"
+                                                    : "default",
+                                        },
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor:
+                                                previewMode === "hr"
+                                                    ? undefined
+                                                    : "#D1D5DB",
+                                        },
+                                        "& .MuiInputBase-input": {
+                                            fontSize: 13,
+                                            color:
+                                                previewMode === "hr"
+                                                    ? "#000000"
+                                                    : "#64748B",
+                                            cursor:
+                                                previewMode === "hr"
+                                                    ? "text"
+                                                    : "default",
+                                        },
+                                        "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+                                            borderColor:
+                                                previewMode === "hr"
+                                                    ? undefined
+                                                    : "#D1D5DB",
+                                        },
+                                        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                                            borderColor:
+                                                previewMode === "hr"
+                                                    ? undefined
+                                                    : "#D1D5DB",
+                                            borderWidth:
+                                                previewMode === "hr"
+                                                    ? undefined
+                                                    : "1px",
+                                        },
+                                    }}
+                                />
 
                             </BodyCell>
 
@@ -443,7 +526,22 @@ export default function KPIResults({
 
                         <Select
                             label="Supervisor KPI Rating"
-                            defaultValue=""
+                            value={
+                                responses?.kpi_results?.overall_rating || ""
+                            }
+                            onChange={(event) => {
+                                if (typeof onResponsesChange !== "function") {
+                                    return;
+                                }
+
+                                onResponsesChange({
+                                    ...responses,
+                                    kpi_results: {
+                                        ...(responses?.kpi_results || {}),
+                                        overall_rating: event.target.value,
+                                    },
+                                });
+                            }}
                         >
                             <MenuItem value="">
                                 Select rating
@@ -578,12 +676,40 @@ export default function KPIResults({
 
                     <RatingSummaryCard
                         label="Employee Selection"
-                        value="4. Above Expectation"
+                        value={
+                            employeeResponses?.kpi_results?.overall_rating
+                                ? `${employeeResponses.kpi_results.overall_rating}. ${
+                                      {
+                                          "1": "Poor",
+                                          "2": "Below Expectation",
+                                          "3": "Meets Expectation",
+                                          "4": "Above Expectation",
+                                          "5": "Fully Meets",
+                                      }[
+                                          employeeResponses.kpi_results.overall_rating
+                                      ]
+                                  }`
+                                : "Not Selected"
+                        }
                     />
 
                     <RatingSummaryCard
                         label="Supervisor Selection"
-                        value="4. Above Expectation"
+                        value={
+                            supervisorResponses?.kpi_results?.overall_rating
+                                ? `${supervisorResponses.kpi_results.overall_rating}. ${
+                                      {
+                                          "1": "Poor",
+                                          "2": "Below Expectation",
+                                          "3": "Meets Expectation",
+                                          "4": "Above Expectation",
+                                          "5": "Fully Meets",
+                                      }[
+                                          supervisorResponses.kpi_results.overall_rating
+                                      ]
+                                  }`
+                                : "Not Selected"
+                        }
                     />
 
                     <Paper
@@ -694,7 +820,22 @@ export default function KPIResults({
 
                 <Select
                     label="Overall KPI Performance Rating"
-                    defaultValue=""
+                    value={
+                        responses?.kpi_results?.overall_rating || ""
+                    }
+                    onChange={(event) => {
+                        if (typeof onResponsesChange !== "function") {
+                            return;
+                        }
+
+                        onResponsesChange({
+                            ...responses,
+                            kpi_results: {
+                                ...(responses?.kpi_results || {}),
+                                overall_rating: event.target.value,
+                            },
+                        });
+                    }}
                 >
 
                     <MenuItem value="">

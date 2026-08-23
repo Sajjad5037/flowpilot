@@ -295,18 +295,40 @@ export default function DiscussionNotesFeedback({
                                 fullWidth
                                 multiline
                                 minRows={3}
-                                defaultValue={
+                                value={
                                     employeeResponses?.discussion_notes_feedback?.employee_response || ""
                                 }
+                                slotProps={{
+                                    htmlInput: {
+                                        readOnly: true,
+                                    },
+                                }}
                                 variant="outlined"
                                 sx={{
+                                    backgroundColor: "#F8FAFC",
+                                    cursor: "default",
+
                                     "& .MuiOutlinedInput-root": {
                                         borderRadius: 1.5,
+                                        cursor: "default",
+                                    },
+
+                                    "& .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "#CBD5E1",
+                                    },
+
+                                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "#CBD5E1",
                                     },
 
                                     "& .MuiInputBase-input": {
                                         fontSize: "0.82rem",
                                         lineHeight: 1.5,
+                                        cursor: "default",
+                                    },
+
+                                    "& .MuiInputBase-input:focus": {
+                                        cursor: "default",
                                     },
                                 }}
                             />
@@ -345,15 +367,37 @@ export default function DiscussionNotesFeedback({
                                 value={
                                     supervisorResponses?.discussion_notes_feedback?.supervisor_response || ""
                                 }
+                                slotProps={{
+                                    htmlInput: {
+                                        readOnly: true,
+                                    },
+                                }}
                                 variant="outlined"
                                 sx={{
+                                    backgroundColor: "#F8FAFC",
+                                    cursor: "default",
+
                                     "& .MuiOutlinedInput-root": {
                                         borderRadius: 1.5,
+                                        cursor: "default",
+                                    },
+
+                                    "& .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "#CBD5E1",
+                                    },
+
+                                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "#CBD5E1",
                                     },
 
                                     "& .MuiInputBase-input": {
                                         fontSize: "0.82rem",
                                         lineHeight: 1.5,
+                                        cursor: "default",
+                                    },
+
+                                    "& .MuiInputBase-input:focus": {
+                                        cursor: "default",
                                     },
                                 }}
                             />

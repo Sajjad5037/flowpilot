@@ -8,21 +8,6 @@ import {
 } from "@mui/material";
 
 
-const previewGoals = [
-    {
-        id: "goal-1",
-        employeeGoal:
-            "Successfully source, interview, and onboard 1 new Business Development Representative (BDR).",
-
-        supervisorGoal:
-            "BDR Hired",
-
-        finalGoal:
-            "BDR Hired",
-    },
-];
-
-
 export default function Q3GoalsPlanning({
     component,
     previewMode = "employee",
@@ -34,7 +19,7 @@ export default function Q3GoalsPlanning({
 
     /*
      * ==========================================
-     * EMPLOYEE VIEW
+        * EMPLOYEE VIEW
      * ==========================================
      */
 
@@ -51,11 +36,7 @@ export default function Q3GoalsPlanning({
                 <GoalSection
                     title="Proposed Goals for Q3"
                     buttonLabel="+ Add Goal"
-                    goals={
-                        responses?.q3_goals_planning?.employee_goals?.length
-                            ? responses.q3_goals_planning.employee_goals
-                            : previewGoals
-                    }
+                    goals={responses?.q3_goals_planning?.employee_goals || []}
                     field="employeeGoal"
                     responses={responses}
                     onResponsesChange={onResponsesChange}
@@ -205,10 +186,12 @@ export default function Q3GoalsPlanning({
                                     sx={{
                                         "& .MuiOutlinedInput-root": {
                                             borderRadius: 1.5,
+                                            backgroundColor: "#FFFFFF !important",
                                         },
 
                                         "& .MuiInputBase-input": {
                                             fontSize: "0.82rem",
+                                            backgroundColor: "#FFFFFF !important",
                                         },
                                     }}
                                 />
@@ -262,6 +245,20 @@ export default function Q3GoalsPlanning({
 
     if (previewMode === "hr") {
 
+        const employeeGoals =
+            employeeResponses?.q3_goals_planning?.employee_goals || [];
+
+        const supervisorGoals =
+            supervisorResponses?.q3_goals_planning?.supervisor_goals || [];
+
+        const hrFinalGoals =
+            responses?.q3_goals_planning?.hr_final_goals || [];
+
+        const goalCount = Math.max(
+            employeeGoals.length,
+            supervisorGoals.length
+        );
+
         return (
 
             <Box
@@ -288,14 +285,6 @@ export default function Q3GoalsPlanning({
                         Q3 Goals Planning
                     </Typography>
 
-
-                    <Button
-                        variant="outlined"
-                        size="small"
-                    >
-                        + Add Goal
-                    </Button>
-
                 </Stack>
 
 
@@ -313,11 +302,19 @@ export default function Q3GoalsPlanning({
                     }}
                 >
 
-                    {(employeeResponses?.q3_goals_planning?.employee_goals || []).map(
-                        (goal, index) => (
+                    {Array.from({ length: goalCount }).map((_, index) => {
+                        const employeeGoal = employeeGoals[index];
+                        const supervisorGoal = supervisorGoals[index];
+                        const hrFinalGoal =
+                            hrFinalGoals.find(
+                                (row) =>
+                                    row.goalId ===
+                                    (employeeGoal?.id || supervisorGoal?.id)
+                            )?.finalGoal || "";
 
+                        return (
                             <Box
-                                key={goal.id}
+                                key={`hr-goal-${index}`}
                             >
 
                                 {/* Goal Header */}
@@ -367,9 +364,7 @@ export default function Q3GoalsPlanning({
 
                                 <GoalResponseRow
                                     label="Employee response"
-                                    value={
-                                        goal.description ?? ""
-                                    }
+                                    value={employeeGoal?.description || ""}
                                 />
 
 
@@ -377,13 +372,7 @@ export default function Q3GoalsPlanning({
 
                                 <GoalResponseRow
                                     label="Supervisor response"
-                                    value={
-                                        supervisorResponses
-                                            ?.q3_goals_planning
-                                            ?.supervisor_goals
-                                            ?.[index]
-                                            ?.description ?? ""
-                                    }
+                                    value={supervisorGoal?.description || ""}
                                 />
 
 
@@ -440,9 +429,47 @@ export default function Q3GoalsPlanning({
                                             fullWidth
                                             multiline
                                             minRows={2}
-                                            defaultValue={
-                                                goal.finalGoal
-                                            }
+                                            value={hrFinalGoal}
+                                            onChange={(event) => {
+                                                const currentHrFinalGoals =
+                                                    responses?.q3_goals_planning?.hr_final_goals || [];
+
+                                                const goalId =
+                                                    employeeGoal?.id ||
+                                                    supervisorGoal?.id ||
+                                                    `hr-goal-${index}`;
+
+                                                const existingHrFinalGoal =
+                                                    currentHrFinalGoals.some(
+                                                        (row) => row.goalId === goalId
+                                                    );
+
+                                                const updatedHrFinalGoals =
+                                                    existingHrFinalGoal
+                                                        ? currentHrFinalGoals.map((row) =>
+                                                              row.goalId === goalId
+                                                                  ? {
+                                                                        ...row,
+                                                                        finalGoal: event.target.value,
+                                                                    }
+                                                                  : row
+                                                          )
+                                                        : [
+                                                              ...currentHrFinalGoals,
+                                                              {
+                                                                  goalId,
+                                                                  finalGoal: event.target.value,
+                                                              },
+                                                          ];
+
+                                                onResponsesChange?.({
+                                                    ...responses,
+                                                    q3_goals_planning: {
+                                                        ...(responses?.q3_goals_planning || {}),
+                                                        hr_final_goals: updatedHrFinalGoals,
+                                                    },
+                                                });
+                                            }}
                                             size="small"
                                             sx={{
                                                 "& .MuiOutlinedInput-root": {
@@ -461,11 +488,218 @@ export default function Q3GoalsPlanning({
                                 </Box>
 
                             </Box>
+                        );
+                    })}
 
-                        )
-                    )}
+                    {(responses?.q3_goals_planning?.hr_goals || []).map((goal, index) => (
+                        <Box
+                            key={goal.id}
+                            sx={{
+                                borderTop: "1px solid #CBD5E1",
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    px: 1.5,
+                                    py: 1.25,
+                                    backgroundColor: "#F8FAFC",
+                                    borderBottom: "1px solid #CBD5E1",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "space-between",
+                                }}
+                            >
+                                <Typography
+                                    variant="body2"
+                                    fontWeight={700}
+                                    color="#1E3A5F"
+                                >
+                                    HR Goal {index + 1}:
+                                </Typography>
+
+                                <IconButton
+                                    color="error"
+                                    size="small"
+                                    aria-label="Delete HR goal"
+                                    onClick={() => {
+                                        const currentGoals =
+                                            responses?.q3_goals_planning?.hr_goals || [];
+
+                                        const updatedGoals = currentGoals.filter(
+                                            (row) => row.id !== goal.id
+                                        );
+
+                                        onResponsesChange?.({
+                                            ...responses,
+                                            q3_goals_planning: {
+                                                ...(responses?.q3_goals_planning || {}),
+                                                hr_goals: updatedGoals,
+                                            },
+                                        });
+                                    }}
+                                >
+                                    ×
+                                </IconButton>
+                            </Box>
+
+                            <Box
+                                sx={{
+                                    display: "grid",
+                                    gridTemplateColumns: "180px 1fr",
+                                    borderBottom: "1px solid #E2E8F0",
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        px: 1.5,
+                                        py: 1.5,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        backgroundColor: "#F8FAFC",
+                                        borderRight: "1px solid #CBD5E1",
+                                    }}
+                                >
+                                    <Typography
+                                        variant="body2"
+                                        fontWeight={600}
+                                        color="#1E3A5F"
+                                    >
+                                        HR response
+                                    </Typography>
+                                </Box>
+
+                                <Box sx={{ p: 1.25 }}>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        multiline
+                                        minRows={1}
+                                        value={goal.description || ""}
+                                        onChange={(event) => {
+                                            const currentGoals =
+                                                responses?.q3_goals_planning?.hr_goals || [];
+
+                                            const updatedGoals = currentGoals.map((row) =>
+                                                row.id === goal.id
+                                                    ? { ...row, description: event.target.value }
+                                                    : row
+                                            );
+
+                                            onResponsesChange?.({
+                                                ...responses,
+                                                q3_goals_planning: {
+                                                    ...(responses?.q3_goals_planning || {}),
+                                                    hr_goals: updatedGoals,
+                                                },
+                                            });
+                                        }}
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                borderRadius: 1.5,
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                fontSize: "0.82rem",
+                                            },
+                                        }}
+                                    />
+                                </Box>
+                            </Box>
+
+                            <Box
+                                sx={{
+                                    display: "grid",
+                                    gridTemplateColumns: "180px 1fr",
+                                    borderBottom: "1px solid #E2E8F0",
+                                    backgroundColor: "#FCF7FF",
+                                }}
+                            >
+                                <Box
+                                    sx={{
+                                        px: 1.5,
+                                        py: 1.5,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        backgroundColor: "#FCF7FF",
+                                        borderRight: "1px solid #CBD5E1",
+                                    }}
+                                >
+                                    <Typography
+                                        variant="body2"
+                                        fontWeight={700}
+                                        color="#7E22CE"
+                                    >
+                                        Final Set Goal
+                                    </Typography>
+                                </Box>
+
+                                <Box sx={{ p: 1.25 }}>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        multiline
+                                        minRows={2}
+                                        value={goal.finalGoal || ""}
+                                        onChange={(event) => {
+                                            const currentHrGoals =
+                                                responses?.q3_goals_planning?.hr_goals || [];
+
+                                            const updatedHrGoals = currentHrGoals.map((row) =>
+                                                row.id === goal.id
+                                                    ? {
+                                                          ...row,
+                                                          finalGoal: event.target.value,
+                                                      }
+                                                    : row
+                                            );
+
+                                            onResponsesChange?.({
+                                                ...responses,
+                                                q3_goals_planning: {
+                                                    ...(responses?.q3_goals_planning || {}),
+                                                    hr_goals: updatedHrGoals,
+                                                },
+                                            });
+                                        }}
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                borderRadius: 1.5,
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                fontSize: "0.82rem",
+                                            },
+                                        }}
+                                    />
+                                </Box>
+                            </Box>
+                        </Box>
+                    ))}
 
                 </Box>
+
+                <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => {
+                        const currentGoals =
+                            responses?.q3_goals_planning?.hr_goals || [];
+
+                        const newGoal = {
+                            id: `hr-goal-${Date.now()}`,
+                            description: "",
+                        };
+
+                        onResponsesChange?.({
+                            ...responses,
+                            q3_goals_planning: {
+                                ...(responses?.q3_goals_planning || {}),
+                                hr_goals: [...currentGoals, newGoal],
+                            },
+                        });
+                    }}
+                    sx={{ mt: 1.5 }}
+                >
+                    + Add Goal
+                </Button>
 
             </Box>
 
@@ -596,6 +830,7 @@ function GoalSection({
                                 sx={{
                                     "& .MuiOutlinedInput-root": {
                                         borderRadius: 1.5,
+                                        backgroundColor: "#FFFFFF",
                                     },
 
                                     "& .MuiInputBase-input": {

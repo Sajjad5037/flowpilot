@@ -3,6 +3,7 @@ import {
     Divider,
     Typography
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 import { COMPONENT_REGISTRY } from "../../registry/componentRegistry";
 import previewData from "../../preview/previewData";
@@ -10,6 +11,8 @@ import SelfAssessmentSupervisorPreview from "../SelfAssessment/SelfAssessmentSup
 import SelfAssessmentHRPreview from "../SelfAssessment/SelfAssessmentHRPreview";
 import GoalListSupervisorPreview from "../GoalList/GoalListSupervisorPreview";
 import GoalListHRPreview from "../GoalList/GoalListHRPreview";
+import EmployeeGoalList from "../GoalList/EmployeeGoalList";
+import EmployeeKPIList from "../KPIList/EmployeeKPIList";
 import KPIListSupervisorPreview from "../KPIList/KPIListSupervisorPreview";
 import KPIListHRPreview from "../KPIList/KPIListHRPreview";
 import PerformanceAndCoreValuesHRPreview
@@ -18,6 +21,9 @@ export default function EmployeeFormPreview({
 
     workflow,
     previewMode,
+    isBuilderPreview = false,
+    reviewCycle,
+    employee,
     employeeResponses,
     supervisorResponses,
     hrResponses,
@@ -26,6 +32,17 @@ export default function EmployeeFormPreview({
     setHrResponses
 
 }) {
+    const location = useLocation();
+    const isActualEmployeeEvaluation =
+        !isBuilderPreview && location.pathname.startsWith("/evaluation/");
+    const isRealEvaluation = isActualEmployeeEvaluation;
+    console.log("DEBUG EmployeeFormPreview isBuilderPreview:", isBuilderPreview);
+    console.log("DEBUG EmployeeFormPreview previewMode:", previewMode);
+    console.log("DEBUG EmployeeFormPreview pathname:", location.pathname);
+    console.log("DEBUG EmployeeFormPreview workflowName:", workflow?.name);
+    console.log("DEBUG EmployeeFormPreview isRealEvaluation:", isRealEvaluation);
+    const cycleTitle = reviewCycle?.split(" (")[0];
+
     let stageComponents;
 
     if (previewMode === "employee") {
@@ -93,23 +110,30 @@ export default function EmployeeFormPreview({
                         fontWeight={700}
                         gutterBottom
                     >
-                        {workflow.name} — {previewMode.charAt(0).toUpperCase() + previewMode.slice(1)} Stage
+                        {isActualEmployeeEvaluation && previewMode === "supervisor"
+                            ? workflow.name.replace(/Employee$/, "Supervisor")
+                            : workflow.name}
+                        {isActualEmployeeEvaluation && cycleTitle &&
+                            ` | ${cycleTitle}`}
+                        {!isActualEmployeeEvaluation &&
+                            ` — ${previewMode.charAt(0).toUpperCase() + previewMode.slice(1)} Stage`}
                     </Typography>
 
-                    <Typography
-                        color="primary"
-                        fontWeight={700}
-                        mb={2}
-                    >
-                        Preview Mode: {previewMode}
-                    </Typography>
+                    {!isActualEmployeeEvaluation && (
+                        <Typography
+                            color="primary"
+                            fontWeight={700}
+                            mb={2}
+                        >
+                            Preview Mode: {previewMode}
+                        </Typography>
+                    )}
 
                     <Divider sx={{ mb: 4 }} />
 
                 </>
 
             )}
-            <Divider sx={{ mb: 4 }} />
             {stageComponents.length === 0 && (
 
                 <Typography
@@ -161,6 +185,15 @@ export default function EmployeeFormPreview({
                 }
                 if (
                     component.id === "goal_list" &&
+                    previewMode === "employee" &&
+                    isRealEvaluation
+                ) {
+
+                    PreviewComponent = EmployeeGoalList;
+
+                }
+                if (
+                    component.id === "goal_list" &&
                     previewMode === "supervisor"
                 ) {
 
@@ -174,6 +207,15 @@ export default function EmployeeFormPreview({
                 ) {
 
                     PreviewComponent = GoalListHRPreview;
+
+                }
+                if (
+                    component.id === "kpi_list" &&
+                    previewMode === "employee" &&
+                    isRealEvaluation
+                ) {
+
+                    PreviewComponent = EmployeeKPIList;
 
                 }
                 if (
@@ -212,7 +254,10 @@ export default function EmployeeFormPreview({
                         <PreviewComponent
                             component={component}
                             previewMode={previewMode}
+                            isBuilderPreview={isBuilderPreview}
+                            isRealEvaluation={isRealEvaluation}
                             previewData={previewData}
+                            employee={employee}
                             responses={
                                 previewMode === "employee"
                                     ? employeeResponses
@@ -268,6 +313,7 @@ export default function EmployeeFormPreview({
                             <PreviewComponent
                                 component={component}
                                 previewMode={previewMode}
+                                employee={employee}
                                 previewData={previewData}
                                 responses={
                                     previewMode === "supervisor"

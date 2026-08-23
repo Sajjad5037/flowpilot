@@ -23,6 +23,13 @@ export default function AvailableEvaluationComponents({
                     return false;
                 }
 
+                if (
+                    component.id === "kpi_review_planning" &&
+                    currentStage !== "employee"
+                ) {
+                    return false;
+                }
+
                 if (!component.stages) {
                     return true;
                 }

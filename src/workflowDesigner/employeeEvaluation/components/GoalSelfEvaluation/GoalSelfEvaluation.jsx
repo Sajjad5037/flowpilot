@@ -1,12 +1,14 @@
 import {
     Box,
+    Button,
+    IconButton,
     MenuItem,
     Select,
     Stack,
     TextField,
     Typography,
 } from "@mui/material";
-
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function GoalSelfEvaluation({
     component,
@@ -16,6 +18,8 @@ export default function GoalSelfEvaluation({
     responses = {},
     onResponsesChange,
     employeeResponses = {},
+    supervisorResponses = {},
+    hrResponses = {},
 }) {
 
     const settings =
@@ -49,31 +53,8 @@ export default function GoalSelfEvaluation({
         settings.allowFinalAgreedRating !== false;
 
 
-    const previewGoal = {
-        id: "preview-goal-1",
-        targetDescription:
-            "Build a bench of 3 top candidates for the RM role (in addition to the 3 we already have)",
-    };
-
-
-    /*
-     * Temporary preview data.
-     * We will connect this to the database later.
-     */
-
     const monthlyProgress =
-        settings.monthlyProgress || {
-
-            April:
-                "1 added to bench Andrew Stewart. Total of 4. 3 from last round hire",
-
-            May:
-                "1 added to bench Andrew Stewart. Total of 4. 3 from last round hire",
-
-            June:
-                "1 added to bench Andrew Stewart. Total of 4. 3 from last round hire",
-
-        };
+        settings.monthlyProgress || {};
 
     const months =
         Array.isArray(reviewCycleMonths) &&
@@ -89,19 +70,223 @@ export default function GoalSelfEvaluation({
             ? responses?.goal_self_evaluation?.employee_rating ?? ""
             : "";
 
-    const handleEmployeeRatingChange = (event) => {
-
-        const value = event.target.value;
+    const handleEmployeeRatingChange = (
+        goalId,
+        value
+    ) => {
 
         if (typeof onResponsesChange !== "function") {
             return;
         }
 
+        const currentRatings =
+            responses?.goal_self_evaluation
+                ?.employee_rating_by_goal || {};
+
         onResponsesChange({
             ...responses,
             goal_self_evaluation: {
                 ...(responses?.goal_self_evaluation || {}),
-                employee_rating: value,
+                employee_rating_by_goal: {
+                    ...currentRatings,
+                    [goalId]: value,
+                },
+            },
+        });
+
+    };
+
+
+    const handleSupervisorRatingChange = (
+        goalId,
+        value
+    ) => {
+
+        if (typeof onResponsesChange !== "function") {
+            return;
+        }
+
+        const currentRatings =
+            responses?.goal_self_evaluation
+                ?.supervisor_rating_by_goal || {};
+
+        onResponsesChange({
+            ...responses,
+            goal_self_evaluation: {
+                ...(responses?.goal_self_evaluation || {}),
+                supervisor_rating_by_goal: {
+                    ...currentRatings,
+                    [goalId]: value,
+                },
+            },
+        });
+
+    };
+
+
+    const handleHrMonthlyProgressChange = (
+        goalId,
+        month,
+        value
+    ) => {
+
+        if (typeof onResponsesChange !== "function") {
+            return;
+        }
+
+        const currentProgressByGoal =
+            responses?.goal_self_evaluation?.monthly_progress_by_goal || {};
+
+        const currentGoalProgress =
+            currentProgressByGoal[goalId] || {};
+
+        onResponsesChange({
+            ...responses,
+            goal_self_evaluation: {
+                ...(responses?.goal_self_evaluation || {}),
+                monthly_progress_by_goal: {
+                    ...currentProgressByGoal,
+                    [goalId]: {
+                        ...currentGoalProgress,
+                        [month]: value,
+                    },
+                },
+            },
+        });
+
+    };
+
+
+    const handleHrCompletionDateChange = (goalId, value) => {
+
+        if (typeof onResponsesChange !== "function") {
+            return;
+        }
+
+        const currentCompletionDates =
+            responses?.goal_self_evaluation?.completion_date_by_goal || {};
+
+        onResponsesChange({
+            ...responses,
+            goal_self_evaluation: {
+                ...(responses?.goal_self_evaluation || {}),
+                completion_date_by_goal: {
+                    ...currentCompletionDates,
+                    [goalId]: value,
+                },
+            },
+        });
+
+    };
+
+
+    const handleHrTargetDescriptionChange = (goalId, value) => {
+
+        if (typeof onResponsesChange !== "function") {
+            return;
+        }
+
+        const currentGoalDescriptions =
+            responses?.goal_self_evaluation?.target_description_by_goal || {};
+
+        onResponsesChange({
+            ...responses,
+            goal_self_evaluation: {
+                ...(responses?.goal_self_evaluation || {}),
+                target_description_by_goal: {
+                    ...currentGoalDescriptions,
+                    [goalId]: value,
+                },
+            },
+        });
+
+    };
+
+
+    const handleHrAddGoal = () => {
+
+        if (typeof onResponsesChange !== "function") {
+            return;
+        }
+
+        const currentGoals =
+            Array.isArray(
+                responses?.goal_self_evaluation?.hr_goals
+            )
+                ? responses.goal_self_evaluation.hr_goals
+                : (
+                    Array.isArray(finalizedGoals)
+                        ? finalizedGoals
+                        : []
+                );
+
+        const newGoal = {
+            id: `hr-goal-${Date.now()}`,
+            description: "",
+            targetDescription: "",
+        };
+
+        onResponsesChange({
+            ...responses,
+            goal_self_evaluation: {
+                ...(responses?.goal_self_evaluation || {}),
+                hr_goals: [
+                    ...currentGoals,
+                    newGoal,
+                ],
+            },
+        });
+
+    };
+
+
+    const handleHrRemoveGoal = (goalId) => {
+
+        if (typeof onResponsesChange !== "function") {
+            return;
+        }
+
+        const currentGoals =
+            Array.isArray(
+                responses?.goal_self_evaluation?.hr_goals
+            )
+                ? responses.goal_self_evaluation.hr_goals
+                : (
+                    Array.isArray(finalizedGoals)
+                        ? finalizedGoals
+                        : []
+                );
+
+        onResponsesChange({
+            ...responses,
+            goal_self_evaluation: {
+                ...(responses?.goal_self_evaluation || {}),
+                hr_goals: currentGoals.filter(
+                    goal => goal.id !== goalId
+                ),
+            },
+        });
+
+    };
+
+
+    const handleHrFinalRatingChange = (goalId, value) => {
+
+        if (typeof onResponsesChange !== "function") {
+            return;
+        }
+
+        const currentRatings =
+            responses?.goal_self_evaluation?.final_rating_by_goal || {};
+
+        onResponsesChange({
+            ...responses,
+            goal_self_evaluation: {
+                ...(responses?.goal_self_evaluation || {}),
+                final_rating_by_goal: {
+                    ...currentRatings,
+                    [goalId]: value,
+                },
             },
         });
 
@@ -123,8 +308,7 @@ export default function GoalSelfEvaluation({
 
 
     const finalRating =
-        settings.finalRating ||
-        "3. Meets Expectation";
+        settings.finalRating || "";
 
 
     const sectionWeight =
@@ -171,9 +355,15 @@ export default function GoalSelfEvaluation({
     if (previewMode === "employee") {
 
         const employeeGoals =
-            Array.isArray(finalizedGoals) && finalizedGoals.length > 0
-                ? finalizedGoals
-                : [previewGoal];
+            Array.isArray(
+                hrResponses?.goal_self_evaluation?.hr_goals
+            )
+                ? hrResponses.goal_self_evaluation.hr_goals
+                : (
+                    Array.isArray(finalizedGoals)
+                        ? finalizedGoals
+                        : []
+                );
 
         return (
 
@@ -206,7 +396,30 @@ export default function GoalSelfEvaluation({
                 </Box>
 
 
-                {employeeGoals.map((goal, index) => (
+                {employeeGoals.map((goal, index) => {
+                    const goalId = goal.id || `goal-${index}`;
+
+                    const hrMonthlyProgress =
+                        hrResponses?.goal_self_evaluation
+                            ?.monthly_progress_by_goal?.[goalId] || {};
+
+                    const displayedMonthlyProgress =
+                        Object.keys(hrMonthlyProgress).length > 0
+                            ? hrMonthlyProgress
+                            : monthlyProgress;
+
+                    const finalMonth = months[months.length - 1];
+
+                    const finalMonthHasData =
+                        Boolean(
+                            hrMonthlyProgress?.[finalMonth]?.trim()
+                        );
+
+                    const employeeGoalRating =
+                        responses?.goal_self_evaluation
+                            ?.employee_rating_by_goal?.[goalId] || "";
+
+                    return (
 
                     <Box
                         key={goal.id || index}
@@ -228,13 +441,13 @@ export default function GoalSelfEvaluation({
 
                         <GoalProgressTable
                             targetDescription={
-                                goal.description ||
-                                goal.targetDescription ||
+                                hrResponses?.goal_self_evaluation
+                                    ?.target_description_by_goal?.[goalId] ??
+                                goal.description ??
+                                goal.targetDescription ??
                                 "--"
                             }
-                            monthlyProgress={
-                                monthlyProgress
-                            }
+                            monthlyProgress={displayedMonthlyProgress}
                             showTargetDescription={
                                 showTargetDescription
                             }
@@ -270,8 +483,14 @@ export default function GoalSelfEvaluation({
                             <Select
                                 fullWidth
                                 size="small"
-                                value={employeeRating}
-                                onChange={handleEmployeeRatingChange}
+                                value={employeeGoalRating}
+                                onChange={(event) =>
+                                    handleEmployeeRatingChange(
+                                        goalId,
+                                        event.target.value
+                                    )
+                                }
+                                disabled={!finalMonthHasData}
                             >
 
                                 {ratingOptions.map(
@@ -310,7 +529,8 @@ export default function GoalSelfEvaluation({
 
                     </Box>
 
-                ))}
+                    );
+                })}
 
             </Box>
 
@@ -328,10 +548,15 @@ export default function GoalSelfEvaluation({
     if (previewMode === "supervisor") {
 
         const supervisorGoals =
-            Array.isArray(finalizedGoals) &&
-            finalizedGoals.length > 0
-                ? finalizedGoals
-                : [previewGoal];
+            Array.isArray(
+                hrResponses?.goal_self_evaluation?.hr_goals
+            )
+                ? hrResponses.goal_self_evaluation.hr_goals
+                : (
+                    Array.isArray(finalizedGoals)
+                        ? finalizedGoals
+                        : []
+                );
 
         return (
 
@@ -349,7 +574,30 @@ export default function GoalSelfEvaluation({
                 </Typography>
 
 
-                {supervisorGoals.map((goal, index) => (
+                {supervisorGoals.map((goal, index) => {
+                    const goalId = goal.id || `goal-${index}`;
+
+                    const hrMonthlyProgress =
+                        hrResponses?.goal_self_evaluation
+                            ?.monthly_progress_by_goal?.[goalId] || {};
+
+                    const displayedMonthlyProgress =
+                        Object.keys(hrMonthlyProgress).length > 0
+                            ? hrMonthlyProgress
+                            : monthlyProgress;
+
+                    const finalMonth = months[months.length - 1];
+
+                    const finalMonthHasData =
+                        Boolean(
+                            hrMonthlyProgress?.[finalMonth]?.trim()
+                        );
+
+                    const supervisorGoalRating =
+                        responses?.goal_self_evaluation
+                            ?.supervisor_rating_by_goal?.[goalId] || "";
+
+                    return (
 
                     <Box
                         key={goal.id || index}
@@ -371,13 +619,13 @@ export default function GoalSelfEvaluation({
 
                     <GoalProgressTable
                         targetDescription={
-                            goal.description ||
-                            goal.targetDescription ||
+                            hrResponses?.goal_self_evaluation
+                                ?.target_description_by_goal?.[goalId] ??
+                            goal.description ??
+                            goal.targetDescription ??
                             "--"
                         }
-                        monthlyProgress={
-                            monthlyProgress
-                        }
+                        monthlyProgress={displayedMonthlyProgress}
                         showTargetDescription={
                             showTargetDescription
                         }
@@ -418,9 +666,20 @@ export default function GoalSelfEvaluation({
                                         fullWidth
                                         size="small"
                                         value={
-                                            supervisorRating
+                                            supervisorGoalRating || ""
                                         }
+                                        onChange={(event) =>
+                                            handleSupervisorRatingChange(
+                                                goalId,
+                                                event.target.value
+                                            )
+                                        }
+                                        disabled={!finalMonthHasData}
                                     >
+
+                                        <MenuItem value="">
+                                            Select Rating
+                                        </MenuItem>
 
                                         {ratingOptions.map(
                                             option => (
@@ -464,7 +723,8 @@ export default function GoalSelfEvaluation({
 
                     </Box>
 
-                ))}
+                    );
+                })}
 
             </Box>
 
@@ -482,10 +742,18 @@ export default function GoalSelfEvaluation({
     if (previewMode === "hr") {
 
         const hrGoals =
-            Array.isArray(finalizedGoals) &&
-            finalizedGoals.length > 0
-                ? finalizedGoals
-                : [previewGoal];
+            Array.isArray(
+                responses?.goal_self_evaluation?.hr_goals
+            )
+                ? responses.goal_self_evaluation.hr_goals
+                : (
+                    Array.isArray(finalizedGoals)
+                        ? finalizedGoals
+                        : []
+                );
+
+        const hrGoalSelfEvaluation =
+            responses?.goal_self_evaluation || {};
 
         return (
 
@@ -535,8 +803,35 @@ export default function GoalSelfEvaluation({
 
                     {hrGoals.map((goal, index) => (
 
-                        <Box
-                            key={goal.id || index}
+                        (() => {
+                        const goalId = goal.id || `goal-${index}`;
+
+                        const hrMonthlyProgress =
+                            hrGoalSelfEvaluation.monthly_progress_by_goal?.[goalId] || {};
+
+                        const finalMonth = months[months.length - 1];
+
+                        const finalMonthHasData =
+                            Boolean(
+                                hrMonthlyProgress?.[finalMonth]?.trim()
+                            );
+
+                        const hrCompletionDate =
+                            hrGoalSelfEvaluation.completion_date_by_goal?.[goalId] || "";
+
+                        const finalRating =
+                            hrGoalSelfEvaluation.final_rating_by_goal?.[goalId] || "";
+
+                        const employeeGoalRating =
+                            employeeResponses?.goal_self_evaluation
+                                ?.employee_rating_by_goal?.[goalId] || "";
+
+                        const supervisorGoalRating =
+                            supervisorResponses?.goal_self_evaluation
+                                ?.supervisor_rating_by_goal?.[goalId] || "";
+
+                        return <Box
+                            key={goalId}
                             sx={{
                                 mb: 4,
                             }}
@@ -590,21 +885,43 @@ export default function GoalSelfEvaluation({
 
                             </Stack>
 
+                            <IconButton
+                                size="small"
+                                color="error"
+                                aria-label={`Remove Goal ${index + 1}`}
+                                onClick={() => handleHrRemoveGoal(goalId)}
+                            >
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+
                         </Stack>
 
 
                         <HRGoalTable
                             targetDescription={
-                                goal.description ||
-                                goal.targetDescription ||
+                                responses?.goal_self_evaluation
+                                    ?.target_description_by_goal?.[goalId] ??
+                                goal.description ??
+                                goal.targetDescription ??
                                 "--"
                             }
                             monthlyProgress={
-                                monthlyProgress
+                                hrMonthlyProgress
                             }
                             completionDate={
-                                completionDate
+                                hrCompletionDate
                             }
+                            onMonthlyProgressChange={
+                                handleHrMonthlyProgressChange
+                            }
+                            onTargetDescriptionChange={
+                                handleHrTargetDescriptionChange
+                            }
+                            goalId={goalId}
+                            onCompletionDateChange={
+                                handleHrCompletionDateChange
+                            }
+                            months={months}
                         />
 
 
@@ -621,10 +938,28 @@ export default function GoalSelfEvaluation({
                             }}
                         >
 
+                            {console.log("HR GOAL RATING DEBUG", {
+                                goalId,
+                                employeeGoalRating,
+                                supervisorGoalRating:
+                                    supervisorResponses?.goal_self_evaluation
+                                        ?.supervisor_rating_by_goal?.[goalId] || "",
+                                hrFinalRating: finalRating,
+                                employeeRatingByGoal:
+                                    employeeResponses?.goal_self_evaluation
+                                        ?.employee_rating_by_goal,
+                                supervisorRatingByGoal:
+                                    supervisorResponses?.goal_self_evaluation
+                                        ?.supervisor_rating_by_goal,
+                                hrFinalRatingByGoal:
+                                    responses?.goal_self_evaluation
+                                        ?.final_rating_by_goal,
+                            })}
+
                             <RatingBox
                                 label="Employee Selection"
                                 value={
-                                    employeeRating
+                                    employeeGoalRating
                                 }
                             />
 
@@ -632,7 +967,7 @@ export default function GoalSelfEvaluation({
                             <RatingBox
                                 label="Supervisor Selection"
                                 value={
-                                    supervisorRating
+                                    supervisorGoalRating
                                 }
                             />
 
@@ -666,7 +1001,18 @@ export default function GoalSelfEvaluation({
                                     value={
                                         finalRating
                                     }
+                                    disabled={!finalMonthHasData}
+                                    onChange={(event) =>
+                                        handleHrFinalRatingChange(
+                                            goalId,
+                                            event.target.value
+                                        )
+                                    }
                                 >
+
+                                    <MenuItem value="">
+                                        Select Rating
+                                    </MenuItem>
 
                                     {ratingOptions.map(
                                         option => (
@@ -687,9 +1033,18 @@ export default function GoalSelfEvaluation({
 
                         </Box>
 
-                        </Box>
+                        </Box>;
+                        })()
 
                     ))}
+
+                    <Button
+                        variant="outlined"
+                        onClick={handleHrAddGoal}
+                        sx={{ mt: 2 }}
+                    >
+                        + Add Goal
+                    </Button>
 
                 </Box>
 
@@ -906,13 +1261,17 @@ function GoalProgressTable({
  */
 
 function HRGoalTable({
+    goalId,
     targetDescription,
     monthlyProgress,
     completionDate,
+    onMonthlyProgressChange,
+    onCompletionDateChange,
+    onTargetDescriptionChange,
+    months = [],
     showTargetDescription = true,
     showMonthlyProgress = true,
 }) {
-
     return (
 
         <Box
@@ -1010,7 +1369,7 @@ function HRGoalTable({
                 />
 
 
-                {["April", "May", "June"].map(
+                {months.map(
                     month => (
 
                         <Box
@@ -1056,19 +1415,30 @@ function HRGoalTable({
                     }}
                 >
 
-                    <Typography
+                    <TextField
+                        fullWidth
+                        size="small"
+                        value={targetDescription || ""}
+                        onChange={(event) =>
+                            onTargetDescriptionChange(
+                                goalId,
+                                event.target.value
+                            )
+                        }
                         sx={{
-                            fontSize: 13,
-                            color: "#334155",
+                            "& .MuiOutlinedInput-root": {
+                                backgroundColor: "#FFFFFF",
+                            },
+                            "& .MuiInputBase-input": {
+                                fontSize: 13,
+                            },
                         }}
-                    >
-                        {targetDescription}
-                    </Typography>
+                    />
 
                 </Box>
 
 
-                {["April", "May", "June"].map(
+                {months.map(
                     month => (
 
                         <Box
@@ -1081,18 +1451,26 @@ function HRGoalTable({
                             }}
                         >
 
-                            <Typography
-                                sx={{
-                                    fontSize: 13,
-                                    color: "#334155",
-                                }}
-                            >
-                                {
-                                    monthlyProgress[
-                                        month
-                                    ] || "--"
+                            <TextField
+                                fullWidth
+                                size="small"
+                                value={monthlyProgress[month] || ""}
+                                onChange={(event) =>
+                                    onMonthlyProgressChange(
+                                        goalId,
+                                        month,
+                                        event.target.value
+                                    )
                                 }
-                            </Typography>
+                                sx={{
+                                    "& .MuiOutlinedInput-root": {
+                                        backgroundColor: "#FFFFFF",
+                                    },
+                                    "& .MuiInputBase-input": {
+                                        fontSize: 13,
+                                    },
+                                }}
+                            />
 
                         </Box>
 
@@ -1110,14 +1488,29 @@ function HRGoalTable({
                     }}
                 >
 
-                    <Typography
-                        sx={{
-                            fontSize: 13,
-                            color: "#334155",
+                    <TextField
+                        fullWidth
+                        size="small"
+                        type="date"
+                        value={completionDate || ""}
+                        onChange={(event) =>
+                            onCompletionDateChange(
+                                goalId,
+                                event.target.value
+                            )
+                        }
+                        InputLabelProps={{
+                            shrink: true,
                         }}
-                    >
-                        {completionDate}
-                    </Typography>
+                        sx={{
+                            "& .MuiOutlinedInput-root": {
+                                backgroundColor: "#FFFFFF",
+                            },
+                            "& .MuiInputBase-input": {
+                                fontSize: 13,
+                            },
+                        }}
+                    />
 
                 </Box>
 
@@ -1128,7 +1521,6 @@ function HRGoalTable({
     );
 
 }
-
 
 /*
  * ==========================================

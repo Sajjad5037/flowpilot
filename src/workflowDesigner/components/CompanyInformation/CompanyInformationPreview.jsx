@@ -2,6 +2,7 @@ import {
     Box,
     Typography
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
 export default function CompanyInformationPreview({
 
@@ -10,6 +11,10 @@ export default function CompanyInformationPreview({
     previewData
 
 }) {
+    const location = useLocation();
+    const isActualEmployeeEvaluation =
+        location.pathname.startsWith("/evaluation/");
+
     const isEmployee = previewMode === "employee";
     const isSupervisor = previewMode === "supervisor";
     const isHR = previewMode === "hr";
@@ -40,13 +45,15 @@ export default function CompanyInformationPreview({
                 py: 2
             }}
         >
-            <Typography
-                color="primary"
-                fontWeight={700}
-                mb={2}
-            >
-                {previewMode.toUpperCase()} PREVIEW
-            </Typography>
+            {!isActualEmployeeEvaluation && (
+                <Typography
+                    color="primary"
+                    fontWeight={700}
+                    mb={2}
+                >
+                    {previewMode.toUpperCase()} PREVIEW
+                </Typography>
+            )}
 
             {showMission && (
 

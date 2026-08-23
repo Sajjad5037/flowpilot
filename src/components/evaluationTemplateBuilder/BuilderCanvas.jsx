@@ -11,6 +11,7 @@ export default function BuilderCanvas({
     selectedSection,
     selectedQuestion,
     onSelectQuestion,
+    onRemoveQuestion,
     onAddQuestion
 }) {
 
@@ -101,13 +102,15 @@ export default function BuilderCanvas({
                     mt={4}
                 >
 
-                    {selectedSection.questions.map(question => (
+                    {selectedSection.questions.map((question, index) => (
 
                           <QuestionCard
                             key={question.id}
                             question={question}
+                            questionNumber={index + 1}
                             selected={selectedQuestion?.id === question.id}
                             onClick={() => onSelectQuestion(question)}
+                            onRemove={() => onRemoveQuestion(question.id)}
                         />
 
                     ))}

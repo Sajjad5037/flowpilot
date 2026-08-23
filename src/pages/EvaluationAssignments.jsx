@@ -100,7 +100,7 @@ export default function EvaluationAssignments() {
             fontWeight={700}
             mb={1}
         >
-            KPI and Goal Settings
+            Employee Evaluation Management
         </Typography>
 
         <Typography

@@ -1,11 +1,13 @@
 import {
     Box,
     Button,
+    IconButton,
     Paper,
     Stack,
     Typography
 } from "@mui/material";
 
+import CloseIcon from "@mui/icons-material/Close";
 import { COMPONENT_REGISTRY } from "../../registry/componentRegistry";
 
 export default function StageCanvas({
@@ -15,6 +17,8 @@ export default function StageCanvas({
     components = [],
 
     selectedComponent,
+
+    onRemoveComponent,
 
     onSelectComponent
 
@@ -120,6 +124,7 @@ export default function StageCanvas({
                                     elevation={0}
                                     onClick={() => onSelectComponent(component)}
                                     sx={{
+                                        position: "relative",
                                         overflow: "hidden",
                                         cursor: "pointer",
                                         borderRadius: 3,
@@ -136,6 +141,28 @@ export default function StageCanvas({
                                         }
                                     }}
                                 >
+
+                                    <IconButton
+                                        size="small"
+                                        aria-label={`Remove ${component.name}`}
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            onRemoveComponent?.(component.instanceId);
+                                        }}
+                                        sx={{
+                                            position: "absolute",
+                                            top: 8,
+                                            right: 8,
+                                            zIndex: 1,
+                                            color: "#DC2626",
+                                            backgroundColor: "rgba(255, 255, 255, 0.9)",
+                                            "&:hover": {
+                                                backgroundColor: "#FEE2E2",
+                                            },
+                                        }}
+                                    >
+                                        <CloseIcon fontSize="small" />
+                                    </IconButton>
 
                                     {ComponentRenderer ? (
 

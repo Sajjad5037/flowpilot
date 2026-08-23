@@ -9,28 +9,26 @@ import {
     TableHead,
     TableRow,
     TextField,
-    Typography
+    Typography,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
-export default function KPIListSupervisorPreview({
-
+export default function EmployeeKPIList({
     component,
-    employeeResponses,
-    supervisorResponses,
-    responses,
-    onResponsesChange
-
+    responses = {},
+    onResponsesChange,
 }) {
+    const fields =
+        component?.fields &&
+        !Array.isArray(component.fields) &&
+        Object.keys(component.fields).length > 0
+            ? component.fields
+            : {
+                kpiTitle: true,
+                expectation: true,
+            };
 
-    const fields = component?.fields || {
-        kpiTitle: true,
-        expectation: true,
-    };
-
-    const currentSupervisorResponses =
-        supervisorResponses || responses || {};
-    const responseKpis = currentSupervisorResponses.kpi_list || {};
+    const responseKpis = responses?.kpi_list || {};
     const kpiEntries = Object.entries(responseKpis);
     const kpis = kpiEntries.length > 0
         ? kpiEntries
@@ -38,7 +36,7 @@ export default function KPIListSupervisorPreview({
 
     function updateKpis(updatedKpis) {
         onResponsesChange?.({
-            ...currentSupervisorResponses,
+            ...responses,
             kpi_list: updatedKpis.reduce((kpiList, [, kpi]) => {
                 const kpiKey = `kpi_${Object.keys(kpiList).length + 1}`;
                 kpiList[kpiKey] = kpi;
@@ -47,31 +45,72 @@ export default function KPIListSupervisorPreview({
         });
     }
 
-    function updateSupervisorKPI(kpiIndex, field, value) {
+    function updateKpiField(kpiIndex, fieldName, value) {
         const updatedKpis = kpis.map(([kpiKey, kpi], index) => (
             index === kpiIndex
-                ? [kpiKey, { ...kpi, [field]: value }]
+                ? [kpiKey, { ...kpi, [fieldName]: value }]
                 : [kpiKey, kpi]
         ));
 
         updateKpis(updatedKpis);
     }
 
-    function addKPI() {
+    function addKpi() {
         updateKpis([
             ...kpis,
             ["kpi_new", {}],
         ]);
     }
 
-    function removeKPI(kpiIndex) {
+    function removeKpi(kpiIndex) {
         updateKpis(
             kpis.filter(([,], index) => index !== kpiIndex)
         );
     }
-    return (
 
-        <Box sx={{ mb: 4 }}>
+    return (
+        <Box
+            sx={{
+                mb: 4,
+            }}
+        >
+            <Box
+                sx={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    justifyContent: "space-between",
+                    gap: 2,
+                    mb: 2,
+                }}
+            >
+                <Box>
+                    <Typography
+                        variant="h6"
+                        fontWeight={700}
+                    >
+                        {component.title || "3. Proposed Key Performance Indicators (KPIs)"}
+                    </Typography>
+
+                    <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mt: 0.75 }}
+                    >
+                        {component.description ||
+                            "Propose ongoing recurring metrics and minimum target expectations."}
+                    </Typography>
+                </Box>
+
+                <Button
+                    variant="outlined"
+                    onClick={addKpi}
+                    sx={{
+                        flexShrink: 0,
+                    }}
+                >
+                    + Add KPI
+                </Button>
+            </Box>
 
             <TableContainer
                 sx={{
@@ -135,10 +174,10 @@ export default function KPIListSupervisorPreview({
                                         <TextField
                                             fullWidth
                                             size="small"
-                                            placeholder="Supervisor KPI Title"
+                                            placeholder="e.g. Sprint Velocity"
                                             value={kpis[index][1]?.title || ""}
                                             onChange={(event) => {
-                                                updateSupervisorKPI(
+                                                updateKpiField(
                                                     index,
                                                     "title",
                                                     event.target.value
@@ -149,16 +188,18 @@ export default function KPIListSupervisorPreview({
                                 )}
 
                                 {fields.expectation && (
-                                    <TableCell sx={{ p: 1 }}>
+                                    <TableCell
+                                        sx={{
+                                            p: 1,
+                                        }}
+                                    >
                                         <TextField
                                             fullWidth
                                             size="small"
-                                            multiline
-                                            minRows={2}
-                                            placeholder="Supervisor Expectation"
+                                            placeholder="e.g. 90% completion rate"
                                             value={kpis[index][1]?.expectation || ""}
                                             onChange={(event) => {
-                                                updateSupervisorKPI(
+                                                updateKpiField(
                                                     index,
                                                     "expectation",
                                                     event.target.value
@@ -170,12 +211,14 @@ export default function KPIListSupervisorPreview({
 
                                 <TableCell
                                     align="center"
-                                    sx={{ p: 0.5 }}
+                                    sx={{
+                                        p: 0.5,
+                                    }}
                                 >
                                     <IconButton
                                         size="small"
                                         aria-label={`Remove KPI ${index + 1}`}
-                                        onClick={() => removeKPI(index)}
+                                        onClick={() => removeKpi(index)}
                                         sx={{
                                             color: "#DC2626",
                                             "&:hover": {
@@ -191,17 +234,6 @@ export default function KPIListSupervisorPreview({
                     </TableBody>
                 </Table>
             </TableContainer>
-
-            <Button
-                variant="outlined"
-                onClick={addKPI}
-                sx={{ mt: 2 }}
-            >
-                + Add KPI
-            </Button>
-
         </Box>
-
     );
-
 }

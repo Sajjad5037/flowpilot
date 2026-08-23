@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     Box,
@@ -10,28 +10,45 @@ import {
 } from "@mui/material";
 
 
-const previewProjects = [
-    {
-        id: "project-1",
-        description:
-            "Supervisor Survey Q2 - 100% submission rate",
-        startDate: "June 22nd",
-        endDate: "June 29th",
-    },
-];
-
-
 export default function ExtraProjects({
     component,
     previewMode = "employee",
     responses = {},
     onResponsesChange,
     employeeResponses = {},
+    hrResponses = {},
 }) {
+    console.log("EXTRA PROJECTS DEBUG:", {
+        previewMode,
+        responses,
+        employeeResponses,
+        hrResponses,
+    });
 
     const [projects, setProjects] = useState(
-        responses?.extra_projects || previewProjects
+        responses?.extra_projects || []
     );
+
+    const [employeeProjects, setEmployeeProjects] = useState(
+        employeeResponses?.extra_projects || []
+    );
+
+    const [hrProjects, setHrProjects] = useState(
+        hrResponses?.hr_extra_projects || []
+    );
+
+    const displayProjects = [
+        ...projects,
+        ...hrProjects,
+    ];
+
+    useEffect(() => {
+        setHrProjects(hrResponses?.hr_extra_projects || []);
+    }, [hrResponses?.hr_extra_projects]);
+
+    useEffect(() => {
+        setEmployeeProjects(employeeResponses?.extra_projects || []);
+    }, [employeeResponses?.extra_projects]);
 
     /*
      * This component is employee-facing only.
@@ -110,13 +127,6 @@ export default function ExtraProjects({
                     </Box>
 
 
-                    <Button
-                        variant="outlined"
-                        size="small"
-                    >
-                        + Add Project
-                    </Button>
-
                 </Stack>
 
 
@@ -163,7 +173,7 @@ export default function ExtraProjects({
                     </Box>
 
 
-                    {(employeeResponses?.extra_projects || []).map(
+                    {employeeProjects.map(
                         (project, index) => (
 
                             <Box
@@ -176,6 +186,8 @@ export default function ExtraProjects({
                                     gridTemplateColumns:
                                         "2fr 1fr 1fr",
 
+                                    position: "relative",
+
                                     backgroundColor:
                                         index % 2 === 0
                                             ? "#FFFFFF"
@@ -183,11 +195,39 @@ export default function ExtraProjects({
 
                                     borderBottom:
                                         index ===
-                                        previewProjects.length - 1
+                                        (employeeProjects.length || 0) - 1
                                             ? "none"
                                             : "1px solid #E2E8F0",
                                 }}
                             >
+
+                                <IconButton
+                                    size="small"
+                                    color="error"
+                                    aria-label="Delete employee project"
+                                    onClick={() => {
+                                        const updatedEmployeeProjects =
+                                            employeeProjects.filter(
+                                                (row) => row.id !== project.id
+                                            );
+
+                                        setEmployeeProjects(updatedEmployeeProjects);
+
+                                        onResponsesChange?.({
+                                            ...responses,
+                                            extra_projects: updatedEmployeeProjects,
+                                        });
+                                    }}
+                                    sx={{
+                                        position: "absolute",
+                                        top: 8,
+                                        right: 8,
+                                        color: "#EF4444",
+                                        zIndex: 1,
+                                    }}
+                                >
+                                    ×
+                                </IconButton>
 
                                 <BodyCell>
                                     {project.description}
@@ -210,7 +250,138 @@ export default function ExtraProjects({
                         )
                     )}
 
+                    {hrProjects.map((project, index) => (
+                        <Box
+                            key={project.id}
+                            sx={{
+                                minWidth: 700,
+                                display: "grid",
+                                gridTemplateColumns: "2fr 1fr 1fr",
+                                backgroundColor:
+                                    index % 2 === 0 ? "#FFFFFF" : "#FAFCFE",
+                                borderTop: "1px solid #E2E8F0",
+                                position: "relative",
+                            }}
+                        >
+                            <IconButton
+                                size="small"
+                                onClick={() => {
+                                    const updatedHrProjects = hrProjects.filter(
+                                        (row) => row.id !== project.id
+                                    );
+
+                                    setHrProjects(updatedHrProjects);
+
+                                    onResponsesChange?.({
+                                        ...responses,
+                                        hr_extra_projects: updatedHrProjects,
+                                    });
+                                }}
+                                sx={{
+                                    position: "absolute",
+                                    top: 8,
+                                    right: 8,
+                                    color: "#EF4444",
+                                    zIndex: 1,
+                                }}
+                            >
+                                ×
+                            </IconButton>
+
+                            <Box sx={{ p: 1.5, borderRight: "1px solid #E2E8F0" }}>
+                                <ProjectField
+                                    label="Project or Assignment"
+                                    value={project.description}
+                                    onChange={(value) => {
+                                        const updatedHrProjects = hrProjects.map((row) =>
+                                            row.id === project.id
+                                                ? { ...row, description: value }
+                                                : row
+                                        );
+
+                                        setHrProjects(updatedHrProjects);
+
+                                        onResponsesChange?.({
+                                            ...responses,
+                                            hr_extra_projects: updatedHrProjects,
+                                        });
+                                    }}
+                                />
+                            </Box>
+
+                            <Box sx={{ p: 1.5, borderRight: "1px solid #E2E8F0" }}>
+                                <ProjectField
+                                    label="Start date"
+                                    value={project.startDate}
+                                    type="date"
+                                    onChange={(value) => {
+                                        const updatedHrProjects = hrProjects.map((row) =>
+                                            row.id === project.id
+                                                ? { ...row, startDate: value }
+                                                : row
+                                        );
+
+                                        setHrProjects(updatedHrProjects);
+
+                                        onResponsesChange?.({
+                                            ...responses,
+                                            hr_extra_projects: updatedHrProjects,
+                                        });
+                                    }}
+                                />
+                            </Box>
+
+                            <Box sx={{ p: 1.5 }}>
+                                <ProjectField
+                                    label="End date"
+                                    value={project.endDate}
+                                    type="date"
+                                    onChange={(value) => {
+                                        const updatedHrProjects = hrProjects.map((row) =>
+                                            row.id === project.id
+                                                ? { ...row, endDate: value }
+                                                : row
+                                        );
+
+                                        setHrProjects(updatedHrProjects);
+
+                                        onResponsesChange?.({
+                                            ...responses,
+                                            hr_extra_projects: updatedHrProjects,
+                                        });
+                                    }}
+                                />
+                            </Box>
+                        </Box>
+                    ))}
+
                 </Box>
+
+                <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => {
+                        const updatedHrProjects = [
+                            ...hrProjects,
+                            {
+                                id: `hr-project-${Date.now()}`,
+                                description: "",
+                                startDate: "",
+                                endDate: "",
+                            },
+                        ];
+
+                        setHrProjects(updatedHrProjects);
+
+                        onResponsesChange?.({
+                            ...responses,
+                            hr_extra_projects: updatedHrProjects,
+                        });
+                    }}
+                    sx={{ mt: 2 }}
+                >
+                    + Add Project
+                </Button>
 
             </Box>
 
@@ -292,118 +463,162 @@ export default function ExtraProjects({
 
             <Stack spacing={1.5}>
 
-                {projects.map(
-                    (project) => (
+                {displayProjects.map(
+                    (project, index) => {
 
-                        <Box
-                            key={project.id}
-                            sx={{
-                                border:
-                                    "1px solid #D6E0EC",
+                        const isHrProject =
+                            hrProjects.some(
+                                (hrProject) =>
+                                    hrProject.id === project.id
+                            );
 
-                                borderRadius: 2,
-
-                                backgroundColor:
-                                    "#F8FAFC",
-
-                                p: 1.5,
-                                position: "relative",
-                                pr: 6,
-                            }}
-                        >
-
-                            <IconButton
-                                size="small"
-                                onClick={() => {
-                                    setProjects((prev) =>
-                                        prev.filter(
-                                            (row) => row.id !== project.id
-                                        )
-                                    );
-                                }}
-                                sx={{
-                                    position: "absolute",
-                                    top: 8,
-                                    right: 8,
-                                    color: "#EF4444",
-                                }}
-                            >
-                                ×
-                            </IconButton>
-
+                        return (
                             <Box
+                                key={project.id}
                                 sx={{
-                                    display: "grid",
-
-                                    gridTemplateColumns:
-                                        "2fr 1fr 1fr",
-
-                                    gap: 1.5,
+                                    border: "1px solid #D6E0EC",
+                                    borderRadius: 2,
+                                    backgroundColor: "#F8FAFC",
+                                    p: 1.5,
+                                    position: "relative",
+                                    pr: 6,
                                 }}
                             >
 
-                                <ProjectField
-                                    label="Project Name / Description"
-                                    value={project.description}
-                                    onChange={(value) => {
-                                        const updatedProjects = projects.map((row) =>
-                                            row.id === project.id
-                                                ? { ...row, description: value }
-                                                : row
-                                        );
+                                {isHrProject ? (
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            display: "block",
+                                            mb: 1,
+                                            fontWeight: 600,
+                                            color: "#64748B",
+                                        }}
+                                    >
+                                        Added by HR
+                                    </Typography>
+                                ) : (
+                                    <IconButton
+                                        size="small"
+                                        onClick={() => {
+                                            setProjects((prev) =>
+                                                prev.filter(
+                                                    (row) =>
+                                                        row.id !== project.id
+                                                )
+                                            );
+                                        }}
+                                        sx={{
+                                            position: "absolute",
+                                            top: 8,
+                                            right: 8,
+                                            color: "#EF4444",
+                                        }}
+                                    >
+                                        ×
+                                    </IconButton>
+                                )}
 
-                                        setProjects(updatedProjects);
-
-                                        onResponsesChange?.({
-                                            ...responses,
-                                            extra_projects: updatedProjects,
-                                        });
+                                <Box
+                                    sx={{
+                                        display: "grid",
+                                        gridTemplateColumns:
+                                            "2fr 1fr 1fr",
+                                        gap: 1.5,
                                     }}
-                                />
+                                >
 
-                                <ProjectField
-                                    label="Start Date"
-                                    value={project.startDate}
-                                    onChange={(value) => {
-                                        const updatedProjects = projects.map((row) =>
-                                            row.id === project.id
-                                                ? { ...row, startDate: value }
-                                                : row
-                                        );
+                                    <ProjectField
+                                        label="Project Name / Description"
+                                        value={project.description}
+                                        onChange={
+                                            isHrProject
+                                                ? undefined
+                                                : (value) => {
+                                                    const updatedProjects =
+                                                        projects.map((row) =>
+                                                            row.id === project.id
+                                                                ? {
+                                                                    ...row,
+                                                                    description: value,
+                                                                }
+                                                                : row
+                                                        );
 
-                                        setProjects(updatedProjects);
+                                                    setProjects(updatedProjects);
 
-                                        onResponsesChange?.({
-                                            ...responses,
-                                            extra_projects: updatedProjects,
-                                        });
-                                    }}
-                                />
+                                                    onResponsesChange?.({
+                                                        ...responses,
+                                                        extra_projects:
+                                                            updatedProjects,
+                                                    });
+                                                }
+                                        }
+                                    />
 
-                                <ProjectField
-                                    label="End Date"
-                                    value={project.endDate}
-                                    onChange={(value) => {
-                                        const updatedProjects = projects.map((row) =>
-                                            row.id === project.id
-                                                ? { ...row, endDate: value }
-                                                : row
-                                        );
+                                    <ProjectField
+                                        label="Start Date"
+                                        value={project.startDate}
+                                        type="date"
+                                        onChange={
+                                            isHrProject
+                                                ? undefined
+                                                : (value) => {
+                                                    const updatedProjects =
+                                                        projects.map((row) =>
+                                                            row.id === project.id
+                                                                ? {
+                                                                    ...row,
+                                                                    startDate: value,
+                                                                }
+                                                                : row
+                                                        );
 
-                                        setProjects(updatedProjects);
+                                                    setProjects(updatedProjects);
 
-                                        onResponsesChange?.({
-                                            ...responses,
-                                            extra_projects: updatedProjects,
-                                        });
-                                    }}
-                                />
+                                                    onResponsesChange?.({
+                                                        ...responses,
+                                                        extra_projects:
+                                                            updatedProjects,
+                                                    });
+                                                }
+                                        }
+                                    />
+
+                                    <ProjectField
+                                        label="End Date"
+                                        value={project.endDate}
+                                        type="date"
+                                        onChange={
+                                            isHrProject
+                                                ? undefined
+                                                : (value) => {
+                                                    const updatedProjects =
+                                                        projects.map((row) =>
+                                                            row.id === project.id
+                                                                ? {
+                                                                    ...row,
+                                                                    endDate: value,
+                                                                }
+                                                                : row
+                                                        );
+
+                                                    setProjects(updatedProjects);
+
+                                                    onResponsesChange?.({
+                                                        ...responses,
+                                                        extra_projects:
+                                                            updatedProjects,
+                                                    });
+                                                }
+                                        }
+                                    />
+
+                                </Box>
 
                             </Box>
-
-                        </Box>
-
-                    )
+                        );
+                    }
                 )}
 
             </Stack>
@@ -424,6 +639,7 @@ function ProjectField({
     label,
     value,
     onChange,
+    type,
 }) {
 
     return (
@@ -446,11 +662,17 @@ function ProjectField({
             <TextField
                 fullWidth
                 size="small"
+                type={type}
                 value={value}
                 variant="outlined"
                 onChange={(event) =>
                     onChange?.(event.target.value)
                 }
+                sx={{
+                    "& .MuiOutlinedInput-root": {
+                        backgroundColor: "#FFFFFF",
+                    },
+                }}
             />
 
         </Box>

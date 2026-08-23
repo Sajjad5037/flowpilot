@@ -1,10 +1,14 @@
 import {
     Box,
+    Button,
+    IconButton,
     Paper,
     Stack,
     TextField,
     Typography
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { useEffect } from "react";
 
 export default function GoalListHRPreview({
 
@@ -12,11 +16,93 @@ export default function GoalListHRPreview({
     employeeResponses,
     supervisorResponses,
     responses,
+    isBuilderPreview,
+    previewMode,
+    isRealEvaluation,
     onResponsesChange
 
 }) {
 
-    const goals = component.goals || [];
+    console.log("DEBUG HR isBuilderPreview:", isBuilderPreview);
+    console.log("DEBUG HR isRealEvaluation:", isRealEvaluation);
+    console.log("DEBUG HR previewMode:", previewMode);
+    console.log("DEBUG HR componentId:", component?.id);
+    console.log("DEBUG HR componentGoals:", component?.goals);
+    console.log("DEBUG HR goalCount:", component?.goals?.length);
+    const responseGoals = responses?.goal_list || {};
+    const goalEntries = Object.entries(responseGoals);
+    const employeeGoalCount = Object.keys(
+        employeeResponses?.goal_list || {}
+    ).length;
+    const supervisorGoalCount = Object.keys(
+        supervisorResponses?.goal_list || {}
+    ).length;
+    const initialGoalCount = Math.max(
+        employeeGoalCount,
+        supervisorGoalCount,
+        1
+    );
+    useEffect(() => {
+        if (!isRealEvaluation || goalEntries.length > 0) {
+            return;
+        }
+
+        const initialGoals = Array.from(
+            { length: initialGoalCount },
+            () => ({ final_goal: "" })
+        );
+
+        onResponsesChange?.({
+            ...(responses || {}),
+            goal_list: initialGoals.reduce((goalList, goal) => {
+                const goalKey = `goal_${Object.keys(goalList).length + 1}`;
+                goalList[goalKey] = goal;
+                return goalList;
+            }, {}),
+        });
+    }, [
+        goalEntries.length,
+        initialGoalCount,
+        isRealEvaluation,
+        onResponsesChange,
+        responses,
+    ]);
+
+    const goals = isRealEvaluation
+        ? (goalEntries.length > 0
+            ? goalEntries
+            : Array.from(
+                { length: initialGoalCount },
+                (_, index) => [`goal_${index + 1}`, {}]
+            ))
+        : (component.goals || []).map((goal, index) => [
+            `goal_${index + 1}`,
+            goal,
+        ]);
+
+    function updateGoals(updatedGoals) {
+        onResponsesChange?.({
+            ...responses,
+            goal_list: updatedGoals.reduce((goalList, [, goal]) => {
+                const goalKey = `goal_${Object.keys(goalList).length + 1}`;
+                goalList[goalKey] = goal;
+                return goalList;
+            }, {}),
+        });
+    }
+
+    function addGoal() {
+        updateGoals([
+            ...goals,
+            ["goal_new", {}],
+        ]);
+    }
+
+    function removeGoal(goalIndex) {
+        updateGoals(
+            goals.filter(([,], index) => index !== goalIndex)
+        );
+    }
 
     return (
 
@@ -34,31 +120,41 @@ export default function GoalListHRPreview({
 
             <Stack spacing={5}>
 
-                {goals.length === 0 ? (
-
-                    <Typography color="text.secondary">
-
-                        No goals configured.
-
-                    </Typography>
-
-                ) : (
-
-                    goals.map((goal, index) => {
-
-                        const goalKey = `goal_${index + 1}`;
+                    {goals.map(([goalKey], index) => {
 
                         return (
 
-                            <Box key={goal.id}>
+                            <Box key={goalKey}>
 
-                                <Typography
-                                    variant="h6"
-                                    fontWeight={700}
-                                    mb={2}
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        mb: 2,
+                                    }}
                                 >
-                                    Goal {index + 1}
-                                </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        fontWeight={700}
+                                    >
+                                        Goal {index + 1}
+                                    </Typography>
+
+                                    {isRealEvaluation && <IconButton
+                                        size="small"
+                                        aria-label={`Remove Goal ${index + 1}`}
+                                        onClick={() => removeGoal(index)}
+                                        sx={{
+                                            color: "#DC2626",
+                                            "&:hover": {
+                                                backgroundColor: "#FEE2E2",
+                                            },
+                                        }}
+                                    >
+                                        <CloseIcon fontSize="small" />
+                                    </IconButton>}
+                                </Box>
 
                                 <Box
                                     sx={{
@@ -92,17 +188,19 @@ export default function GoalListHRPreview({
                                             }}
                                         >
 
-                                            <Typography>
+                                            <Stack spacing={1}>
 
-                                                {
+                                                <Typography>
+                                                    <strong>Proposal:</strong>{" "}
+                                                    {employeeResponses?.goal_list?.[goalKey]?.proposal || "No employee proposal."}
+                                                </Typography>
 
-                                                    employeeResponses?.goal_list?.[goalKey]?.proposal ||
+                                                <Typography>
+                                                    <strong>Description:</strong>{" "}
+                                                    {employeeResponses?.goal_list?.[goalKey]?.description || ""}
+                                                </Typography>
 
-                                                    "No employee proposal."
-
-                                                }
-
-                                            </Typography>
+                                            </Stack>
 
                                         </Paper>
 
@@ -202,11 +300,16 @@ export default function GoalListHRPreview({
 
                         );
 
-                    })
-
-                )}
+                    })}
 
             </Stack>
+
+            {isRealEvaluation && <Button
+                variant="outlined"
+                onClick={addGoal}
+            >
+                + Add Goal
+            </Button>}
 
         </Box>
 

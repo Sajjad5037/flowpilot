@@ -1,10 +1,13 @@
 import {
     Box,
+    Button,
+    IconButton,
     Paper,
     Stack,
     TextField,
     Typography
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function KPIListHRPreview({
 
@@ -16,14 +19,49 @@ export default function KPIListHRPreview({
 
 }) {
 
-    const kpis = component.kpis || [
+    const responseKpis = responses?.kpi_list || {};
+    const kpiEntries = Object.entries(responseKpis);
+    const employeeKpiCount = Object.keys(
+        employeeResponses?.kpi_list || {}
+    ).length;
+    const supervisorKpiCount = Object.keys(
+        supervisorResponses?.kpi_list || {}
+    ).length;
+    const initialKpiCount = Math.max(
+        employeeKpiCount,
+        supervisorKpiCount,
+        1
+    );
+    const kpis = kpiEntries.length > 0
+        ? kpiEntries
+        : Array.from(
+            { length: initialKpiCount },
+            (_, index) => [`kpi_${index + 1}`, {}]
+        );
 
-        {
-            id: crypto.randomUUID()
-        }
+    function updateKpis(updatedKpis) {
+        onResponsesChange?.({
+            ...responses,
+            kpi_list: updatedKpis.reduce((kpiList, [, kpi]) => {
+                const kpiKey = `kpi_${Object.keys(kpiList).length + 1}`;
+                kpiList[kpiKey] = kpi;
+                return kpiList;
+            }, {}),
+        });
+    }
 
-    ];
-    const kpiKey = (index) => `kpi_${index + 1}`;
+    function addKPI() {
+        updateKpis([
+            ...kpis,
+            ["kpi_new", {}],
+        ]);
+    }
+
+    function removeKPI(kpiIndex) {
+        updateKpis(
+            kpis.filter(([,], index) => index !== kpiIndex)
+        );
+    }
     return (
 
         <Box sx={{ mb: 4 }}>
@@ -48,10 +86,41 @@ export default function KPIListHRPreview({
 
             <Stack spacing={4}>
 
-                {kpis.map((kpi, index) => (
+                {kpis.map(([kpiKey], index) => (
+
+                    <Box key={kpiKey}>
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                mb: 1,
+                            }}
+                        >
+                            <Typography
+                                variant="h6"
+                                fontWeight={700}
+                            >
+                                KPI {index + 1}
+                            </Typography>
+
+                            <IconButton
+                                size="small"
+                                aria-label={`Remove KPI ${index + 1}`}
+                                onClick={() => removeKPI(index)}
+                                sx={{
+                                    color: "#DC2626",
+                                    "&:hover": {
+                                        backgroundColor: "#FEE2E2",
+                                    },
+                                }}
+                            >
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                        </Box>
 
                     <Paper
-                        key={kpi.id}
                         variant="outlined"
                     >
 
@@ -127,7 +196,7 @@ export default function KPIListHRPreview({
                                         mb={2}
                                     >
                                         {
-                                            employeeResponses?.kpi_list?.[kpiKey(index)]?.title ||
+                                            employeeResponses?.kpi_list?.[kpiKey]?.title ||
 
                                             "No employee KPI title."
                                         }
@@ -142,7 +211,7 @@ export default function KPIListHRPreview({
 
                                     <Typography color="text.secondary">
                                         {
-                                            employeeResponses?.kpi_list?.[kpiKey(index)]?.expectation ||
+                                            employeeResponses?.kpi_list?.[kpiKey]?.expectation ||
 
                                             "No employee KPI expectation."
                                         }
@@ -183,7 +252,7 @@ export default function KPIListHRPreview({
                                         mb={2}
                                     >
                                         {
-                                            supervisorResponses?.kpi_list?.[kpiKey(index)]?.title ||
+                                            supervisorResponses?.kpi_list?.[kpiKey]?.title ||
                                             "No supervisor KPI title."
                                         }
                                     </Typography>
@@ -197,7 +266,7 @@ export default function KPIListHRPreview({
 
                                     <Typography color="text.secondary">
                                         {
-                                            supervisorResponses?.kpi_list?.[kpiKey(index)]?.expectation ||
+                                            supervisorResponses?.kpi_list?.[kpiKey]?.expectation ||
                                             "No supervisor KPI expectation."
                                         }
                                     </Typography>
@@ -221,7 +290,7 @@ export default function KPIListHRPreview({
                                         fullWidth
                                         label="HR KPI Title"
                                         value={
-                                            responses?.kpi_list?.[kpiKey(index)]?.title || ""
+                                            responses?.kpi_list?.[kpiKey]?.title || ""
                                         }
                                         onChange={(e) => {
 
@@ -233,9 +302,9 @@ export default function KPIListHRPreview({
 
                                                     ...(responses?.kpi_list || {}),
 
-                                                    [kpiKey(index)]: {
+                                                    [kpiKey]: {
 
-                                                        ...(responses?.kpi_list?.[kpiKey(index)] || {}),
+                                                        ...(responses?.kpi_list?.[kpiKey] || {}),
 
                                                         title: e.target.value
 
@@ -254,7 +323,7 @@ export default function KPIListHRPreview({
                                         rows={3}
                                         label="HR KPI Expectation"
                                         value={
-                                            responses?.kpi_list?.[kpiKey(index)]?.expectation || ""
+                                            responses?.kpi_list?.[kpiKey]?.expectation || ""
                                         }
                                         onChange={(e) => {
 
@@ -266,9 +335,9 @@ export default function KPIListHRPreview({
 
                                                     ...(responses?.kpi_list || {}),
 
-                                                    [kpiKey(index)]: {
+                                                    [kpiKey]: {
 
-                                                        ...(responses?.kpi_list?.[kpiKey(index)] || {}),
+                                                        ...(responses?.kpi_list?.[kpiKey] || {}),
 
                                                         expectation: e.target.value
 
@@ -291,9 +360,18 @@ export default function KPIListHRPreview({
 
                     </Paper>
 
+                    </Box>
+
                 ))}
 
             </Stack>
+
+            <Button
+                variant="outlined"
+                onClick={addKPI}
+            >
+                + Add KPI
+            </Button>
 
         </Box>
 

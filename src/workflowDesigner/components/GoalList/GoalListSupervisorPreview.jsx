@@ -1,21 +1,43 @@
 import {
     Box,
+    Button,
+    IconButton,
     Paper,
     Stack,
     TextField,
     Typography
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 export default function GoalListSupervisorPreview({
 
     component,
     responses,
     employeeResponses,
+    isBuilderPreview,
+    previewMode,
+    isRealEvaluation,
     onResponsesChange
 
 }) {
 
-    const goals = component.goals || [];
+    console.log("DEBUG Supervisor isBuilderPreview:", isBuilderPreview);
+    console.log("DEBUG Supervisor isRealEvaluation:", isRealEvaluation);
+    console.log("DEBUG Supervisor previewMode:", previewMode);
+    console.log("DEBUG Supervisor componentId:", component?.id);
+    console.log("DEBUG Supervisor componentGoals:", component?.goals);
+    console.log("DEBUG Supervisor goalCount:", component?.goals?.length);
+    const responseGoals = responses?.goal_list || {};
+    const responseGoalEntries = Object.entries(responseGoals);
+    const goals = isRealEvaluation
+        ? (responseGoalEntries.length > 0
+            ? responseGoalEntries
+            : [["goal_1", {}]])
+        : (component.goals || []).map((goal, index) => [
+            `goal_${index + 1}`,
+            goal,
+        ]);
+
     function updateGoalReview(goalKey, value) {
 
     onResponsesChange({
@@ -40,6 +62,30 @@ export default function GoalListSupervisorPreview({
 
 }
 
+    function updateGoals(updatedGoals) {
+        onResponsesChange?.({
+            ...responses,
+            goal_list: updatedGoals.reduce((goalList, [, goal]) => {
+                const goalKey = `goal_${Object.keys(goalList).length + 1}`;
+                goalList[goalKey] = goal;
+                return goalList;
+            }, {}),
+        });
+    }
+
+    function addGoal() {
+        updateGoals([
+            ...goals,
+            ["goal_new", {}],
+        ]);
+    }
+
+    function removeGoal(goalIndex) {
+        updateGoals(
+            goals.filter(([,], index) => index !== goalIndex)
+        );
+    }
+
     return (
 
         <Box sx={{ mb: 4 }}>
@@ -54,7 +100,7 @@ export default function GoalListSupervisorPreview({
 
             <Stack spacing={5}>
 
-                {goals.length === 0 ? (
+                {!isRealEvaluation && goals.length === 0 ? (
 
                     <Typography color="text.secondary">
 
@@ -64,21 +110,43 @@ export default function GoalListSupervisorPreview({
 
                 ) : (
 
-                    goals.map((goal, index) => {
-
-                        const goalKey = `goal_${index + 1}`;
+                    goals.map(([goalKey], index) => {
 
                         return (
 
-                            <Box key={goal.id}>
+                            <Box key={goalKey}>
 
-                                <Typography
-                                    variant="h6"
-                                    fontWeight={700}
-                                    mb={2}
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "space-between",
+                                        mb: 2,
+                                    }}
                                 >
-                                    Goal {index + 1}
-                                </Typography>
+                                    <Typography
+                                        variant="h6"
+                                        fontWeight={700}
+                                    >
+                                        Goal {index + 1}
+                                    </Typography>
+
+                                    {isRealEvaluation && (
+                                        <IconButton
+                                            size="small"
+                                            aria-label={`Remove Goal ${index + 1}`}
+                                            onClick={() => removeGoal(index)}
+                                            sx={{
+                                                color: "#DC2626",
+                                                "&:hover": {
+                                                    backgroundColor: "#FEE2E2",
+                                                },
+                                            }}
+                                        >
+                                            <CloseIcon fontSize="small" />
+                                        </IconButton>
+                                    )}
+                                </Box>
 
                                 <Box>
 
@@ -128,7 +196,7 @@ export default function GoalListSupervisorPreview({
                                         <TextField
                                             fullWidth
                                             multiline
-                                            rows={10}
+                                            minRows={2}
                                             placeholder="Enter supervisor feedback..."
                                             value={
                                                 responses?.goal_list?.[goalKey]?.review || ""
@@ -156,6 +224,16 @@ export default function GoalListSupervisorPreview({
                 )}
 
             </Stack>
+
+            {isRealEvaluation && (
+                <Button
+                    variant="outlined"
+                    onClick={addGoal}
+                    sx={{ mt: 2 }}
+                >
+                    + Add Goal
+                </Button>
+            )}
 
         </Box>
 

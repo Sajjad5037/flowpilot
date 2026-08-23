@@ -2,10 +2,12 @@ import {
     Paper,
     Typography,
     Divider,
+    IconButton,
     Stack,
     TextField,
     Button
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function SelfAssessmentProperties({
 
@@ -61,6 +63,15 @@ export default function SelfAssessmentProperties({
 
         });
 
+    }
+
+    function removeQuestion(index) {
+        onChange({
+            ...component,
+            questions: questions.filter(
+                (_, questionIndex) => questionIndex !== index
+            )
+        });
     }
 
     return (
@@ -133,6 +144,21 @@ export default function SelfAssessmentProperties({
                         onChange={(e) =>
                             updateQuestion(index, e.target.value)
                         }
+                        InputProps={{
+                            endAdornment: (
+                                <IconButton
+                                    size="small"
+                                    color="error"
+                                    aria-label={`Remove Question ${index + 1}`}
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                        removeQuestion(index);
+                                    }}
+                                >
+                                    <DeleteIcon fontSize="small" />
+                                </IconButton>
+                            )
+                        }}
                     />
 
                 ))}

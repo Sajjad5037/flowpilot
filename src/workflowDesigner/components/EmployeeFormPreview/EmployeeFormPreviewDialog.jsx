@@ -19,6 +19,20 @@ export default function EmployeeFormPreviewDialog({
 
     previewMode,
 
+    isBuilderPreview,
+
+    employeeResponses,
+
+    supervisorResponses,
+
+    hrResponses,
+
+    setEmployeeResponses,
+
+    setSupervisorResponses,
+
+    setHrResponses,
+
     onClose
 
 }) {
@@ -82,6 +96,13 @@ export default function EmployeeFormPreviewDialog({
                     <EmployeeFormPreview
                         workflow={workflow}
                         previewMode={previewMode}
+                        isBuilderPreview={isBuilderPreview}
+                        employeeResponses={employeeResponses}
+                        supervisorResponses={supervisorResponses}
+                        hrResponses={hrResponses}
+                        setEmployeeResponses={setEmployeeResponses}
+                        setSupervisorResponses={setSupervisorResponses}
+                        setHrResponses={setHrResponses}
                     />
 
                 </Box>

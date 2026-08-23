@@ -9,6 +9,7 @@ export default function EmployeeInformationPreview({
 
     component,
     previewMode,
+    employee,
     responses,
     employeeResponses,
     onResponsesChange
@@ -26,6 +27,25 @@ export default function EmployeeInformationPreview({
     );
 
     function renderField(label, fieldKey) {
+    const isActualEmployeeEvaluation =
+        (previewMode === "employee" || previewMode === "supervisor") &&
+        employee;
+
+    const employeeValue = {
+        employee_name: employee?.full_name,
+        supervisor: employee?.supervisor_name,
+        department: employee?.department,
+        position: employee?.designation,
+    }[fieldKey];
+
+    const isBackendEmployeeField =
+        isActualEmployeeEvaluation &&
+        [
+            "employee_name",
+            "supervisor",
+            "department",
+            "position",
+        ].includes(fieldKey);
 
     return (
 
@@ -43,7 +63,9 @@ export default function EmployeeInformationPreview({
                 fullWidth
                 variant="outlined"
                 value={
-                    previewMode === "employee"
+                    isActualEmployeeEvaluation
+                        ? (employeeValue || "")
+                        : previewMode === "employee"
                         ? (responses?.employee_information?.[fieldKey] || "")
                         : (employeeResponses?.employee_information?.[fieldKey] || "")
                 }
@@ -59,6 +81,30 @@ export default function EmployeeInformationPreview({
 
                 }}
                 disabled={previewMode !== "employee"}
+                InputProps={
+                    isActualEmployeeEvaluation
+                        ? { readOnly: true }
+                        : undefined
+                }
+                sx={
+                    isBackendEmployeeField
+                        ? {
+                            "& .MuiOutlinedInput-root": {
+                                backgroundColor: "#F8FAFC",
+                                "& fieldset": {
+                                    borderColor: "#CBD5E1",
+                                },
+                                "&:hover fieldset": {
+                                    borderColor: "#94A3B8",
+                                },
+                                "&.Mui-focused fieldset": {
+                                    borderColor: "#CBD5E1",
+                                    borderWidth: 1,
+                                },
+                            },
+                        }
+                        : undefined
+                }
             />
 
         </Box>

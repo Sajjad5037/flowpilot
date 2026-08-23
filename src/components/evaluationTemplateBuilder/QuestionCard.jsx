@@ -3,17 +3,21 @@ import {
     Checkbox,
     Divider,
     FormControlLabel,
+    IconButton,
     Radio,
     Stack,
     TextField,
     Typography
 } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { QUESTION_REGISTRY } from "../../constants/questionRegistry";
 
 export default function QuestionCard({
     question,
+    questionNumber,
     selected,
-    onClick
+    onClick,
+    onRemove
 }) {
     const hideStandardFields =
         QUESTION_REGISTRY[question.type]?.hideStandardFields ?? false;
@@ -292,11 +296,29 @@ export default function QuestionCard({
                 spacing={2}
             >
 
-                {!hideStandardFields && (
-                    <Typography>
-                        {question.label}
-                    </Typography>
-                )}
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                >
+                    {!hideStandardFields && (
+                        <Typography>
+                            {question.label}
+                        </Typography>
+                    )}
+
+                    <IconButton
+                        size="small"
+                        color="error"
+                        aria-label={`Remove Question ${questionNumber}`}
+                        onClick={(event) => {
+                            event.stopPropagation();
+                            onRemove?.();
+                        }}
+                    >
+                        <DeleteIcon fontSize="small" />
+                    </IconButton>
+                </Stack>
 
                 {renderQuestionPreview()}
 

@@ -123,6 +123,37 @@ export default function EvaluationTemplateBuilder() {
 
     }
 
+    function handleRemoveQuestion(questionId) {
+
+        const updatedSections = sections.map(section => {
+
+            if (section.id !== selectedSection.id) {
+                return section;
+            }
+
+            return {
+                ...section,
+                questions: section.questions.filter(
+                    question => question.id !== questionId
+                )
+            };
+
+        });
+
+        setSections(updatedSections);
+
+        const updatedSection = updatedSections.find(
+            section => section.id === selectedSection.id
+        );
+
+        setSelectedSection(updatedSection);
+
+        if (selectedQuestion?.id === questionId) {
+            setSelectedQuestion(null);
+        }
+
+    }
+
     return (
 
         <Box>
@@ -164,6 +195,7 @@ export default function EvaluationTemplateBuilder() {
                             selectedSection={selectedSection}
                             selectedQuestion={selectedQuestion}
                             onSelectQuestion={setSelectedQuestion}
+                            onRemoveQuestion={handleRemoveQuestion}
                             onAddQuestion={() => setQuestionDialogOpen(true)}
                         />
 

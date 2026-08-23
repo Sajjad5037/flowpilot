@@ -1,12 +1,5 @@
 import {
     Box,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
     TextField,
     Typography
 } from "@mui/material";
@@ -18,22 +11,17 @@ export default function KPIListPreview({
     onResponsesChange
 
 }) {
+    const fields =
+        component?.fields &&
+        !Array.isArray(component.fields) &&
+        Object.keys(component.fields).length > 0
+            ? component.fields
+            : {
+                kpiTitle: true,
+                expectation: true,
+            };
 
-    const fields = component.fields || {
-
-        kpiTitle: true,
-
-        expectation: true
-
-    };
-
-    const kpis = component.kpis || [
-
-        {
-            id: crypto.randomUUID()
-        }
-
-    ];
+    const kpis = Object.keys(responses?.kpi_list || {});
     function updateKPIField(kpiKey, fieldName, value) {
 
         onResponsesChange({
@@ -74,126 +62,126 @@ export default function KPIListPreview({
                 {component.title || "Proposed KPIs"}
             </Typography>
 
-            <TableContainer
-                component={Paper}
-                elevation={0}
+            <Box
                 sx={{
                     border: "1px solid #D1D5DB",
-                    borderRadius: 2
+                    borderRadius: 2,
+                    overflow: "hidden",
                 }}
             >
 
-                <Table>
+                <Box
+                    sx={{
+                        display: "grid",
+                        gridTemplateColumns: "1fr 1fr",
+                        bgcolor: "#EEF2F7",
+                        borderBottom: "1px solid #D1D5DB",
+                    }}
+                >
 
-                    <TableHead>
+                    {fields.kpiTitle && (
 
-                        <TableRow>
+                        <Box
+                            sx={{
+                                p: 1.5,
+                                fontWeight: 700,
+                                borderRight: "1px solid #D1D5DB",
+                            }}
+                        >
+                            Proposed KPI Title
+                        </Box>
 
-                            {fields.kpiTitle && (
+                    )}
 
-                                <TableCell
-                                    sx={{
-                                        bgcolor: "#EEF2F7",
-                                        fontWeight: 700,
-                                        width: "50%"
-                                    }}
-                                >
-                                    Proposed KPI Title
-                                </TableCell>
+                    {fields.expectation && (
 
-                            )}
+                        <Box
+                            sx={{
+                                p: 1.5,
+                                fontWeight: 700,
+                            }}
+                        >
+                            Expectation / Target
+                        </Box>
 
-                            {fields.expectation && (
+                    )}
 
-                                <TableCell
-                                    sx={{
-                                        bgcolor: "#EEF2F7",
-                                        fontWeight: 700,
-                                        width: "50%"
-                                    }}
-                                >
-                                    Expectation / Target
-                                </TableCell>
+                </Box>
 
-                            )}
+                <Box
+                    sx={{
+                        display: "grid",
+                        gap: 1.5,
+                        p: 1.5,
+                    }}
+                >
 
-                        </TableRow>
+                    {kpis.map((kpiKey) => {
 
-                    </TableHead>
+                        return (
 
-                    <TableBody>
+                            <Box
+                                key={kpiKey}
+                                sx={{
+                                    display: "grid",
+                                    gridTemplateColumns: "1fr 1fr",
+                                    gap: 1.5,
+                                }}
+                            >
 
-                        {kpis.map((kpi, index) => {
+                                {fields.kpiTitle && (
 
-                            const kpiKey = `kpi_${index + 1}`;
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        placeholder="e.g. Sprint Velocity"
+                                        value={
+                                            responses?.kpi_list?.[kpiKey]?.title || ""
+                                        }
+                                        onChange={(e) => {
 
-                            return (
+                                            updateKPIField(
+                                                kpiKey,
+                                                "title",
+                                                e.target.value
+                                            );
 
-                                <TableRow key={kpi.id}>
+                                        }}
+                                    />
 
-                                    {fields.kpiTitle && (
+                                )}
 
-                                        <TableCell>
+                                {fields.expectation && (
 
-                                            <TextField
-                                                fullWidth
-                                                size="small"
-                                                placeholder="e.g. Sprint Velocity"
-                                                value={
-                                                    responses?.kpi_list?.[kpiKey]?.title || ""
-                                                }
-                                                onChange={(e) => {
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        placeholder="e.g. 90% completion rate"
+                                        value={
+                                            responses?.kpi_list?.[kpiKey]?.expectation || ""
+                                        }
+                                        onChange={(e) => {
 
-                                                    updateKPIField(
-                                                        kpiKey,
-                                                        "title",
-                                                        e.target.value
-                                                    );
+                                            updateKPIField(
+                                                kpiKey,
+                                                "expectation",
+                                                e.target.value
+                                            );
 
-                                                }}
-                                            />
+                                        }}
+                                    />
 
-                                        </TableCell>
+                                )}
 
-                                    )}
+                            </Box>
 
-                                    {fields.expectation && (
+                        );
 
-                                        <TableCell>
+                    })}
 
-                                            <TextField
-                                                fullWidth
-                                                size="small"
-                                                placeholder="e.g. 90% completion rate"
-                                                value={
-                                                    responses?.kpi_list?.[kpiKey]?.expectation || ""
-                                                }
-                                                onChange={(e) => {
+                </Box>
 
-                                                    updateKPIField(
-                                                        kpiKey,
-                                                        "expectation",
-                                                        e.target.value
-                                                    );
-
-                                                }}
-                                            />
-
-                                        </TableCell>
-
-                                    )}
-
-                                </TableRow>
-
-                            );
-
-                        })}
-
-                    </TableBody>
-
-                </Table>
-
-            </TableContainer>
+            </Box>
 
         </Box>
 

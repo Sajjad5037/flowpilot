@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
     Box,
@@ -104,6 +104,7 @@ const previewKpis = [
 export default function KPIReviewPlanning({
     component,
     previewMode = "employee",
+    reviewCycle,
     responses = {},
     onResponsesChange,
     employeeResponses = {},
@@ -112,6 +113,20 @@ export default function KPIReviewPlanning({
 }) {
 
     const settings = component?.settings || {};
+    const currentQuarter =
+        reviewCycle?.match(/^Q[1-4]/)?.[0] || "";
+
+    const currentQuarterNumber =
+        currentQuarter
+            ? Number(currentQuarter.substring(1))
+            : null;
+
+    const quarter =
+        currentQuarterNumber
+            ? `Q${currentQuarterNumber === 4
+                ? 1
+                : currentQuarterNumber + 1}`
+            : "";
     const employeeProposals =
         employeeResponses?.kpi_review_planning?.employee_proposals || [];
 
@@ -165,6 +180,32 @@ export default function KPIReviewPlanning({
         },
     ]);
 
+    useEffect(() => {
+        if (previewMode !== "employee") {
+            return;
+        }
+
+        const savedProposals =
+            responses?.kpi_review_planning?.employee_proposals;
+
+        if (Array.isArray(savedProposals)) {
+            setEmployeeKpis(savedProposals);
+        }
+    }, [previewMode, responses]);
+
+    useEffect(() => {
+        if (previewMode !== "supervisor") {
+            return;
+        }
+
+        const savedProposals =
+            responses?.kpi_review_planning?.supervisor_proposals;
+
+        if (Array.isArray(savedProposals)) {
+            setSupervisorKpis(savedProposals);
+        }
+    }, [previewMode, responses]);
+
 
     /*
      * ---------------------------------------------------------
@@ -195,7 +236,7 @@ export default function KPIReviewPlanning({
                     fontWeight={600}
                     gutterBottom
                 >
-                    Proposed KPI Change Details (Q3 Review)
+                    Proposed KPI Change Details ({quarter} Review)
                 </Typography>
 
 
@@ -313,7 +354,7 @@ export default function KPIReviewPlanning({
                     fontWeight={600}
                     gutterBottom
                 >
-                    Proposed KPI Change Details (Q3 Review)
+                    Proposed KPI Change Details ({quarter} Review)
                 </Typography>
 
 
@@ -437,7 +478,7 @@ export default function KPIReviewPlanning({
                 fontWeight={600}
                 gutterBottom
             >
-                Q3 KPI Review & Planning
+                {quarter} KPI Review & Planning
             </Typography>
 
 
@@ -546,12 +587,9 @@ export default function KPIReviewPlanning({
 
         <BodyCell>
 
-            <TextField
-                fullWidth
-                size="small"
-                defaultValue={previewKpis[index]?.currentTitle || ""}
-                variant="outlined"
-            />
+            <Typography variant="body2">
+                {previewKpis[index]?.currentTitle || ""}
+            </Typography>
 
         </BodyCell>
 
@@ -560,14 +598,9 @@ export default function KPIReviewPlanning({
 
         <BodyCell>
 
-            <TextField
-                fullWidth
-                size="small"
-                defaultValue={previewKpis[index]?.currentExpectation || ""}
-                variant="outlined"
-                multiline
-                minRows={1}
-            />
+            <Typography variant="body2">
+                {previewKpis[index]?.currentExpectation || ""}
+            </Typography>
 
         </BodyCell>
 
@@ -576,14 +609,9 @@ export default function KPIReviewPlanning({
 
         <BodyCell>
 
-            <TextField
-                fullWidth
-                size="small"
-                defaultValue={
-                    row.employee.title
-                }
-                variant="outlined"
-            />
+            <Typography variant="body2">
+                {row.employee.title}
+            </Typography>
 
         </BodyCell>
 
@@ -592,14 +620,9 @@ export default function KPIReviewPlanning({
 
         <BodyCell>
 
-            <TextField
-                fullWidth
-                size="small"
-                defaultValue={
-                    row.employee.proposed
-                }
-                variant="outlined"
-            />
+            <Typography variant="body2">
+                {row.employee.proposed}
+            </Typography>
 
         </BodyCell>
 
@@ -608,14 +631,9 @@ export default function KPIReviewPlanning({
 
         <BodyCell>
 
-            <TextField
-                fullWidth
-                size="small"
-                defaultValue={
-                    row.supervisor.title
-                }
-                variant="outlined"
-            />
+            <Typography variant="body2">
+                {row.supervisor.title}
+            </Typography>
 
         </BodyCell>
 
@@ -624,14 +642,9 @@ export default function KPIReviewPlanning({
 
         <BodyCell>
 
-            <TextField
-                fullWidth
-                size="small"
-                defaultValue={
-                    row.supervisor.proposed
-                }
-                variant="outlined"
-            />
+            <Typography variant="body2">
+                {row.supervisor.proposed}
+            </Typography>
 
         </BodyCell>
 
@@ -664,7 +677,7 @@ export default function KPIReviewPlanning({
                         variant="subtitle1"
                         fontWeight={600}
                     >
-                        Final Agreed Q3 Targets & Expectations
+                        Final Agreed {quarter} Targets & Expectations
                     </Typography>
 
 
@@ -822,62 +835,6 @@ export default function KPIReviewPlanning({
 
 
             <Divider sx={{ my: 3 }} />
-
-
-            <Stack spacing={2}>
-
-                <FormControl
-                    fullWidth
-                    size="small"
-                >
-
-                    <InputLabel>
-                        Final Q3 KPI Rating
-                    </InputLabel>
-
-                    <Select
-                        label="Final Q3 KPI Rating"
-                        value={responses?.kpi_review_planning?.final_q3_kpi_rating || ""}
-                        onChange={(event) => {
-                            onResponsesChange?.({
-                                ...responses,
-                                kpi_review_planning: {
-                                    ...(responses?.kpi_review_planning || {}),
-                                    final_q3_kpi_rating: event.target.value,
-                                },
-                            });
-                        }}
-                    >
-
-                        <MenuItem value="">
-                            Select rating
-                        </MenuItem>
-
-                        <MenuItem value="1">
-                            1. Poor
-                        </MenuItem>
-
-                        <MenuItem value="2">
-                            2. Below Expectation
-                        </MenuItem>
-
-                        <MenuItem value="3">
-                            3. Meets Expectation
-                        </MenuItem>
-
-                        <MenuItem value="4">
-                            4. Above Expectation
-                        </MenuItem>
-
-                        <MenuItem value="5">
-                            5. Fully Meets
-                        </MenuItem>
-
-                    </Select>
-
-                </FormControl>
-
-            </Stack>
 
         </Paper>
     );

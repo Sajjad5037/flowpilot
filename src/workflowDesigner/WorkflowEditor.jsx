@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import {
     Box,
@@ -15,6 +15,9 @@ import WorkflowHeader from "./components/WorkflowHeader/WorkflowHeader";
 import EmployeeFormPreview from "./components/EmployeeFormPreview/EmployeeFormPreview";
 import EmployeeFormPreviewDialog from "./components/EmployeeFormPreview/EmployeeFormPreviewDialog";
 import evaluationTemplateService from "../services/evaluationTemplateService";
+import {
+    getEvaluationPreviewResponses,
+} from "../services/evaluationPreviewResponseService";
 export default function Builder() {
 
     const location = useLocation();
@@ -27,6 +30,20 @@ export default function Builder() {
     const [previewOpen, setPreviewOpen] = useState(false);
     const [lastSaved, setLastSaved] = useState("");
     const [selectedComponent, setSelectedComponent] = useState(null);
+    const [employeeResponses, setEmployeeResponses] = useState({});
+    const [supervisorResponses, setSupervisorResponses] = useState({});
+    const [hrResponses, setHrResponses] = useState({});
+
+    useEffect(() => {
+
+        getEvaluationPreviewResponses()
+            .then((response) => {
+                setEmployeeResponses(response.employee_responses || {});
+                setSupervisorResponses(response.supervisor_responses || {});
+                setHrResponses(response.hr_responses || {});
+            });
+
+    }, []);
 
     const [workflow, setWorkflow] = useState(
 
@@ -186,6 +203,31 @@ export default function Builder() {
         }));
 
     }
+
+    function handleRemoveComponent(componentId) {
+
+        setWorkflow(prev => ({
+
+            ...prev,
+
+            stages: {
+
+                ...prev.stages,
+
+                [currentStage]:
+                    (prev.stages[currentStage] || []).filter(
+                        component => component.instanceId !== componentId
+                    )
+
+            }
+
+        }));
+
+        setSelectedComponent(prev =>
+            prev?.instanceId === componentId ? null : prev
+        );
+
+    }
     async function handleSave() {
 
         try {
@@ -193,6 +235,8 @@ export default function Builder() {
             const response = await evaluationTemplateService.create({
 
                 name: workflow.name,
+
+                workflow_type: "goal_kpi_setting",
 
                 workflow_json: workflow
 
@@ -318,6 +362,7 @@ export default function Builder() {
                     currentStage={currentStage}
                     components={workflow.stages[currentStage]}
                     selectedComponent={selectedComponent}
+                    onRemoveComponent={handleRemoveComponent}
                     onSelectComponent={setSelectedComponent}
                 />
 
@@ -395,6 +440,13 @@ export default function Builder() {
                     <EmployeeFormPreview
                         workflow={workflow}
                         previewMode={previewMode}
+                        isBuilderPreview
+                        employeeResponses={employeeResponses}
+                        supervisorResponses={supervisorResponses}
+                        hrResponses={hrResponses}
+                        setEmployeeResponses={setEmployeeResponses}
+                        setSupervisorResponses={setSupervisorResponses}
+                        setHrResponses={setHrResponses}
                     />
 
                 </Paper>
@@ -405,6 +457,13 @@ export default function Builder() {
                 open={previewOpen}
                 workflow={workflow}
                 previewMode={previewMode}
+                isBuilderPreview
+                employeeResponses={employeeResponses}
+                supervisorResponses={supervisorResponses}
+                hrResponses={hrResponses}
+                setEmployeeResponses={setEmployeeResponses}
+                setSupervisorResponses={setSupervisorResponses}
+                setHrResponses={setHrResponses}
                 onClose={() => setPreviewOpen(false)}
             />
 
