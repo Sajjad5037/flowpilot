@@ -31,13 +31,46 @@ export default function EmployeesTable({
                 sx={{ mb: 3 }}
             />
 
-            <TableContainer component={Paper}>
+            <TableContainer
+                component={Paper}
+                sx={{
+                    overflowX: "auto",
+                    border: "1px solid #E2E8F0",
+                    borderRadius: 2,
+                    boxShadow: "0 4px 14px rgba(15, 23, 42, 0.04)"
+                }}
+            >
 
-                <Table>
+                <Table
+                    size="small"
+                    sx={{
+                        minWidth: 820,
+                        "& .MuiTableCell-root": {
+                            borderBottom: "1px solid #E2E8F0",
+                            px: 2,
+                            py: 1.5
+                        },
+                        "& .MuiTableRow-root:last-child .MuiTableCell-root": {
+                            borderBottom: 0
+                        }
+                    }}
+                >
 
                     <TableHead>
 
-                        <TableRow>
+                        <TableRow
+                            sx={{
+                                bgcolor: "#F8FAFC",
+                                "& .MuiTableCell-root": {
+                                    color: "#475569",
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                    letterSpacing: 0.4,
+                                    textTransform: "uppercase",
+                                    whiteSpace: "nowrap"
+                                }
+                            }}
+                        >
 
                             <TableCell>Name</TableCell>
 
@@ -63,33 +96,53 @@ export default function EmployeesTable({
 
                         {employees.map((employee) => (
 
-                            <TableRow key={employee.id}>
+                            <TableRow
+                                key={employee.id}
+                                hover
+                                sx={{
+                                    transition: "background-color 0.15s ease",
+                                    "&:hover": {
+                                        bgcolor: "#F8FAFC"
+                                    }
+                                }}
+                            >
 
-                                <TableCell>
+                                <TableCell sx={{ fontWeight: 600, color: "#0F172A" }}>
                                     {employee.full_name ?? employee.fullName}
                                 </TableCell>
 
-                                <TableCell>
+                                <TableCell sx={{ whiteSpace: "nowrap" }}>
                                     {employee.role}
                                 </TableCell>
 
-                                <TableCell>
+                                <TableCell sx={{ whiteSpace: "nowrap" }}>
                                     {employee.department}
                                 </TableCell>
 
-                                <TableCell>
+                                <TableCell sx={{ whiteSpace: "nowrap" }}>
                                     {employee.designation}
                                 </TableCell>
 
-                                <TableCell>
+                                <TableCell sx={{ whiteSpace: "nowrap" }}>
                                     {employee.slack_id ?? employee.slackId}
                                 </TableCell>
 
-                                <TableCell>
+                                <TableCell
+                                    title={employee.email}
+                                    sx={{
+                                        maxWidth: 240,
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                        whiteSpace: "nowrap"
+                                    }}
+                                >
                                     {employee.email}
                                 </TableCell>
 
-                                <TableCell align="center">
+                                <TableCell
+                                    align="center"
+                                    sx={{ whiteSpace: "nowrap" }}
+                                >
 
                                     <IconButton
                                         color="primary"

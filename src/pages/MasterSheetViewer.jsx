@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import EmployeeFormPreview
 from "../workflowDesigner/components/EmployeeFormPreview/EmployeeFormPreview";
+import EmployeeEvaluationForm
+from "../workflowDesigner/employeeEvaluation/runtime/EmployeeEvaluationForm";
 
 import {
     Box,
@@ -96,13 +98,38 @@ export default function MasterSheetViewer({
                 Master Sheet Viewer
             </Typography>
 
-            <EmployeeFormPreview
-                workflow={masterSheet.workflow_json}
-                previewMode="hr"
-                employeeResponses={masterSheet.employee_responses}
-                supervisorResponses={masterSheet.supervisor_responses}
-                hrResponses={masterSheet.hr_responses}
-            />
+            {masterSheet.workflow_type === "employee_evaluation" ? (
+
+                <EmployeeEvaluationForm
+                    workflow={masterSheet.workflow_json}
+                    previewMode="hr"
+                    employee={{
+                        full_name: masterSheet.employee_name,
+                        email: masterSheet.employee_email,
+                        supervisor_name: masterSheet.supervisor_name,
+                        department: masterSheet.department,
+                        review_cycle: masterSheet.review_cycle,
+                        review_cycle_months: masterSheet.review_cycle_months,
+                        finalized_goals: masterSheet.finalized_goals || [],
+                        finalized_kpis: masterSheet.finalized_kpis || []
+                    }}
+                    responses={masterSheet.hr_responses || {}}
+                    employeeResponses={masterSheet.employee_responses || {}}
+                    supervisorResponses={masterSheet.supervisor_responses || {}}
+                    hrResponses={masterSheet.hr_responses || {}}
+                />
+
+            ) : (
+
+                <EmployeeFormPreview
+                    workflow={masterSheet.workflow_json}
+                    previewMode="hr"
+                    employeeResponses={masterSheet.employee_responses}
+                    supervisorResponses={masterSheet.supervisor_responses}
+                    hrResponses={masterSheet.hr_responses}
+                />
+
+            )}
 
         </Box>
 

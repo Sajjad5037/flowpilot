@@ -123,22 +123,43 @@ export default function Employees() {
 
 return (
 
-        <Box p={4}>
+        <Box
+            sx={{
+                p: { xs: 2, sm: 3, md: 4 },
+                bgcolor: "#F8FAFC",
+                minHeight: "100vh"
+            }}
+        >
 
             <Stack
                 direction="row"
                 justifyContent="space-between"
                 alignItems="center"
-                mb={4}
+                mb={3}
+                sx={{
+                    gap: 2,
+                    flexWrap: "wrap"
+                }}
             >
 
-                <Typography variant="h4">
+                <Typography
+                    variant="h5"
+                    fontWeight={700}
+                    color="#0F172A"
+                >
                     Employees
                 </Typography>
 
                 <Button
                     variant="contained"
                     onClick={handleAddEmployee}
+                    sx={{
+                        px: 2.5,
+                        borderRadius: 2,
+                        textTransform: "none",
+                        fontWeight: 600,
+                        boxShadow: "none"
+                    }}
                 >
                     + Add Employee
                 </Button>
@@ -148,7 +169,25 @@ return (
             <Tabs
                 value={employeeTab}
                 onChange={(_, value) => setEmployeeTab(value)}
-                sx={{ mb: 2 }}
+                sx={{
+                    mb: 2.5,
+                    minHeight: 42,
+                    borderBottom: "1px solid #E2E8F0",
+                    "& .MuiTab-root": {
+                        minHeight: 42,
+                        px: { xs: 1.5, sm: 2.5 },
+                        textTransform: "none",
+                        fontWeight: 600,
+                        color: "#64748B"
+                    },
+                    "& .Mui-selected": {
+                        color: "#2563EB"
+                    },
+                    "& .MuiTabs-indicator": {
+                        height: 3,
+                        borderRadius: "3px 3px 0 0"
+                    }
+                }}
             >
                 <Tab value="active" label="Active Employees" />
                 <Tab value="inactive" label="Inactive Employees" />
@@ -161,7 +200,11 @@ return (
                 onChange={(event) => setSearch(event.target.value)}
                 sx={{
                     mb: 3,
-                    maxWidth: 450
+                    maxWidth: 480,
+                    bgcolor: "#FFFFFF",
+                    "& .MuiOutlinedInput-root": {
+                        borderRadius: 2
+                    }
                 }}
             />
 
@@ -171,6 +214,7 @@ return (
                 ) : (
                     <Box
                         sx={{
+                            bgcolor: "#FFFFFF",
                             "& > .MuiTextField-root": {
                                 display: "none"
                             }
