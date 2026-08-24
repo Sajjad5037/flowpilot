@@ -20,11 +20,15 @@ const evaluationTemplateService = {
 
     },
 
-    getAll: async () => {
+    getAll: async (includeInactive = false) => {
+
+        const query = includeInactive
+            ? "?include_inactive=true"
+            : "";
 
         const response = await axios.get(
 
-            `${API_BASE}/evaluation-templates`
+            `${API_BASE}/evaluation-templates${query}`
 
         );
 
@@ -51,6 +55,30 @@ const evaluationTemplateService = {
             `${API_BASE}/evaluation-templates/${id}`,
 
             template
+
+        );
+
+        return response.data;
+
+    },
+
+    delete: async (id) => {
+
+        const response = await axios.delete(
+
+            `${API_BASE}/evaluation-templates/${id}`
+
+        );
+
+        return response.data;
+
+    },
+
+    activate: async (id) => {
+
+        const response = await axios.patch(
+
+            `${API_BASE}/evaluation-templates/${id}/activate`
 
         );
 

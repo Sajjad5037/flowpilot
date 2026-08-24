@@ -26,7 +26,8 @@ export async function createEmployee(employee) {
             slack_id: employee.slackId,
             department: employee.department,
             designation: employee.designation,
-            role: employee.role
+            role: employee.role,
+            is_active: employee.isActive
         }
     );
 

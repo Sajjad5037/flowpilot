@@ -5,8 +5,10 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
+    FormControlLabel,
     Grid,
     MenuItem,
+    Switch,
     TextField
 } from "@mui/material";
 
@@ -61,7 +63,8 @@ export default function AddEmployeeDialog({
         slackId: "",
         department: "",
         designation: "",
-        role: ""
+        role: "",
+        isActive: true
 
     };
 
@@ -85,7 +88,8 @@ export default function AddEmployeeDialog({
                 slackId: employee.slack_id ?? employee.slackId ?? "",
                 department: employee.department ?? "",
                 designation: employee.designation ?? "",
-                role: employee.role ?? ""
+                role: employee.role ?? "",
+                isActive: employee.is_active ?? true
 
             });
 
@@ -289,6 +293,29 @@ export default function AddEmployeeDialog({
                         </TextField>
 
                     </Grid>
+
+                    {isEditing && (
+
+                        <Grid size={{ xs: 12, md: 6 }}>
+
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={form.isActive}
+                                        onChange={(event) =>
+                                            setForm(prev => ({
+                                                ...prev,
+                                                isActive: event.target.checked
+                                            }))
+                                        }
+                                    />
+                                }
+                                label="Active Employee"
+                            />
+
+                        </Grid>
+
+                    )}
 
                 </Grid>
 

@@ -4,6 +4,9 @@ import {
     Button,
     CircularProgress,
     Stack,
+    Tab,
+    Tabs,
+    TextField,
     Typography
 } from "@mui/material";
 
@@ -19,6 +22,8 @@ export default function Employees() {
     const [loading, setLoading] = useState(true);
     const [openAddDialog, setOpenAddDialog] = useState(false);
     const [selectedEmployee, setSelectedEmployee] = useState(null);
+    const [employeeTab, setEmployeeTab] = useState("active");
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         loadEmployees();
@@ -94,6 +99,28 @@ export default function Employees() {
         }
 
     }
+
+    const visibleEmployees = employees
+        .filter(employee =>
+            employeeTab === "active"
+                ? employee.is_active === true
+                : employee.is_active === false
+        )
+        .filter(employee => {
+            const searchValue = search.toLowerCase();
+
+            return [
+                employee.full_name,
+                employee.fullName,
+                employee.email,
+                employee.department,
+                employee.designation,
+                employee.role
+            ].some(value =>
+                value?.toLowerCase().includes(searchValue)
+            );
+        });
+
 return (
 
         <Box p={4}>
@@ -118,15 +145,43 @@ return (
 
             </Stack>
 
+            <Tabs
+                value={employeeTab}
+                onChange={(_, value) => setEmployeeTab(value)}
+                sx={{ mb: 2 }}
+            >
+                <Tab value="active" label="Active Employees" />
+                <Tab value="inactive" label="Inactive Employees" />
+            </Tabs>
+
+            <TextField
+                fullWidth
+                placeholder="Search employees..."
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                sx={{
+                    mb: 3,
+                    maxWidth: 450
+                }}
+            />
+
             <>
                 {loading ? (
                     <CircularProgress />
                 ) : (
-                    <EmployeesTable
-                        employees={employees}
-                        onEdit={handleEditEmployee}
-                        onDelete={handleDeleteEmployee}
-                    />
+                    <Box
+                        sx={{
+                            "& > .MuiTextField-root": {
+                                display: "none"
+                            }
+                        }}
+                    >
+                        <EmployeesTable
+                            employees={visibleEmployees}
+                            onEdit={handleEditEmployee}
+                            onDelete={handleDeleteEmployee}
+                        />
+                    </Box>
                 )}
 
                 <AddEmployeeDialog

@@ -9,6 +9,7 @@ import {
   AccountTree,
   Assignment,
   Description,
+  History,
 } from "@mui/icons-material";
 
 import {
@@ -73,6 +74,11 @@ const mainMenu = [
       title: "Meeting Readiness",
       path: "/meeting-readiness",
       icon: <Event />,
+  },
+  {
+      title: "Activity Log",
+      path: "/activity-log",
+      icon: <History />,
   },
 ];
 

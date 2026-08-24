@@ -5,6 +5,7 @@ import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
 import EvaluationTemplates from "../workflowDesigner/pages/EvaluationTemplates";
 import MeetingReadiness from "../pages/MeetingReadiness";
+import ActivityLog from "../pages/ActivityLog";
 import WorkflowDesigner from "../workflowDesigner/pages/WorkflowDesigner";
 import WorkflowEditor from "../workflowDesigner/WorkflowEditor";
 import EvaluationAssignments from "../pages/EvaluationAssignments";
@@ -156,6 +157,15 @@ export default function AppRoutes() {
               </Layout>
           }
       />
+
+        <Route
+          path="/activity-log"
+          element={
+            <Layout>
+              <ActivityLog />
+            </Layout>
+          }
+        />
 
       
 
