@@ -146,7 +146,7 @@ export default function EvaluationAssignments() {
                             </MenuItem>
 
                             {employees
-                                .filter(e => e.role === "Employee")
+                                .filter(e => e.role === "Employee" && e.is_active === true)
                                 .map(employee => (
 
                                     <MenuItem
