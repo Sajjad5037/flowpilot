@@ -19,25 +19,38 @@ export default function KPIListHRPreview({
 
 }) {
 
-    const responseKpis = responses?.kpi_list || {};
-    const kpiEntries = Object.entries(responseKpis);
-    const employeeKpiCount = Object.keys(
+    const employeeKpiKeys = Object.keys(
         employeeResponses?.kpi_list || {}
-    ).length;
-    const supervisorKpiCount = Object.keys(
+    );
+    const supervisorKpiKeys = Object.keys(
         supervisorResponses?.kpi_list || {}
-    ).length;
+    );
+    const employeeKpiCount = employeeKpiKeys.length;
+    const supervisorKpiCount = supervisorKpiKeys.length;
     const initialKpiCount = Math.max(
         employeeKpiCount,
         supervisorKpiCount,
         1
     );
-    const kpis = kpiEntries.length > 0
-        ? kpiEntries
+
+    // Authoritative KPI keys come from employee/supervisor data, never from HR's own responses.
+    const authoritativeKpiKeySet = new Set([
+        ...employeeKpiKeys,
+        ...supervisorKpiKeys
+    ]);
+    const authoritativeKpiKeys = authoritativeKpiKeySet.size > 0
+        ? Array.from(authoritativeKpiKeySet).sort(
+            (a, b) => parseInt(a.replace("kpi_", ""), 10) -
+                parseInt(b.replace("kpi_", ""), 10)
+        )
         : Array.from(
             { length: initialKpiCount },
-            (_, index) => [`kpi_${index + 1}`, {}]
+            (_, index) => `kpi_${index + 1}`
         );
+
+    const kpis = authoritativeKpiKeys.map(
+        kpiKey => [kpiKey, responses?.kpi_list?.[kpiKey] || {}]
+    );
 
     function updateKpis(updatedKpis) {
         onResponsesChange?.({
