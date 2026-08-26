@@ -23,10 +23,15 @@ export default function KPIListSupervisorPreview({
 
 }) {
 
-    const fields = component?.fields || {
-        kpiTitle: true,
-        expectation: true,
-    };
+    const fields =
+        component?.fields &&
+        !Array.isArray(component.fields) &&
+        Object.keys(component.fields).length > 0
+            ? component.fields
+            : {
+                kpiTitle: true,
+                expectation: true,
+            };
 
     const currentSupervisorResponses =
         supervisorResponses || responses || {};
@@ -58,8 +63,12 @@ export default function KPIListSupervisorPreview({
     }
 
     function addKPI() {
+        const existingKpis = Object.entries(
+            currentSupervisorResponses.kpi_list || {}
+        );
+
         updateKpis([
-            ...kpis,
+            ...existingKpis,
             ["kpi_new", {}],
         ]);
     }

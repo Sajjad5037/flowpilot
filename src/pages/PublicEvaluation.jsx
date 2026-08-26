@@ -289,6 +289,37 @@ export default function PublicEvaluation() {
         goalFieldsComplete &&
         kpiFieldsComplete &&
         performanceFieldsComplete;
+    const employeeGoals = Object.values(
+        employeeResponses?.goal_list || {}
+    );
+    const employeeKpis = Object.values(
+        employeeResponses?.kpi_list || {}
+    );
+    const goalFields = goalComponent?.fields || {
+        goalTitle: true,
+        goalDescription: true,
+    };
+    const employeeGoalFieldsComplete = !goalComponent || (
+        employeeGoals.length > 0 &&
+        employeeGoals.every(goal => (
+            (!goalFields.goalTitle || goal?.proposal?.trim()) &&
+            (!goalFields.goalDescription || goal?.description?.trim())
+        ))
+    );
+    const employeeKpiFieldsComplete = !kpiComponent || (
+        employeeKpis.length > 0 &&
+        employeeKpis.every(kpi => (
+            (!kpiFields.kpiTitle || kpi?.title?.trim()) &&
+            (!kpiFields.expectation || kpi?.expectation?.trim())
+        ))
+    );
+    const isGoalKpiEmployeeStage =
+        assignment?.workflow_json?.type !== "employee_evaluation" &&
+        (assignment?.current_stage === "employee" ||
+            assignment?.access_stage === "employee");
+    const requiredEmployeeFieldsComplete =
+        employeeGoalFieldsComplete &&
+        employeeKpiFieldsComplete;
 
     if (submitted) {
 
@@ -833,6 +864,8 @@ export default function PublicEvaluation() {
                             onClick={handleSubmitEvaluation}
                             disabled={
                                 submitted || (
+                                    (isGoalKpiEmployeeStage &&
+                                        !requiredEmployeeFieldsComplete) ||
                                     (isGoalKpiSupervisorStage &&
                                         !requiredSupervisorFieldsComplete) ||
                                     (isGoalKpiHrStage &&
