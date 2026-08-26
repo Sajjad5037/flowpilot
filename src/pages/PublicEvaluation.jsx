@@ -162,7 +162,10 @@ export default function PublicEvaluation() {
 
             // Preserve the existing sequential workflow exactly.
 
-            if (assignment.current_stage === "employee") {
+            const legacySubmissionStage =
+                assignment.access_stage || assignment.current_stage;
+
+            if (legacySubmissionStage === "employee") {
 
                 console.log("Employee Responses:");
                 console.log(employeeResponses);
@@ -170,7 +173,7 @@ export default function PublicEvaluation() {
                 dataToSubmit = employeeResponses;
 
             }
-            else if (assignment.current_stage === "supervisor") {
+            else if (legacySubmissionStage === "supervisor") {
 
                 console.log("Supervisor Responses:");
                 console.log(supervisorResponses);
@@ -178,7 +181,7 @@ export default function PublicEvaluation() {
                 dataToSubmit = supervisorResponses;
 
             }
-            else if (assignment.current_stage === "hr") {
+            else if (legacySubmissionStage === "hr") {
 
                 console.log("HR Responses:");
                 console.log(hrResponses);
@@ -201,7 +204,11 @@ export default function PublicEvaluation() {
 
             assignment?.workflow_json?.type === "employee_evaluation"
                 ? assignment.access_stage
-                : null
+                : null,
+
+            assignment?.workflow_json?.type === "employee_evaluation"
+                ? null
+                : accessToken
 
         );
 
@@ -223,6 +230,66 @@ export default function PublicEvaluation() {
     }
 
 }
+
+    const workflowComponents = [
+        ...(assignment?.workflow_json?.stages?.employee || []),
+        ...(assignment?.workflow_json?.stages?.supervisor || []),
+    ];
+    const goalComponent = workflowComponents.find(
+        component => component.id === "goal_list"
+    );
+    const kpiComponent = workflowComponents.find(
+        component => component.id === "kpi_list"
+    );
+    const supervisorGoals = Object.values(
+        supervisorResponses?.goal_list || {}
+    );
+    const supervisorKpis = Object.values(
+        supervisorResponses?.kpi_list || {}
+    );
+    const goalFieldsComplete = !goalComponent || (
+        supervisorGoals.length > 0 &&
+        supervisorGoals.every(goal => goal?.review?.trim())
+    );
+    const kpiFields = kpiComponent?.fields || {
+        kpiTitle: true,
+        expectation: true,
+    };
+    const kpiFieldsComplete = !kpiComponent || (
+        supervisorKpis.length > 0 &&
+        supervisorKpis.every(kpi => (
+            (!kpiFields.kpiTitle || kpi?.title?.trim()) &&
+            (!kpiFields.expectation || kpi?.expectation?.trim())
+        ))
+    );
+    const performanceComponent = workflowComponents.find(
+        component => component.id === "performance_and_core_values"
+    );
+    const requiredPerformanceFields =
+        performanceComponent?.fields?.filter(field => {
+            const normalizedFieldLabel = field.label
+                ?.trim()
+                .replace(/:\s*$/, "")
+                .toLowerCase();
+
+            return [
+                "professional attributes to work on",
+                "core values to work on",
+            ].includes(normalizedFieldLabel);
+        }) || [];
+    const performanceFieldsComplete =
+        requiredPerformanceFields.length === 2 &&
+        requiredPerformanceFields.every(
+            field => supervisorResponses?.performance_and_core_values?.[field.id]?.trim()
+        );
+    const isGoalKpiSupervisorStage =
+        assignment?.workflow_json?.type !== "employee_evaluation" &&
+        assignment?.current_stage === "supervisor";
+    const requiredSupervisorFieldsComplete =
+        goalFieldsComplete &&
+        kpiFieldsComplete &&
+        performanceFieldsComplete;
+
     if (submitted) {
 
         return (
@@ -323,6 +390,74 @@ export default function PublicEvaluation() {
 
     const isEmployeeEvaluation =
         assignment?.workflow_json?.type === "employee_evaluation";
+    const employee = {
+        full_name: assignment.employee_name,
+        supervisor_name: assignment.supervisor_name,
+        department: assignment.department,
+        designation: assignment.designation,
+    };
+    const employeeInformationComplete = Boolean(
+        employee.full_name?.trim() &&
+        employee.supervisor_name?.trim() &&
+        employee.department?.trim() &&
+        employee.designation?.trim()
+    );
+    const isGoalKpiHrStage =
+        !isEmployeeEvaluation &&
+        (assignment.current_stage === "hr" ||
+            assignment.access_stage === "hr");
+    const hrGoalEntries = Object.entries(
+        hrResponses?.goal_list || {}
+    );
+    const hrGoalCount = goalComponent
+        ? Math.max(
+            Object.keys(employeeResponses?.goal_list || {}).length,
+            Object.keys(supervisorResponses?.goal_list || {}).length,
+            1
+        )
+        : 0;
+    const hrGoalsToValidate = goalComponent
+        ? (hrGoalEntries.length > 0
+            ? hrGoalEntries.map(([, goal]) => goal)
+            : Array.from(
+                { length: hrGoalCount },
+                () => ({})
+            ))
+        : [];
+    const goalsComplete = !goalComponent || (
+        hrGoalsToValidate.length > 0 &&
+        hrGoalsToValidate.every(goal => goal?.final_goal?.trim())
+    );
+    const employeeKpiKeys = Object.keys(
+        employeeResponses?.kpi_list || {}
+    );
+    const supervisorKpiKeys = Object.keys(
+        supervisorResponses?.kpi_list || {}
+    );
+    const authoritativeKpiKeys = new Set([
+        ...employeeKpiKeys,
+        ...supervisorKpiKeys,
+        ...Object.keys(hrResponses?.kpi_list || {}),
+    ]);
+    if (authoritativeKpiKeys.size === 0 && kpiComponent) {
+        authoritativeKpiKeys.add("kpi_1");
+    }
+    const hrKpisToValidate = kpiComponent
+        ? Array.from(authoritativeKpiKeys).map(kpiKey =>
+            hrResponses?.kpi_list?.[kpiKey] || {}
+        )
+        : [];
+    const kpisComplete = !kpiComponent || (
+        hrKpisToValidate.length > 0 &&
+        hrKpisToValidate.every(kpi => (
+            kpi?.title?.trim() &&
+            kpi?.expectation?.trim()
+        ))
+    );
+    const requiredHrFieldsComplete =
+        employeeInformationComplete &&
+        goalsComplete &&
+        kpisComplete;
 
     if (isEmployeeEvaluation) {
 
@@ -575,7 +710,12 @@ export default function PublicEvaluation() {
                             variant="contained"
                             size="large"
                             onClick={handleSubmitEvaluation}
-                            disabled={submitted}
+                            disabled={
+                                submitted || (
+                                    isGoalKpiSupervisorStage &&
+                                    !requiredSupervisorFieldsComplete
+                                )
+                            }
                         >
                             {submitted
                                 ? "Evaluation Submitted"
@@ -647,17 +787,14 @@ export default function PublicEvaluation() {
 
                     <EmployeeFormPreview
                         workflow={assignment.workflow_json}
-                        previewMode={assignment.current_stage}
+                        previewMode={
+                            assignment.access_stage || assignment.current_stage
+                        }
                         reviewCycle={assignment.review_cycle}
                         employeeResponses={employeeResponses}
                         supervisorResponses={supervisorResponses}
                         hrResponses={hrResponses}
-                        employee={{
-                            full_name: assignment.employee_name,
-                            supervisor_name: assignment.supervisor_name,
-                            department: assignment.department,
-                            designation: assignment.designation,
-                        }}
+                        employee={employee}
                         setEmployeeResponses={setEmployeeResponses}
                         setSupervisorResponses={setSupervisorResponses}
                         setHrResponses={setHrResponses}
@@ -694,7 +831,14 @@ export default function PublicEvaluation() {
                             variant="contained"
                             size="large"
                             onClick={handleSubmitEvaluation}
-                            disabled={submitted}
+                            disabled={
+                                submitted || (
+                                    (isGoalKpiSupervisorStage &&
+                                        !requiredSupervisorFieldsComplete) ||
+                                    (isGoalKpiHrStage &&
+                                        !requiredHrFieldsComplete)
+                                )
+                            }
                         >
                             {submitted
                                 ? "Evaluation Submitted"

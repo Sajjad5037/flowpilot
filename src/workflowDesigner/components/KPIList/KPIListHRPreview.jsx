@@ -36,7 +36,8 @@ export default function KPIListHRPreview({
     // Authoritative KPI keys come from employee/supervisor data, never from HR's own responses.
     const authoritativeKpiKeySet = new Set([
         ...employeeKpiKeys,
-        ...supervisorKpiKeys
+        ...supervisorKpiKeys,
+        ...Object.keys(responses?.kpi_list || {})
     ]);
     const authoritativeKpiKeys = authoritativeKpiKeySet.size > 0
         ? Array.from(authoritativeKpiKeySet).sort(

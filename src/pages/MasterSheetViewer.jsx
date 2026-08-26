@@ -124,6 +124,12 @@ export default function MasterSheetViewer({
                 <EmployeeFormPreview
                     workflow={masterSheet.workflow_json}
                     previewMode="hr"
+                    employee={{
+                        full_name: masterSheet.employee_name,
+                        supervisor_name: masterSheet.supervisor_name,
+                        department: masterSheet.department,
+                        designation: masterSheet.designation
+                    }}
                     employeeResponses={masterSheet.employee_responses}
                     supervisorResponses={masterSheet.supervisor_responses}
                     hrResponses={masterSheet.hr_responses}

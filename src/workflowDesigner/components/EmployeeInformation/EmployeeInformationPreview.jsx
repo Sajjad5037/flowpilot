@@ -63,7 +63,7 @@ export default function EmployeeInformationPreview({
                 fullWidth
                 variant="outlined"
                 value={
-                    isActualEmployeeEvaluation
+                    (isActualEmployeeEvaluation || isHR)
                         ? (employeeValue || "")
                         : previewMode === "employee"
                         ? (responses?.employee_information?.[fieldKey] || "")
@@ -112,35 +112,6 @@ export default function EmployeeInformationPreview({
     );
 
 }
-
-    if (isHR) {
-
-    return (
-
-        <Box sx={{ mb: 4 }}>
-
-            <Typography
-                variant="body1"
-                fontWeight={600}
-            >
-
-                <strong>Employee:</strong>{" "}
-
-                {employeeResponses?.employee_information?.employee_name || "-"}
-
-                {" | "}
-
-                <strong>Supervisor:</strong>{" "}
-
-                {employeeResponses?.employee_information?.supervisor || "-"}
-
-            </Typography>
-
-        </Box>
-
-    );
-
-        }
 
         return (
 

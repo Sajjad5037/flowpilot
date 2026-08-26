@@ -78,13 +78,26 @@ export async function submitEvaluation(
 
     responses,
 
-    accessStage = null
+    accessStage = null,
+
+    accessToken = null
 
 ) {
 
-    const url = accessStage
-        ? `${API_BASE}/evaluation-assignments/${assignmentId}/submit?access_stage=${accessStage}`
-        : `${API_BASE}/evaluation-assignments/${assignmentId}/submit`;
+    const params = new URLSearchParams();
+
+    if (accessStage) {
+        params.set("access_stage", accessStage);
+    }
+
+    if (accessToken) {
+        params.set("access_token", accessToken);
+    }
+
+    const query = params.toString();
+    const url = `${API_BASE}/evaluation-assignments/${assignmentId}/submit${
+        query ? `?${query}` : ""
+    }`;
 
     const response = await axios.post(
 

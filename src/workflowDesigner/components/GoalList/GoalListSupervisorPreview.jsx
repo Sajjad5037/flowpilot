@@ -95,7 +95,7 @@ export default function GoalListSupervisorPreview({
                 fontWeight={700}
                 mb={3}
             >
-                {component.title || "Proposed Goals Review"}
+                {component.title || "Proposed Goals"}
             </Typography>
 
             <Stack spacing={5}>
@@ -190,7 +190,7 @@ export default function GoalListSupervisorPreview({
                                             fontWeight={600}
                                             mb={1}
                                         >
-                                            Supervisor Review
+                                            Supervisor
                                         </Typography>
 
                                         <TextField

@@ -68,6 +68,17 @@ export default function GoalListHRPreview({
         responses,
     ]);
 
+    const configuredGoals = (component.goals || []).map((goal, index) => [
+        `goal_${index + 1}`,
+        goal,
+    ]);
+    const configuredGoalKeys = new Set(
+        configuredGoals.map(([goalKey]) => goalKey)
+    );
+    const responseOnlyGoals = Object.keys(responseGoals)
+        .filter(goalKey => !configuredGoalKeys.has(goalKey))
+        .map(goalKey => [goalKey, responseGoals[goalKey]]);
+
     const goals = isRealEvaluation
         ? (goalEntries.length > 0
             ? goalEntries
@@ -75,10 +86,7 @@ export default function GoalListHRPreview({
                 { length: initialGoalCount },
                 (_, index) => [`goal_${index + 1}`, {}]
             ))
-        : (component.goals || []).map((goal, index) => [
-            `goal_${index + 1}`,
-            goal,
-        ]);
+        : [...configuredGoals, ...responseOnlyGoals];
 
     function updateGoals(updatedGoals) {
         onResponsesChange?.({
@@ -191,12 +199,10 @@ export default function GoalListHRPreview({
                                             <Stack spacing={1}>
 
                                                 <Typography>
-                                                    <strong>Proposal:</strong>{" "}
                                                     {employeeResponses?.goal_list?.[goalKey]?.proposal || "No employee proposal."}
                                                 </Typography>
 
                                                 <Typography>
-                                                    <strong>Description:</strong>{" "}
                                                     {employeeResponses?.goal_list?.[goalKey]?.description || ""}
                                                 </Typography>
 
