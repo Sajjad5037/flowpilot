@@ -115,8 +115,6 @@ export default function EmployeeFormPreview({
                             : workflow.name}
                         {isActualEmployeeEvaluation && cycleTitle &&
                             ` | ${cycleTitle}`}
-                        {isActualEmployeeEvaluation && previewMode === "supervisor" &&
-                            " | Supervisor Form"}
                         {!isActualEmployeeEvaluation &&
                             ` — ${previewMode.charAt(0).toUpperCase() + previewMode.slice(1)} Stage`}
                     </Typography>
