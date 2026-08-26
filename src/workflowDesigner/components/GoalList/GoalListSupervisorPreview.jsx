@@ -186,12 +186,7 @@ export default function GoalListSupervisorPreview({
 
                                     <Box>
 
-                                        <Typography
-                                            fontWeight={600}
-                                            mb={1}
-                                        >
-                                            Supervisor
-                                        </Typography>
+                                        
 
                                         <TextField
                                             fullWidth

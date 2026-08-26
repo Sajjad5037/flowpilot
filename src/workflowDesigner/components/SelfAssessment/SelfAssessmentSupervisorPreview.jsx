@@ -116,13 +116,6 @@ export default function SelfAssessmentSupervisorPreview({
 
                                 <Box>
 
-                                    <Typography
-                                        fontWeight={600}
-                                        mb={1}
-                                    >
-                                        Supervisor Response
-                                    </Typography>
-
                                     <TextField
                                         fullWidth
                                         multiline
