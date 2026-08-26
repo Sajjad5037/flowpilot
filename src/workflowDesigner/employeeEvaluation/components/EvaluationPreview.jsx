@@ -25,6 +25,7 @@ export default function EvaluationPreview({
     onClose,
     workflow,
     previewMode = "employee",
+    onComponentChange,
 }) {
     console.log(
             "EVALUATION PREVIEW MOUNTED",
@@ -316,6 +317,8 @@ export default function EvaluationPreview({
                                             previewMode={
                                                 previewMode
                                             }
+                                            isBuilderPreview={true}
+                                            onComponentChange={onComponentChange}
                                             responses={
                                                 previewMode === "employee"
                                                     ? previewResponses?.employee_responses || {}

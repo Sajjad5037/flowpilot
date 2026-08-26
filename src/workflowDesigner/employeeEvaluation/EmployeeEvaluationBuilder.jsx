@@ -144,6 +144,17 @@ export default function EmployeeEvaluationBuilder() {
      */
     function handleAddComponent(component) {
 
+        // Guard against re-adding a component already present in any stage.
+        const alreadyExists = [
+            ...(workflow.stages.employee || []),
+            ...(workflow.stages.supervisor || []),
+            ...(workflow.stages.hr || []),
+        ].some(existing => existing.id === component.id);
+
+        if (alreadyExists) {
+            return;
+        }
+
         if (component.id === "kpi_review_planning") {
 
             const employeeComponent = {
@@ -211,6 +222,10 @@ export default function EmployeeEvaluationBuilder() {
             ...component,
 
             instanceId: crypto.randomUUID(),
+
+            ...(component.id === "q3_goals_planning"
+                ? { goals: [{ id: "goal_1" }] }
+                : {}),
 
         };
 
@@ -296,6 +311,30 @@ export default function EmployeeEvaluationBuilder() {
 
         );
 
+    }
+
+
+    /*
+     * Remove a component (by component.id) from every stage.
+     */
+    function handleDeleteComponent(componentId) {
+        setWorkflow((prev) => ({
+            ...prev,
+            stages: {
+                ...prev.stages,
+                employee: (prev.stages.employee || []).filter(
+                    (component) => component.id !== componentId
+                ),
+                supervisor: (prev.stages.supervisor || []).filter(
+                    (component) => component.id !== componentId
+                ),
+                hr: (prev.stages.hr || []).filter(
+                    (component) => component.id !== componentId
+                ),
+            },
+        }));
+
+        setSelectedComponent(null);
     }
 
 
@@ -519,6 +558,14 @@ export default function EmployeeEvaluationBuilder() {
                             setSelectedComponent
                         }
 
+                        onDeleteComponent={
+                            handleDeleteComponent
+                        }
+
+                        onComponentChange={
+                            handleComponentChange
+                        }
+
                     />
 
                 </Paper>
@@ -604,6 +651,7 @@ export default function EmployeeEvaluationBuilder() {
                     <EvaluationPreview
                         workflow={workflow}
                         previewMode={currentStage}
+                        onComponentChange={handleComponentChange}
                     />
 
                 </Paper>

@@ -15,6 +15,8 @@ export default function Q3GoalsPlanning({
     onResponsesChange,
     employeeResponses = {},
     supervisorResponses = {},
+    isBuilderPreview = false,
+    onComponentChange,
 }) {
 
     /*
@@ -24,6 +26,127 @@ export default function Q3GoalsPlanning({
      */
 
     if (previewMode === "employee") {
+
+        if (isBuilderPreview) {
+
+            const builderGoals = component?.goals || [];
+
+            function handleAddBuilderGoal() {
+
+                const updatedGoals = [
+                    ...(component?.goals || []),
+                    { id: `goal_${(component?.goals?.length || 0) + 1}` },
+                ];
+
+                onComponentChange?.({
+                    ...component,
+                    goals: updatedGoals,
+                });
+
+            }
+
+            return (
+
+                <Box
+                    sx={{
+                        width: "100%",
+                    }}
+                >
+
+                    <Stack
+                        direction="row"
+                        alignItems="center"
+                        justifyContent="space-between"
+                        sx={{
+                            mb: 1.5,
+                        }}
+                    >
+
+                        <Typography
+                            variant="subtitle1"
+                            fontWeight={700}
+                            color="#0F172A"
+                        >
+                            Proposed Goals for Q3
+                        </Typography>
+
+                        <Button
+                            variant="outlined"
+                            size="small"
+                            onClick={handleAddBuilderGoal}
+                        >
+                            + Add Goal
+                        </Button>
+
+                    </Stack>
+
+                    <Stack spacing={1.5}>
+
+                        {builderGoals.map((goal, index) => (
+
+                            <Box
+                                key={goal.id}
+                                sx={{
+                                    display: "grid",
+                                    gridTemplateColumns: "55px 1fr 32px",
+                                    gap: 1,
+                                    alignItems: "center",
+                                }}
+                            >
+
+                                <Typography
+                                    variant="body2"
+                                    fontWeight={600}
+                                    color="#1E3A5F"
+                                >
+                                    Goal {index + 1}:
+                                </Typography>
+
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    disabled
+                                    placeholder="Employee will enter this goal"
+                                />
+
+                                <Typography
+                                    component="button"
+                                    onClick={() => {
+                                        const updatedGoals = builderGoals.filter(
+                                            (_, goalIndex) => goalIndex !== index
+                                        );
+
+                                        onComponentChange?.({
+                                            ...component,
+                                            goals: updatedGoals,
+                                        });
+                                    }}
+                                    sx={{
+                                        border: 0,
+                                        background: "transparent",
+                                        color: "#DC2626",
+                                        fontSize: 22,
+                                        fontWeight: 700,
+                                        cursor: "pointer",
+                                        lineHeight: 1,
+                                        p: 0,
+                                    }}
+                                    aria-label={`Remove Goal ${index + 1}`}
+                                >
+                                    ×
+                                </Typography>
+
+                            </Box>
+
+                        ))}
+
+                    </Stack>
+
+                </Box>
+
+            );
+
+        }
 
         return (
 

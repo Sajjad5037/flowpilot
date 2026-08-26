@@ -110,6 +110,8 @@ export default function KPIReviewPlanning({
     employeeResponses = {},
     supervisorResponses = {},
     hrResponses = {},
+    isBuilderPreview = false,
+    onComponentChange,
 }) {
 
     const settings = component?.settings || {};
@@ -219,6 +221,121 @@ export default function KPIReviewPlanning({
      *
      * For now these are preview values only.
      */
+
+    if (isBuilderPreview) {
+
+        const builderKpis = component?.kpis || [];
+
+        function handleAddBuilderKpi() {
+
+            const updatedKpis = [
+                ...(component?.kpis || []),
+                {
+                    id: `kpi_${(component?.kpis?.length || 0) + 1}`,
+                },
+            ];
+
+            onComponentChange?.({
+                ...component,
+                kpis: updatedKpis,
+            });
+        }
+
+        return (
+
+            <Box sx={{ width: "100%" }}>
+
+                <Stack
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    sx={{ mb: 1.5 }}
+                >
+
+                    <Typography
+                        variant="subtitle1"
+                        fontWeight={700}
+                        color="#0F172A"
+                    >
+                        Proposed KPIs
+                    </Typography>
+
+                    <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={handleAddBuilderKpi}
+                    >
+                        + Add KPI
+                    </Button>
+
+                </Stack>
+
+                <Stack spacing={1.5}>
+
+                    {builderKpis.map((kpi, index) => (
+
+                        <Box
+                            key={kpi.id}
+                            sx={{
+                                display: "grid",
+                            gridTemplateColumns: "55px 1fr 32px",
+                            gap: 1,
+                            alignItems: "center",
+                        }}
+                    >
+
+                        <Typography
+                            variant="body2"
+                            fontWeight={600}
+                            color="#1E3A5F"
+                        >
+                            KPI {index + 1}:
+                        </Typography>
+
+                        <TextField
+                            fullWidth
+                            size="small"
+                            disabled
+                            placeholder="Employee will enter this KPI"
+                        />
+
+                        <Typography
+                            component="button"
+                            onClick={() => {
+                                const updatedKpis = builderKpis.filter(
+                                    (_, kpiIndex) => kpiIndex !== index
+                                );
+
+                                onComponentChange?.({
+                                    ...component,
+                                    kpis: updatedKpis,
+                                });
+                            }}
+                            sx={{
+                                border: 0,
+                                background: "transparent",
+                                color: "#DC2626",
+                                fontSize: 22,
+                                fontWeight: 700,
+                                cursor: "pointer",
+                                lineHeight: 1,
+                                p: 0,
+                            }}
+                            aria-label={`Remove KPI ${index + 1}`}
+                        >
+                            ×
+                        </Typography>
+
+                            </Box>
+
+            ))}
+
+        </Stack>
+
+    </Box>
+);
+
+}
 
     if (previewMode === "employee") {
 

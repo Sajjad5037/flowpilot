@@ -21,7 +21,11 @@ export default function KPIListPreview({
                 expectation: true,
             };
 
-    const kpis = Object.keys(responses?.kpi_list || {});
+    const kpis = (component.kpis || [
+        {
+            id: "preview-kpi-1",
+        },
+    ]).map((_, index) => `kpi_${index + 1}`);
     function updateKPIField(kpiKey, fieldName, value) {
 
         onResponsesChange({

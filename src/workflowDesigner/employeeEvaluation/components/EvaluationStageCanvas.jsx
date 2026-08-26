@@ -1,8 +1,10 @@
 import {
     Box,
+    IconButton,
     Stack,
     Typography,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 import {
     EMPLOYEE_EVALUATION_REGISTRY,
@@ -18,6 +20,10 @@ export default function EvaluationStageCanvas({
     selectedComponent,
 
     onSelectComponent,
+
+    onDeleteComponent,
+
+    onComponentChange,
 
 }) {
 
@@ -193,24 +199,46 @@ export default function EvaluationStageCanvas({
                                 </Box>
 
 
-                                <Typography
-                                    variant="caption"
-                                    sx={{
-                                        px: 1,
-
-                                        py: 0.4,
-
-                                        borderRadius: 1,
-
-                                        bgcolor: "#EFF6FF",
-
-                                        color: "#2563EB",
-
-                                        fontWeight: 600,
-                                    }}
+                                <Stack
+                                    direction="row"
+                                    alignItems="center"
+                                    spacing={1}
                                 >
-                                    {currentStage}
-                                </Typography>
+
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            px: 1,
+
+                                            py: 0.4,
+
+                                            borderRadius: 1,
+
+                                            bgcolor: "#EFF6FF",
+
+                                            color: "#2563EB",
+
+                                            fontWeight: 600,
+                                        }}
+                                    >
+                                        {currentStage}
+                                    </Typography>
+
+                                    <IconButton
+                                        size="small"
+                                        aria-label={`Remove ${registryComponent.name}`}
+                                        onClick={(event) => {
+                                            event.stopPropagation();
+                                            onDeleteComponent?.(component.id);
+                                        }}
+                                        sx={{
+                                            color: "#DC2626",
+                                        }}
+                                    >
+                                        <CloseIcon fontSize="small" />
+                                    </IconButton>
+
+                                </Stack>
 
                             </Stack>
 
@@ -236,6 +264,8 @@ export default function EvaluationStageCanvas({
                             <Component
                                 component={component}
                                 previewMode={currentStage}
+                                isBuilderPreview={true}
+                                onComponentChange={onComponentChange}
                             />
 
                         </Box>

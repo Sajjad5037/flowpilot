@@ -9,6 +9,8 @@ export default function Q3GoalsPlanningPreview({
     employeeResponses = {},
     supervisorResponses = {},
     hrResponses = {},
+    isBuilderPreview = false,
+    onComponentChange,
 }) {
 
     return (
@@ -19,6 +21,8 @@ export default function Q3GoalsPlanningPreview({
             employeeResponses={employeeResponses}
             supervisorResponses={supervisorResponses}
             hrResponses={hrResponses}
+            isBuilderPreview={isBuilderPreview}
+            onComponentChange={onComponentChange}
         />
     );
 }
