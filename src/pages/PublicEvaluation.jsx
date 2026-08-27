@@ -64,6 +64,10 @@ export default function PublicEvaluation() {
         );
 
         setAssignment(data);
+        console.log(
+            "SUPERVISOR COMPONENTS:",
+            data.workflow_json?.stages?.supervisor
+        );
 
         // Load employee responses
         setEmployeeResponses(
@@ -265,22 +269,13 @@ export default function PublicEvaluation() {
     const performanceComponent = workflowComponents.find(
         component => component.id === "performance_and_core_values"
     );
-    const requiredPerformanceFields =
-        performanceComponent?.fields?.filter(field => {
-            const normalizedFieldLabel = field.label
-                ?.trim()
-                .replace(/:\s*$/, "")
-                .toLowerCase();
+    const performanceResponses =
+    supervisorResponses?.performance_and_core_values || {};
 
-            return [
-                "professional attributes to work on",
-                "core values to work on",
-            ].includes(normalizedFieldLabel);
-        }) || [];
     const performanceFieldsComplete =
-        requiredPerformanceFields.length === 2 &&
-        requiredPerformanceFields.every(
-            field => supervisorResponses?.performance_and_core_values?.[field.id]?.trim()
+        Boolean(
+            performanceResponses.professional_attributes?.trim() &&
+            performanceResponses.core_values?.trim()
         );
     const isGoalKpiSupervisorStage =
         assignment?.workflow_json?.type !== "employee_evaluation" &&
@@ -662,11 +657,7 @@ export default function PublicEvaluation() {
 
                         <Button
                             variant="contained"
-                            onClick={() => {
-
-                                console.log("Save Draft");
-
-                            }}
+                            onClick={handleSubmitEvaluation}
                             sx={{
                                 alignSelf: {
                                     xs: "stretch",

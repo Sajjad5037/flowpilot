@@ -1277,6 +1277,7 @@ function HRGoalTable({
         <Box
             sx={{
                 width: "100%",
+                minWidth: 0,
                 border:
                     "1px solid #CBD5E1",
                 overflow: "hidden",
@@ -1287,7 +1288,7 @@ function HRGoalTable({
                 sx={{
                     display: "grid",
                     gridTemplateColumns:
-                        "1.2fr 1fr 1fr 1fr 0.7fr",
+                        "2fr 0.9fr 0.9fr 0.9fr 0.7fr",
                 }}
             >
 
@@ -1417,7 +1418,8 @@ function HRGoalTable({
 
                     <TextField
                         fullWidth
-                        size="small"
+                        multiline
+                        minRows={3}
                         value={targetDescription || ""}
                         onChange={(event) =>
                             onTargetDescriptionChange(
@@ -1428,9 +1430,11 @@ function HRGoalTable({
                         sx={{
                             "& .MuiOutlinedInput-root": {
                                 backgroundColor: "#FFFFFF",
+                                alignItems: "flex-start",
                             },
                             "& .MuiInputBase-input": {
                                 fontSize: 13,
+                                overflowWrap: "anywhere",
                             },
                         }}
                     />

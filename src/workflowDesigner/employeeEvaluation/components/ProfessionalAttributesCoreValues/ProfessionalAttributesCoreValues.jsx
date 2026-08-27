@@ -10,7 +10,28 @@ import {
 export default function ProfessionalAttributesCoreValues({
     component,
     previewMode = "employee",
+    supervisorResponses = {},
+    onResponsesChange,
 }) {
+
+    const performanceResponses =
+        supervisorResponses?.performance_and_core_values || {};
+
+    const professionalAttributes =
+        performanceResponses.professional_attributes || "";
+
+    const coreValues =
+        performanceResponses.core_values || "";
+
+    const handleChange = (field, value) => {
+        onResponsesChange?.({
+            ...supervisorResponses,
+            performance_and_core_values: {
+                ...performanceResponses,
+                [field]: value,
+            },
+        });
+    };
 
     return (
 
@@ -45,7 +66,29 @@ export default function ProfessionalAttributesCoreValues({
                     <TextField
                         fullWidth
                         aria-label="Professional Attributes to Work On"
-                        defaultValue="N/A"
+                        value={professionalAttributes}
+                        onChange={
+                            previewMode === "supervisor"
+                                ? (event) =>
+                                    handleChange(
+                                        "professional_attributes",
+                                        event.target.value
+                                    )
+                                : undefined
+                        }
+                        slotProps={{
+                            input: {
+                                readOnly: previewMode === "hr",
+                            },
+                        }}
+                        sx={{
+                            "& .MuiOutlinedInput-root": {
+                                backgroundColor:
+                                    previewMode === "hr"
+                                        ? "#F1F5F9"
+                                        : "#FFFFFF",
+                            },
+                        }}
                         size="small"
                     />
 
@@ -68,7 +111,29 @@ export default function ProfessionalAttributesCoreValues({
                     <TextField
                         fullWidth
                         aria-label="Core Values to Work On"
-                        defaultValue="N/A"
+                        value={coreValues}
+                        onChange={
+                            previewMode === "supervisor"
+                                ? (event) =>
+                                    handleChange(
+                                        "core_values",
+                                        event.target.value
+                                    )
+                                : undefined
+                        }
+                        slotProps={{
+                            input: {
+                                readOnly: previewMode === "hr",
+                            },
+                        }}
+                        sx={{
+                            "& .MuiOutlinedInput-root": {
+                                backgroundColor:
+                                    previewMode === "hr"
+                                        ? "#F1F5F9"
+                                        : "#FFFFFF",
+                            },
+                        }}
                         size="small"
                     />
 

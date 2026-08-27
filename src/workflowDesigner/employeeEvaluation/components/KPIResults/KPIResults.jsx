@@ -91,6 +91,17 @@ export default function KPIResults({
         month => month.toLowerCase()
     );
 
+    const latestMonthKey = monthKeys[monthKeys.length - 1];
+
+    const hasAllLatestMonthValues =
+        finalizedKpis.length > 0 &&
+        finalizedKpis.every(
+            kpi =>
+                hrResponses?.kpi_results?.[kpi.id]?.[latestMonthKey] !== undefined &&
+                hrResponses?.kpi_results?.[kpi.id]?.[latestMonthKey] !== null &&
+                String(hrResponses.kpi_results[kpi.id][latestMonthKey]).trim() !== ""
+        );
+
     const kpiResponses =
         responses?.kpi_results || {};
 
@@ -255,8 +266,17 @@ export default function KPIResults({
                                 {editable ? (
                                     <TextField
                                         fullWidth
-                                        size="small"
+                                        multiline
+                                        minRows={2}
                                         defaultValue={kpi.title}
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                alignItems: "flex-start",
+                                            },
+                                            "& .MuiInputBase-input": {
+                                                overflowWrap: "anywhere",
+                                            },
+                                        }}
                                     />
                                 ) : (
                                     <Typography variant="body2">
@@ -823,6 +843,7 @@ export default function KPIResults({
                     value={
                         responses?.kpi_results?.overall_rating || ""
                     }
+                    disabled={!hasAllLatestMonthValues}
                     onChange={(event) => {
                         if (typeof onResponsesChange !== "function") {
                             return;

@@ -12,6 +12,10 @@ import GoalSelfEvaluation
     from "../components/GoalSelfEvaluation/GoalSelfEvaluation";
 import KPIResults
     from "../components/KPIResults/KPIResults";
+
+import ProfessionalAttributesCoreValues
+    from "../components/ProfessionalAttributesCoreValues/ProfessionalAttributesCoreValues";
+    
 import KPIReviewPlanning
     from "../components/KPIReviewPlanning/KPIReviewPlanning";
 import ExtraProjects
@@ -40,50 +44,221 @@ export default function EmployeeEvaluationForm({
             component => component.id === "employee_information"
         );
 
-    const selfAssessmentComponent =
-        workflow?.stages?.employee?.find(
-            component => component.id === "self_assessment"
+    const employeeComponents = workflow?.stages?.employee || [];
+    const supervisorComponents = workflow?.stages?.supervisor || [];
+    const hrComponents = workflow?.stages?.hr || [];
+
+    const employeeOnlyComponentIds = [
+        "self_assessment",
+    ];
+
+    const sharedEmployeeComponents =
+        employeeComponents.filter(
+            component =>
+                !employeeOnlyComponentIds.includes(
+                    component.id
+                )
         );
 
-    const companyInformationComponent =
-        workflow?.stages?.employee?.find(
-            component => component.id === "company_information"
+    const sharedSupervisorComponents =
+        supervisorComponents.filter(
+            component =>
+                [
+                    "q3_goals_planning",
+                ].includes(component.id)
         );
 
-    const goalSelfEvaluationComponent =
-        workflow?.stages?.employee?.find(
-            component => component.id === "goal_self_evaluation"
-        );
+    function getFormComponents() {
 
-    const kpiResultsComponent =
-        workflow?.stages?.employee?.find(
-            component => component.id === "kpi_results"
-        );
+        if (previewMode === "employee") {
 
-    const kpiReviewPlanningComponent =
-        workflow?.stages?.[previewMode]?.find(
-            component => component.id === "kpi_review_planning"
-        );
+            return [
+                ...employeeComponents,
+                ...sharedSupervisorComponents.filter(
+                    supervisorComponent =>
+                        !employeeComponents.some(
+                            employeeComponent =>
+                                employeeComponent.instanceId ===
+                                supervisorComponent.instanceId
+                        )
+                ),
+            ];
 
-    const extraProjectsComponent =
-        workflow?.stages?.employee?.find(
-            component => component.id === "extra_projects"
-        );
+        }
 
-    const discussionNotesFeedbackComponent =
-        workflow?.stages?.employee?.find(
-            component => component.id === "discussion_notes_feedback"
-        );
+        if (previewMode === "supervisor") {
 
-    const q3FeedbackProposedGoalsComponent =
-        workflow?.stages?.employee?.find(
-            component => component.id === "q3_feedback_proposed_goals"
-        );
+            return [
+                ...sharedEmployeeComponents,
+                ...supervisorComponents,
+            ];
 
-    const q3GoalsPlanningComponent =
-        workflow?.stages?.employee?.find(
-            component => component.id === "q3_goals_planning"
-        );
+        }
+
+        if (previewMode === "hr") {
+
+            return [
+                ...sharedEmployeeComponents,
+                ...supervisorComponents,
+                ...hrComponents,
+            ];
+
+        }
+
+        return [];
+
+    }
+
+    const formComponents = getFormComponents();
+
+    function renderComponent(component) {
+
+        switch (component.id) {
+
+            case "company_information":
+                return (
+                    <CompanyInformation
+                        key={component.instanceId}
+                        component={component}
+                    />
+                );
+
+            case "self_assessment":
+                return (
+                    <SelfAssessment
+                        key={component.instanceId}
+                        component={component}
+                    />
+                );
+
+            case "goal_self_evaluation":
+                return (
+                    <GoalSelfEvaluation
+                        key={component.instanceId}
+                        component={component}
+                        previewMode={previewMode}
+                        reviewCycleMonths={employee?.review_cycle_months}
+                        finalizedGoals={employee?.finalized_goals || []}
+                        responses={responses}
+                        onResponsesChange={onResponsesChange}
+                        employeeResponses={employeeResponses}
+                        supervisorResponses={supervisorResponses}
+                        hrResponses={hrResponses}
+                    />
+                );
+
+            case "kpi_results":
+                return (
+                    <KPIResults
+                        key={component.instanceId}
+                        component={component}
+                        previewMode={previewMode}
+                        finalizedKpis={employee?.finalized_kpis || []}
+                        reviewCycle={employee?.review_cycle}
+                        reviewCycleMonths={employee?.review_cycle_months || []}
+                        responses={responses}
+                        onResponsesChange={onResponsesChange}
+                        employeeResponses={employeeResponses}
+                        supervisorResponses={supervisorResponses}
+                        hrResponses={hrResponses}
+                    />
+                );
+
+            case "professional_attributes_core_values":
+                if (
+                    previewMode !== "supervisor" &&
+                    previewMode !== "hr"
+                ) {
+                    return null;
+                }
+
+                return (
+                    <ProfessionalAttributesCoreValues
+                        key={component.instanceId}
+                        component={component}
+                        previewMode={previewMode}
+                        responses={responses}
+                        onResponsesChange={onResponsesChange}
+                        supervisorResponses={supervisorResponses}
+                    />
+                );
+
+            case "kpi_review_planning":
+                return (
+                    <KPIReviewPlanning
+                        key={component.instanceId}
+                        component={component}
+                        previewMode={previewMode}
+                        reviewCycle={employee?.review_cycle}
+                        responses={responses}
+                        onResponsesChange={onResponsesChange}
+                        employeeResponses={employeeResponses}
+                        supervisorResponses={supervisorResponses}
+                        hrResponses={hrResponses}
+                    />
+                );
+
+            case "extra_projects":
+                return (
+                    <ExtraProjects
+                        key={component.instanceId}
+                        component={component}
+                        previewMode={previewMode}
+                        responses={responses}
+                        onResponsesChange={onResponsesChange}
+                        employeeResponses={employeeResponses}
+                        supervisorResponses={supervisorResponses}
+                        hrResponses={hrResponses}
+                    />
+                );
+
+            case "discussion_notes_feedback":
+                return (
+                    <DiscussionNotesFeedback
+                        key={component.instanceId}
+                        component={component}
+                        previewMode={previewMode}
+                        responses={responses}
+                        onResponsesChange={onResponsesChange}
+                        employeeResponses={employeeResponses}
+                        supervisorResponses={supervisorResponses}
+                        reviewCycle={employee?.review_cycle}
+                    />
+                );
+
+            case "q3_feedback_proposed_goals":
+                return (
+                    <Q3FeedbackProposedGoals
+                        key={component.instanceId}
+                        component={component}
+                        previewMode={previewMode}
+                        responses={responses}
+                        onResponsesChange={onResponsesChange}
+                        employeeResponses={employeeResponses}
+                        supervisorResponses={supervisorResponses}
+                        reviewCycle={employee?.review_cycle}
+                    />
+                );
+
+            case "q3_goals_planning":
+                return (
+                    <Q3GoalsPlanning
+                        key={component.instanceId}
+                        component={component}
+                        previewMode={previewMode}
+                        responses={responses}
+                        onResponsesChange={onResponsesChange}
+                        employeeResponses={employeeResponses}
+                        supervisorResponses={supervisorResponses}
+                    />
+                );
+
+            default:
+                return null;
+
+        }
+
+    }
 
     if (!employeeInformation) {
 
@@ -195,124 +370,7 @@ export default function EmployeeEvaluationForm({
 
             </Box>
 
-            {companyInformationComponent && (
-
-                <CompanyInformation
-                    component={companyInformationComponent}
-                />
-
-            )}
-
-            {selfAssessmentComponent && (
-
-                <SelfAssessment
-                    component={selfAssessmentComponent}
-                />
-
-            )}
-
-            {goalSelfEvaluationComponent && (
-
-                <GoalSelfEvaluation
-                    component={goalSelfEvaluationComponent}
-                    previewMode={previewMode}
-                    reviewCycleMonths={employee?.review_cycle_months}
-                    finalizedGoals={employee?.finalized_goals || []}
-                    responses={responses}
-                    onResponsesChange={onResponsesChange}
-                    employeeResponses={employeeResponses}
-                    supervisorResponses={supervisorResponses}
-                    hrResponses={hrResponses}
-                />
-
-            )}
-
-            {kpiResultsComponent && (
-
-                <KPIResults
-                    component={kpiResultsComponent}
-                    previewMode={previewMode}
-                    finalizedKpis={employee?.finalized_kpis || []}
-                    reviewCycle={employee?.review_cycle}
-                    reviewCycleMonths={employee?.review_cycle_months || []}
-                    responses={responses}
-                    onResponsesChange={onResponsesChange}
-                    employeeResponses={employeeResponses}
-                    supervisorResponses={supervisorResponses}
-                    hrResponses={hrResponses}
-                />
-
-            )}
-
-            {kpiReviewPlanningComponent && (
-
-                <KPIReviewPlanning
-                    component={kpiReviewPlanningComponent}
-                    previewMode={previewMode}
-                    reviewCycle={employee?.review_cycle}
-                    responses={responses}
-                    onResponsesChange={onResponsesChange}
-                    employeeResponses={employeeResponses}
-                    supervisorResponses={supervisorResponses}
-                    hrResponses={hrResponses}
-                />
-
-            )}
-
-            {extraProjectsComponent && (
-
-                <ExtraProjects
-                    component={extraProjectsComponent}
-                    previewMode={previewMode}
-                    responses={responses}
-                    onResponsesChange={onResponsesChange}
-                    employeeResponses={employeeResponses}
-                    supervisorResponses={supervisorResponses}
-                    hrResponses={hrResponses}
-                />
-
-            )}
-
-            {discussionNotesFeedbackComponent && (
-
-                <DiscussionNotesFeedback
-                    component={discussionNotesFeedbackComponent}
-                    previewMode={previewMode}
-                    responses={responses}
-                    onResponsesChange={onResponsesChange}
-                    employeeResponses={employeeResponses}
-                    supervisorResponses={supervisorResponses}
-                    reviewCycle={employee?.review_cycle}
-                />
-
-            )}
-
-            {q3FeedbackProposedGoalsComponent && (
-
-                <Q3FeedbackProposedGoals
-                    component={q3FeedbackProposedGoalsComponent}
-                    previewMode={previewMode}
-                    responses={responses}
-                    onResponsesChange={onResponsesChange}
-                    employeeResponses={employeeResponses}
-                    supervisorResponses={supervisorResponses}
-                    reviewCycle={employee?.review_cycle}
-                />
-
-            )}
-
-            {q3GoalsPlanningComponent && (
-
-                <Q3GoalsPlanning
-                    component={q3GoalsPlanningComponent}
-                    previewMode={previewMode}
-                    responses={responses}
-                    onResponsesChange={onResponsesChange}
-                    employeeResponses={employeeResponses}
-                    supervisorResponses={supervisorResponses}
-                />
-
-            )}
+            {formComponents.map(renderComponent)}
 
         </Box>
 

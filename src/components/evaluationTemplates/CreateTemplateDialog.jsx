@@ -34,7 +34,9 @@ export default function CreateTemplateDialog({
 
     function handleContinue() {
 
-        onCreate(form);
+        onCreate({
+            name: form.name,
+        });
 
         setForm({
             name: "",

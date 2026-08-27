@@ -15,6 +15,8 @@ import CreateTemplateDialog from "../../components/evaluationTemplates/CreateTem
 import {
     getTemplates
 } from "../../services/evaluationTemplateService";
+import evaluationTemplateService
+    from "../../services/evaluationTemplateService";
 
 export default function EvaluationTemplates() {
 
@@ -27,13 +29,39 @@ export default function EvaluationTemplates() {
         loadTemplates();
 
     }, []);
-    function handleCreateTemplate(template) {
+    async function handleCreateTemplate(template) {
 
-        console.log(template);
+        try {
 
-        setDialogOpen(false);
+            const createdTemplate =
+                await evaluationTemplateService.create({
+                    name: template.name,
+                    workflow_type: "employee_evaluation",
+                    workflow_json: {
+                        id: crypto.randomUUID(),
+                        name: template.name,
+                        type: "employee_evaluation",
+                        stages: {
+                            employee: [],
+                            supervisor: [],
+                            hr: [],
+                        },
+                    },
+                });
 
-        navigate("/evaluation-templates/1/builder");
+            setDialogOpen(false);
+            navigate(
+                `/evaluation-templates/${createdTemplate.id}/builder`
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+            alert("Failed to create evaluation template.");
+
+        }
 
     }
 

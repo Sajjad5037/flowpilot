@@ -87,16 +87,32 @@ export default function Builder() {
         // Prevent duplicate singleton components
         if (registryComponent?.singleton) {
 
-            const existingComponent =
-                workflow.stages[currentStage].find(
+            let existingComponent = null;
+
+            for (const stage of Object.values(workflow.stages)) {
+
+                const foundComponent = stage.find(
                     item => item.id === component.id
                 );
 
-            console.log("Existing Component:", existingComponent);
+                if (foundComponent) {
+                    existingComponent = foundComponent;
+                    break;
+                }
+
+            }
+
+            console.log(
+                "Existing singleton component across workflow:",
+                existingComponent
+            );
 
             if (existingComponent) {
 
-                console.log("Singleton already exists. Selecting existing component.");
+                console.log(
+                    "Singleton already exists in another stage. " +
+                    "Do not create another instance."
+                );
 
                 setSelectedComponent(existingComponent);
 

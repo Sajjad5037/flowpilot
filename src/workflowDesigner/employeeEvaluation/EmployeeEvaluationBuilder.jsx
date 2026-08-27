@@ -155,68 +155,6 @@ export default function EmployeeEvaluationBuilder() {
             return;
         }
 
-        if (component.id === "kpi_review_planning") {
-
-            const employeeComponent = {
-                ...component,
-                stages: ["employee", "supervisor", "hr"],
-                instanceId: crypto.randomUUID(),
-            };
-
-            const supervisorComponent = {
-                ...component,
-                stages: ["employee", "supervisor", "hr"],
-                instanceId: crypto.randomUUID(),
-            };
-
-            const hrComponent = {
-                ...component,
-                stages: ["employee", "supervisor", "hr"],
-                instanceId: crypto.randomUUID(),
-            };
-
-            setWorkflow(prev => ({
-                ...prev,
-                stages: {
-                    ...prev.stages,
-
-                    employee: [
-                        ...(prev.stages.employee || []).filter(
-                            existing =>
-                                existing.id !== "kpi_review_planning"
-                        ),
-                        employeeComponent,
-                    ],
-
-                    supervisor: [
-                        ...(prev.stages.supervisor || []).filter(
-                            existing =>
-                                existing.id !== "kpi_review_planning"
-                        ),
-                        supervisorComponent,
-                    ],
-
-                    hr: [
-                        ...(prev.stages.hr || []).filter(
-                            existing =>
-                                existing.id !== "kpi_review_planning"
-                        ),
-                        hrComponent,
-                    ],
-                },
-            }));
-
-            setSelectedComponent(
-                currentStage === "supervisor"
-                    ? supervisorComponent
-                    : currentStage === "hr"
-                    ? hrComponent
-                    : employeeComponent
-            );
-
-            return;
-        }
-
         const newComponent = {
 
             ...component,
