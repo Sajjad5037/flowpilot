@@ -64,7 +64,8 @@ export default function AddEmployeeDialog({
         department: "",
         designation: "",
         role: "",
-        isActive: true
+        isActive: true,
+        isExistingEmployee: false
 
     };
 
@@ -89,7 +90,8 @@ export default function AddEmployeeDialog({
                 department: employee.department ?? "",
                 designation: employee.designation ?? "",
                 role: employee.role ?? "",
-                isActive: employee.is_active ?? true
+                isActive: employee.is_active ?? true,
+                isExistingEmployee: employee.is_existing_employee ?? false
 
             });
 
@@ -316,6 +318,25 @@ export default function AddEmployeeDialog({
                         </Grid>
 
                     )}
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    checked={form.isExistingEmployee}
+                                    onChange={(event) =>
+                                        setForm(prev => ({
+                                            ...prev,
+                                            isExistingEmployee: event.target.checked
+                                        }))
+                                    }
+                                />
+                            }
+                            label="Existing Employee"
+                        />
+
+                    </Grid>
 
                 </Grid>
 

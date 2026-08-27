@@ -272,11 +272,21 @@ export default function PublicEvaluation() {
     const performanceResponses =
     supervisorResponses?.performance_and_core_values || {};
 
+    const performanceFields = performanceComponent?.fields || [];
+
     const performanceFieldsComplete =
-        Boolean(
-            performanceResponses.professional_attributes?.trim() &&
-            performanceResponses.core_values?.trim()
-        );
+        !performanceComponent ||
+        performanceFields.length === 0 ||
+        performanceFields.every(field => {
+            const value =
+                performanceResponses?.[field.id];
+
+            return (
+                value !== undefined &&
+                value !== null &&
+                String(value).trim() !== ""
+            );
+        });
     const isGoalKpiSupervisorStage =
         assignment?.workflow_json?.type !== "employee_evaluation" &&
         assignment?.current_stage === "supervisor";
@@ -284,6 +294,14 @@ export default function PublicEvaluation() {
         goalFieldsComplete &&
         kpiFieldsComplete &&
         performanceFieldsComplete;
+    console.log("SUPERVISOR SUBMIT VALIDATION DEBUG", {
+        isGoalKpiSupervisorStage,
+        goalFieldsComplete,
+        kpiFieldsComplete,
+        performanceFieldsComplete,
+        requiredSupervisorFieldsComplete,
+        supervisorResponses,
+    });
     const employeeGoals = Object.values(
         employeeResponses?.goal_list || {}
     );

@@ -27,7 +27,8 @@ export async function createEmployee(employee) {
             department: employee.department,
             designation: employee.designation,
             role: employee.role,
-            is_active: employee.isActive
+            is_active: employee.isActive,
+            is_existing_employee: employee.isExistingEmployee
         }
     );
 
@@ -49,7 +50,8 @@ export async function updateEmployee(id, employee) {
             department: employee.department,
             designation: employee.designation,
             role: employee.role,
-            is_active: employee.isActive
+            is_active: employee.isActive,
+            is_existing_employee: employee.isExistingEmployee
         }
     );
 

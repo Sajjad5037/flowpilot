@@ -91,25 +91,129 @@ export default function KPIResults({
         month => month.toLowerCase()
     );
 
-    const latestMonthKey = monthKeys[monthKeys.length - 1];
-
-    const hasAllLatestMonthValues =
-        finalizedKpis.length > 0 &&
-        finalizedKpis.every(
-            kpi =>
-                hrResponses?.kpi_results?.[kpi.id]?.[latestMonthKey] !== undefined &&
-                hrResponses?.kpi_results?.[kpi.id]?.[latestMonthKey] !== null &&
-                String(hrResponses.kpi_results[kpi.id][latestMonthKey]).trim() !== ""
-        );
-
     const kpiResponses =
         responses?.kpi_results || {};
+
+    console.group("KPI month validation diagnosis");
+    console.log("previewMode:", previewMode);
+    console.log("finalizedKpis:", finalizedKpis);
+    console.log("monthKeys:", monthKeys);
+    console.log("kpiResponses:", kpiResponses);
+    finalizedKpis.forEach(kpi => {
+        monthKeys.forEach(monthKey => {
+            const value =
+                kpiResponses?.[kpi.id]?.[monthKey];
+
+            console.log("KPI/month value:", {
+                kpiId: kpi.id,
+                monthKey,
+                value,
+                valueType: typeof value,
+                isEmptyString: value === "",
+                isNull: value === null,
+                isUndefined: value === undefined,
+                isNumericZero: value === 0,
+            });
+        });
+    });
+    console.groupEnd();
 
     const displayedKpiResponses =
         previewMode === "employee" ||
         previewMode === "supervisor"
             ? hrResponses?.kpi_results || {}
             : kpiResponses;
+
+    finalizedKpis.forEach(kpi => {
+        monthKeys.forEach(monthKey => {
+            console.log(
+                "Supervisor KPI rating diagnosis:",
+                JSON.stringify(
+                    {
+                        previewMode,
+                        kpiId: kpi.id,
+                        title: kpi.title,
+                        monthKey,
+                        displayedValue:
+                            displayedKpiResponses?.[kpi.id]?.[monthKey],
+                        kpiResponseValue:
+                            kpiResponses?.[kpi.id]?.[monthKey],
+                        hrKpiResponses:
+                            hrResponses?.kpi_results,
+                        employeeKpiResponses:
+                            employeeResponses?.kpi_results,
+                        supervisorKpiResponses:
+                            supervisorResponses?.kpi_results,
+                    },
+                    (_key, value) =>
+                        value === undefined
+                            ? "[undefined]"
+                            : value
+                )
+            );
+        });
+    });
+
+    console.log(
+        "Complete displayedKpiResponses:",
+        JSON.stringify(
+            displayedKpiResponses,
+            (_key, value) =>
+                value === undefined
+                    ? "[undefined]"
+                    : value
+        )
+    );
+
+    const hasAllMonthValues =
+        finalizedKpis.length > 0 &&
+        finalizedKpis.every(kpi =>
+            monthKeys.every(monthKey => {
+                const value =
+                    displayedKpiResponses?.[kpi.id]?.[monthKey];
+
+                return (
+                    value !== undefined &&
+                    value !== null &&
+                    String(value).trim() !== ""
+                );
+            })
+        );
+
+    finalizedKpis.forEach(kpi => {
+        monthKeys.forEach(monthKey => {
+            const validationValue =
+                kpiResponses?.[kpi.id]?.[monthKey];
+
+            console.log(
+                "KPI validation comparison:",
+                JSON.stringify({
+                    kpiId: kpi.id,
+                    title: kpi.title,
+                    monthKey,
+                    validationValue,
+                    validationValueType: typeof validationValue,
+                    isUndefined: validationValue === undefined,
+                    isNull: validationValue === null,
+                    isEmptyString: validationValue === "",
+                    trimmedValue:
+                        typeof validationValue === "string"
+                            ? validationValue.trim()
+                            : null,
+                })
+            );
+        });
+    });
+
+    console.log({
+        previewMode,
+        finalizedKpis,
+        monthKeys,
+        kpiResponses,
+        hasAllMonthValues,
+    });
+
+    console.log("hasAllMonthValues:", hasAllMonthValues);
 
     function updateKpiMonth(
         kpiId,
@@ -130,36 +234,6 @@ export default function KPIResults({
                 },
             },
         });
-    }
-
-
-    function calculateKpiAverage(kpiId) {
-
-        const sourceResponses =
-            previewMode === "employee" ||
-            previewMode === "supervisor"
-                ? hrResponses?.kpi_results || {}
-                : kpiResponses;
-
-        const values = monthKeys
-            .map(
-                monthKey =>
-                    sourceResponses?.[kpiId]?.[monthKey]
-            )
-            .map(value => Number(value))
-            .filter(value => !Number.isNaN(value));
-
-        if (values.length === 0) {
-            return "";
-        }
-
-        const average =
-            values.reduce(
-                (sum, value) => sum + value,
-                0
-            ) / values.length;
-
-        return average.toFixed(2);
     }
 
 
@@ -262,6 +336,39 @@ export default function KPIResults({
                         >
 
                             <BodyCell>
+
+                                {console.log(
+                                    "August KPI input diagnosis:",
+                                    JSON.stringify(
+                                        {
+                                            kpiId: kpi.id,
+                                            transformedKpiId: kpi.kpiId,
+                                            title: kpi.title,
+                                            monthKeys,
+                                            kpiResponses,
+                                            kpiResponseByKpiId:
+                                                kpiResponses?.[kpi.kpiId]?.[monthKeys[1]],
+                                            kpiResponseByKpiIdType:
+                                                typeof kpiResponses?.[kpi.kpiId]?.[monthKeys[1]],
+                                            kpiResponseById:
+                                                kpiResponses?.[kpi.id]?.[monthKeys[1]],
+                                            kpiResponseByIdType:
+                                                typeof kpiResponses?.[kpi.id]?.[monthKeys[1]],
+                                            displayedKpiResponse:
+                                                displayedKpiResponses?.[kpi.kpiId]?.[monthKeys[1]],
+                                            displayedKpiResponseType:
+                                                typeof displayedKpiResponses?.[kpi.kpiId]?.[monthKeys[1]],
+                                            responses,
+                                            employeeResponses,
+                                            supervisorResponses,
+                                            hrResponses,
+                                        },
+                                        (_key, value) =>
+                                            value === undefined
+                                                ? "[undefined]"
+                                                : value
+                                    )
+                                )}
 
                                 {editable ? (
                                     <TextField
@@ -386,9 +493,33 @@ export default function KPIResults({
                                 <TextField
                                     fullWidth
                                     size="small"
-                                    value={calculateKpiAverage(kpi.kpiId)}
+                                    value={
+                                        displayedKpiResponses?.[kpi.kpiId]?.q3_average || ""
+                                    }
+                                    onChange={(event) => {
+
+                                        if (previewMode !== "hr") {
+                                            return;
+                                        }
+
+                                        if (typeof onResponsesChange !== "function") {
+                                            return;
+                                        }
+
+                                        onResponsesChange({
+                                            ...responses,
+                                            kpi_results: {
+                                                ...(responses?.kpi_results || {}),
+                                                [kpi.kpiId]: {
+                                                    ...(responses?.kpi_results?.[kpi.kpiId] || {}),
+                                                    q3_average: event.target.value,
+                                                },
+                                            },
+                                        });
+
+                                    }}
                                     InputProps={{
-                                        readOnly: true,
+                                        readOnly: previewMode !== "hr",
                                     }}
                                     sx={{
                                         "& .MuiOutlinedInput-root": {
@@ -549,6 +680,7 @@ export default function KPIResults({
                             value={
                                 responses?.kpi_results?.overall_rating || ""
                             }
+                            disabled={!hasAllMonthValues}
                             onChange={(event) => {
                                 if (typeof onResponsesChange !== "function") {
                                     return;
@@ -753,6 +885,7 @@ export default function KPIResults({
                             <Select
                                 aria-label="Final Agreed Rating"
                                 defaultValue="4"
+                                disabled={!hasAllMonthValues}
                             >
 
                                 <MenuItem value="1">
@@ -843,7 +976,7 @@ export default function KPIResults({
                     value={
                         responses?.kpi_results?.overall_rating || ""
                     }
-                    disabled={!hasAllLatestMonthValues}
+                    disabled={!hasAllMonthValues}
                     onChange={(event) => {
                         if (typeof onResponsesChange !== "function") {
                             return;
