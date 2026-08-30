@@ -23,6 +23,7 @@ export default function EvaluationAssignments() {
     const [template, setTemplate] = useState("");
     const [employees, setEmployees] = useState([]);
     const [templates, setTemplates] = useState([]);
+    const [hasEmployeeEvaluation, setHasEmployeeEvaluation] = useState(false);
 
     const selectedEmployee = employees.find(
         e => e.id === Number(employee)
@@ -33,6 +34,17 @@ export default function EvaluationAssignments() {
         loadData();
 
     }, []);
+    useEffect(() => {
+
+        const employeeEvaluationExists = templates.some(
+            template =>
+                template.workflow_type === "employee_evaluation" &&
+                template.status !== "inactive"
+        );
+
+        setHasEmployeeEvaluation(employeeEvaluationExists);
+
+    }, [templates]);
 
     async function loadData() {
 
@@ -287,9 +299,20 @@ export default function EvaluationAssignments() {
                         variant="contained"
                         size="large"
                         onClick={handleSendEvaluation}
+                        disabled={!hasEmployeeEvaluation}
                     >
                         Send Evaluation
                     </Button>
+
+                    {!hasEmployeeEvaluation && (
+                        <Typography
+                            variant="body2"
+                            color="error"
+                            sx={{ mt: 1 }}
+                        >
+                            First add the Employee Evaluation form to send Goal and KPI Settings form.
+                        </Typography>
+                    )}
 
                 </Box>
 

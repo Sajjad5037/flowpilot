@@ -99,8 +99,12 @@ export default function EmployeeGoalList({
                     }}
                 >
                     <Typography
-                        variant="body1"
-                        fontWeight={600}
+                        sx={{
+                            color: "#0F172A",
+                            fontSize: 14,
+                            fontWeight: 700,
+                            lineHeight: 1.45,
+                        }}
                     >
                         {label}
                     </Typography>
@@ -120,6 +124,26 @@ export default function EmployeeGoalList({
                         );
                     }}
                     {...props}
+                    sx={{
+                        "& .MuiOutlinedInput-root": {
+                            bgcolor: "#FFFFFF",
+                            borderRadius: 1.5,
+                            "& fieldset": {
+                                borderColor: "#CBD5E1",
+                            },
+                            "&:hover fieldset": {
+                                borderColor: "#94A3B8",
+                            },
+                            "&.Mui-focused fieldset": {
+                                borderColor: "#7C3AED",
+                                borderWidth: 1,
+                            },
+                        },
+                        "& .MuiInputBase-input": {
+                            color: "#334155",
+                            fontSize: 14,
+                        },
+                    }}
                 />
             </Box>
         );
@@ -128,24 +152,147 @@ export default function EmployeeGoalList({
     return (
         <Box
             sx={{
+                bgcolor: "#FFFFFF",
+                border: "1px solid #E2E8F0",
+                borderRadius: 2,
+                p: {
+                    xs: 2.5,
+                    sm: 3,
+                },
                 mb: 4,
             }}
         >
-            <Typography
-                variant="h6"
-                fontWeight={700}
-                mb={3}
+            <Box
+                sx={{
+                    display: "flex",
+                    flexDirection: {
+                        xs: "column",
+                        sm: "row",
+                    },
+                    alignItems: {
+                        xs: "stretch",
+                        sm: "flex-start",
+                    },
+                    justifyContent: "space-between",
+                    gap: 2,
+                    mb: 2.5,
+                }}
             >
-                {component.title || "Proposed Goals"}
-            </Typography>
+                <Box>
+                    <Typography
+                        component="h2"
+                        sx={{
+                            color: "#0F172A",
+                            fontSize: 18,
+                            fontWeight: 700,
+                            lineHeight: 1.35,
+                        }}
+                    >
+                        {component.title || "Proposed Goals"}
+                    </Typography>
+
+                    {component.description && (
+                        <Typography
+                            sx={{
+                                color: "#64748B",
+                                fontSize: 14,
+                                lineHeight: 1.5,
+                                mt: 0.5,
+                            }}
+                        >
+                            {component.description}
+                        </Typography>
+                    )}
+                </Box>
+
+                <Button
+                    variant="outlined"
+                    onClick={addGoal}
+                    sx={{
+                        alignSelf: {
+                            xs: "flex-start",
+                            sm: "auto",
+                        },
+                        flexShrink: 0,
+                        borderColor: "#D8B4FE",
+                        color: "#7C3AED",
+                        textTransform: "none",
+                        "&:hover": {
+                            borderColor: "#A855F7",
+                            bgcolor: "#FAF5FF",
+                        },
+                    }}
+                >
+                    + Add Proposed Goal
+                </Button>
+            </Box>
 
             {goals.map(([goalKey], index) => (
                 <Box
                     key={goalKey}
                     sx={{
-                        mb: 5,
+                        bgcolor: "#FAFBFD",
+                        border: "1px solid #DCE3EC",
+                        borderRadius: 2,
+                        p: {
+                            xs: 2,
+                            sm: 2.5,
+                        },
+                        mb: index === goals.length - 1 ? 0 : 2.5,
                     }}
                 >
+                    <Box
+                        sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: 2,
+                            mb: 2,
+                        }}
+                    >
+                        <Typography
+                            sx={{
+                                color: "#0F172A",
+                                fontSize: 14,
+                                fontWeight: 700,
+                            }}
+                        >
+                            Goal #{index + 1}
+                        </Typography>
+
+                        <Box
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 1,
+                            }}
+                        >
+                            <Typography
+                                sx={{
+                                    color: "#94A3B8",
+                                    fontSize: 13,
+                                    fontWeight: 500,
+                                }}
+                            >
+                                Proposed Target
+                            </Typography>
+
+                            <IconButton
+                                size="small"
+                                aria-label={`Remove Goal ${index + 1}`}
+                                onClick={() => removeGoal(index)}
+                                sx={{
+                                    color: "#DC2626",
+                                    "&:hover": {
+                                        backgroundColor: "#FEE2E2",
+                                    },
+                                }}
+                            >
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                        </Box>
+                    </Box>
+
                     <Grid
                         container
                         spacing={3}
@@ -163,23 +310,9 @@ export default function EmployeeGoalList({
                                 }}
                             >
                                 {renderField(
-                                    `Goal ${index + 1} Proposal`,
+                                    "Target Description",
                                     index,
-                                    "proposal",
-                                    {},
-                                    <IconButton
-                                        size="small"
-                                        aria-label={`Remove Goal ${index + 1}`}
-                                        onClick={() => removeGoal(index)}
-                                        sx={{
-                                            color: "#DC2626",
-                                            "&:hover": {
-                                                backgroundColor: "#FEE2E2",
-                                            },
-                                        }}
-                                    >
-                                        <CloseIcon fontSize="small" />
-                                    </IconButton>
+                                    "proposal"
                                 )}
                             </Grid>
                         )}
@@ -225,7 +358,7 @@ export default function EmployeeGoalList({
                         )}
 
                         {fields.weight && (
-                            <Grid item xs={6}>
+                            <Grid item xs={12} sm={6}>
                                 {renderField(
                                     "Weight (%)",
                                     index,
@@ -235,7 +368,7 @@ export default function EmployeeGoalList({
                         )}
 
                         {fields.targetDate && (
-                            <Grid item xs={6}>
+                            <Grid item xs={12} sm={6}>
                                 {renderField(
                                     "Target Date",
                                     index,
@@ -253,13 +386,6 @@ export default function EmployeeGoalList({
                     </Grid>
                 </Box>
             ))}
-
-            <Button
-                variant="outlined"
-                onClick={addGoal}
-            >
-                + Add Goal
-            </Button>
         </Box>
     );
 }

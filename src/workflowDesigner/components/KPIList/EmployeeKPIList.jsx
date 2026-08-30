@@ -71,30 +71,49 @@ export default function EmployeeKPIList({
     return (
         <Box
             sx={{
+                bgcolor: "#FFFFFF",
+                border: "1px solid #E2E8F0",
+                borderRadius: 2,
+                p: {
+                    xs: 2.5,
+                    sm: 3,
+                },
                 mb: 4,
             }}
         >
             <Box
                 sx={{
                     display: "flex",
+                    flexDirection: {
+                        xs: "column",
+                        sm: "row",
+                    },
                     alignItems: "flex-start",
                     justifyContent: "space-between",
                     gap: 2,
-                    mb: 2,
+                    mb: 2.5,
                 }}
             >
                 <Box>
                     <Typography
-                        variant="h6"
-                        fontWeight={700}
+                        component="h2"
+                        sx={{
+                            color: "#0F172A",
+                            fontSize: 18,
+                            fontWeight: 700,
+                            lineHeight: 1.35,
+                        }}
                     >
                         {component.title || "3. Proposed Key Performance Indicators (KPIs)"}
                     </Typography>
 
                     <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mt: 0.75 }}
+                        sx={{
+                            color: "#64748B",
+                            fontSize: 14,
+                            lineHeight: 1.5,
+                            mt: 0.5,
+                        }}
                     >
                         {component.description ||
                             "Propose ongoing recurring metrics and minimum target expectations."}
@@ -105,7 +124,18 @@ export default function EmployeeKPIList({
                     variant="outlined"
                     onClick={addKpi}
                     sx={{
+                        alignSelf: {
+                            xs: "flex-start",
+                            sm: "auto",
+                        },
                         flexShrink: 0,
+                        borderColor: "#D8B4FE",
+                        color: "#7C3AED",
+                        textTransform: "none",
+                        "&:hover": {
+                            borderColor: "#A855F7",
+                            bgcolor: "#FAF5FF",
+                        },
                     }}
                 >
                     + Add KPI
@@ -114,8 +144,8 @@ export default function EmployeeKPIList({
 
             <TableContainer
                 sx={{
-                    border: "1px solid #D1D5DB",
-                    borderRadius: 2,
+                    border: "1px solid #DCE3EC",
+                    borderRadius: 0,
                     overflowX: "auto",
                 }}
             >
@@ -128,14 +158,19 @@ export default function EmployeeKPIList({
                     <TableHead>
                         <TableRow
                             sx={{
-                                backgroundColor: "#EEF2F7",
+                                backgroundColor: "#F8FAFC",
                             }}
                         >
                             {fields.kpiTitle && (
                                 <TableCell
                                     sx={{
+                                        color: "#0F172A",
+                                        fontSize: 13,
                                         fontWeight: 700,
-                                        borderRight: "1px solid #D1D5DB",
+                                        borderRight: "1px solid #DCE3EC",
+                                        borderBottom: "1px solid #DCE3EC",
+                                        px: 1.5,
+                                        py: 1.25,
                                     }}
                                 >
                                     Proposed KPI Title
@@ -145,7 +180,12 @@ export default function EmployeeKPIList({
                             {fields.expectation && (
                                 <TableCell
                                     sx={{
+                                        color: "#0F172A",
+                                        fontSize: 13,
                                         fontWeight: 700,
+                                        borderBottom: "1px solid #DCE3EC",
+                                        px: 1.5,
+                                        py: 1.25,
                                     }}
                                 >
                                     Target Expectation
@@ -154,8 +194,9 @@ export default function EmployeeKPIList({
 
                             <TableCell
                                 sx={{
-                                    width: 48,
+                                    width: 40,
                                     p: 0.5,
+                                    borderBottom: "1px solid #DCE3EC",
                                 }}
                             />
                         </TableRow>
@@ -167,13 +208,16 @@ export default function EmployeeKPIList({
                                 {fields.kpiTitle && (
                                     <TableCell
                                         sx={{
-                                            borderRight: "1px solid #E5E7EB",
-                                            p: 1,
+                                            borderRight: "1px solid #DCE3EC",
+                                            borderBottom: "1px solid #DCE3EC",
+                                            px: 1.25,
+                                            py: 0.75,
                                         }}
                                     >
                                         <TextField
                                             fullWidth
                                             size="small"
+                                            variant="standard"
                                             placeholder="e.g. Sprint Velocity"
                                             value={kpis[index][1]?.title || ""}
                                             onChange={(event) => {
@@ -183,6 +227,22 @@ export default function EmployeeKPIList({
                                                     event.target.value
                                                 );
                                             }}
+                                            InputProps={{
+                                                disableUnderline: true,
+                                            }}
+                                            sx={{
+                                                borderBottom: "1px solid #CBD5E1",
+                                                "& .MuiInputBase-input": {
+                                                    color: "#334155",
+                                                    fontSize: 14,
+                                                    px: 0.5,
+                                                    py: 0.75,
+                                                },
+                                                "& .MuiInputBase-input::placeholder": {
+                                                    color: "#94A3B8",
+                                                    opacity: 1,
+                                                },
+                                            }}
                                         />
                                     </TableCell>
                                 )}
@@ -190,12 +250,15 @@ export default function EmployeeKPIList({
                                 {fields.expectation && (
                                     <TableCell
                                         sx={{
-                                            p: 1,
+                                            borderBottom: "1px solid #DCE3EC",
+                                            px: 1.25,
+                                            py: 0.75,
                                         }}
                                     >
                                         <TextField
                                             fullWidth
                                             size="small"
+                                            variant="standard"
                                             placeholder="e.g. 90% completion rate"
                                             value={kpis[index][1]?.expectation || ""}
                                             onChange={(event) => {
@@ -205,6 +268,22 @@ export default function EmployeeKPIList({
                                                     event.target.value
                                                 );
                                             }}
+                                            InputProps={{
+                                                disableUnderline: true,
+                                            }}
+                                            sx={{
+                                                borderBottom: "1px solid #CBD5E1",
+                                                "& .MuiInputBase-input": {
+                                                    color: "#334155",
+                                                    fontSize: 14,
+                                                    px: 0.5,
+                                                    py: 0.75,
+                                                },
+                                                "& .MuiInputBase-input::placeholder": {
+                                                    color: "#94A3B8",
+                                                    opacity: 1,
+                                                },
+                                            }}
                                         />
                                     </TableCell>
                                 )}
@@ -213,6 +292,7 @@ export default function EmployeeKPIList({
                                     align="center"
                                     sx={{
                                         p: 0.5,
+                                        borderBottom: "1px solid #DCE3EC",
                                     }}
                                 >
                                     <IconButton

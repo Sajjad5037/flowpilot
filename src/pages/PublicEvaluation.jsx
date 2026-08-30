@@ -845,19 +845,38 @@ export default function PublicEvaluation() {
                     mt={4}
                     pt={3}
                     sx={{
-                        borderTop: "1px solid #E5E7EB"
+                        borderTop: "1px solid #D8E0EA"
                     }}
                 >
 
                     <Stack
-                        direction="row"
-                        spacing={2}
+                        direction={{
+                            xs: "column-reverse",
+                            sm: "row",
+                        }}
+                        spacing={{
+                            xs: 1.5,
+                            sm: 2,
+                        }}
                         justifyContent="flex-end"
                     >
 
                         <Button
                             variant="outlined"
                             size="large"
+                            sx={{
+                                minWidth: 108,
+                                borderColor: "#CBD5E1",
+                                borderRadius: 1.5,
+                                color: "#0F172A",
+                                fontWeight: 600,
+                                textTransform: "none",
+                                boxShadow: "0 1px 2px rgba(15, 23, 42, 0.06)",
+                                "&:hover": {
+                                    borderColor: "#94A3B8",
+                                    bgcolor: "#F8FAFC",
+                                },
+                            }}
                             onClick={() => {
 
                                 console.log("Save Draft");
@@ -870,6 +889,23 @@ export default function PublicEvaluation() {
                         <Button
                             variant="contained"
                             size="large"
+                            sx={{
+                                minWidth: 145,
+                                borderRadius: 1.5,
+                                bgcolor: "#7C1FD1",
+                                color: "#FFFFFF",
+                                fontWeight: 700,
+                                textTransform: "none",
+                                boxShadow: "none",
+                                "&:hover": {
+                                    bgcolor: "#6818B5",
+                                    boxShadow: "none",
+                                },
+                                "&.Mui-disabled": {
+                                    bgcolor: "#D8B4FE",
+                                    color: "#FFFFFF",
+                                },
+                            }}
                             onClick={handleSubmitEvaluation}
                             disabled={
                                 submitted || (
@@ -883,8 +919,10 @@ export default function PublicEvaluation() {
                             }
                         >
                             {submitted
-                                ? "Evaluation Submitted"
-                                : "Submit Evaluation"}
+                                ? "Proposal Submitted"
+                                : (assignment.access_stage || assignment.current_stage) === "employee"
+                                    ? "Submit Proposal"
+                                    : "Submit Evaluation"}
                         </Button>
 
                     </Stack>

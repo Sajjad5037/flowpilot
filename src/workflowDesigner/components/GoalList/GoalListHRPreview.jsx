@@ -2,7 +2,6 @@ import {
     Box,
     Button,
     IconButton,
-    Paper,
     Stack,
     TextField,
     Typography
@@ -114,39 +113,120 @@ export default function GoalListHRPreview({
 
     return (
 
-        <Box sx={{ mb: 4 }}>
+        <Box
+            sx={{
+                bgcolor: "#FFFFFF",
+                border: "1px solid #E2E8F0",
+                borderRadius: 2,
+                p: {
+                    xs: 2.5,
+                    sm: 3,
+                },
+                mb: 4,
+            }}
+        >
 
-            <Typography
-                variant="h5"
+            <Box
                 sx={{
-                    fontWeight: 700,
-                    mb: 3
+                    display: "flex",
+                    flexDirection: {
+                        xs: "column",
+                        sm: "row",
+                    },
+                    alignItems: {
+                        xs: "stretch",
+                        sm: "flex-start",
+                    },
+                    justifyContent: "space-between",
+                    gap: 2,
+                    mb: 2.5,
                 }}
             >
-                {component.title || "Goal Review"}
-            </Typography>
+                <Box>
+                    <Typography
+                        component="h2"
+                        sx={{
+                            color: "#0F172A",
+                            fontSize: 18,
+                            fontWeight: 700,
+                            lineHeight: 1.35,
+                        }}
+                    >
+                        {component.title || "Goal Review"}
+                    </Typography>
 
-            <Stack spacing={5}>
+                    {component.description && (
+                        <Typography
+                            sx={{
+                                color: "#64748B",
+                                fontSize: 14,
+                                lineHeight: 1.5,
+                                mt: 0.5,
+                            }}
+                        >
+                            {component.description}
+                        </Typography>
+                    )}
+                </Box>
+
+                {isRealEvaluation && (
+                    <Button
+                        variant="outlined"
+                        onClick={addGoal}
+                        sx={{
+                            alignSelf: {
+                                xs: "flex-start",
+                                sm: "auto",
+                            },
+                            flexShrink: 0,
+                            borderColor: "#6EE7B7",
+                            color: "#047857",
+                            textTransform: "none",
+                            "&:hover": {
+                                borderColor: "#34D399",
+                                bgcolor: "#F0FDF4",
+                            },
+                        }}
+                    >
+                        + Add Goal
+                    </Button>
+                )}
+            </Box>
+
+            <Stack spacing={2.5}>
 
                     {goals.map(([goalKey], index) => {
 
                         return (
 
-                            <Box key={goalKey}>
+                            <Box
+                                key={goalKey}
+                                sx={{
+                                    border: "1px solid #DCE3EC",
+                                    borderRadius: 2,
+                                    overflow: "hidden",
+                                }}
+                            >
 
                                 <Box
                                     sx={{
                                         display: "flex",
                                         alignItems: "center",
                                         justifyContent: "space-between",
-                                        mb: 2,
+                                        bgcolor: "#F8FAFC",
+                                        borderBottom: "1px solid #DCE3EC",
+                                        px: 2,
+                                        py: 1.25,
                                     }}
                                 >
                                     <Typography
-                                        variant="h6"
-                                        fontWeight={700}
+                                        sx={{
+                                            color: "#0F172A",
+                                            fontSize: 14,
+                                            fontWeight: 700,
+                                        }}
                                     >
-                                        Goal {index + 1}
+                                        Goal Item #{index + 1}
                                     </Typography>
 
                                     {isRealEvaluation && <IconButton
@@ -166,109 +246,131 @@ export default function GoalListHRPreview({
 
                                 <Box
                                     sx={{
-                                        display: "grid",
-                                        gridTemplateColumns: "1fr 1fr 1fr",
-                                        gap: 3
+                                        p: 2,
                                     }}
                                 >
+                                    <Box
+                                        sx={{
+                                            display: "grid",
+                                            gridTemplateColumns: {
+                                                xs: "1fr",
+                                                md: "repeat(2, minmax(0, 1fr))",
+                                            },
+                                            gap: 2,
+                                        }}
+                                    >
+                                        {/* Employee */}
 
-                                    {/* Employee */}
-
-                                    <Box>
-
-                                        <Typography
-                                            variant="subtitle1"
+                                        <Box
                                             sx={{
-                                                fontWeight: 700,
-                                                mb: 1
-                                            }}
-                                        >
-                                            Employee Response
-                                        </Typography>
-
-                                        <Paper
-                                            elevation={0}
-                                            sx={{
+                                                bgcolor: "#F5F8FF",
+                                                border: "1px solid #D6E4FF",
+                                                borderRadius: 2,
                                                 p: 2,
-                                                bgcolor: "#F3F4F6",
-                                                borderLeft: "4px solid #64748B",
-                                                minHeight: 220
+                                                minHeight: 92,
                                             }}
                                         >
+                                            <Typography
+                                                sx={{
+                                                    color: "#173A82",
+                                                    fontSize: 12,
+                                                    fontWeight: 700,
+                                                    mb: 0.75,
+                                                }}
+                                            >
+                                                Employee Proposed Goal
+                                            </Typography>
 
                                             <Stack spacing={1}>
 
-                                                <Typography>
+                                                <Typography
+                                                    sx={{
+                                                        color: "#334155",
+                                                        fontSize: 14,
+                                                        lineHeight: 1.5,
+                                                    }}
+                                                >
                                                     {employeeResponses?.goal_list?.[goalKey]?.proposal || "No employee proposal."}
                                                 </Typography>
 
-                                                <Typography>
+                                                <Typography
+                                                    sx={{
+                                                        color: "#64748B",
+                                                        fontSize: 13,
+                                                        lineHeight: 1.5,
+                                                    }}
+                                                >
                                                     {employeeResponses?.goal_list?.[goalKey]?.description || ""}
                                                 </Typography>
 
                                             </Stack>
 
-                                        </Paper>
+                                        </Box>
 
-                                    </Box>
+                                        {/* Supervisor */}
 
-                                    {/* Supervisor */}
-
-                                    <Box>
-
-                                        <Typography
-                                            variant="subtitle1"
+                                        <Box
                                             sx={{
-                                                fontWeight: 700,
-                                                mb: 1
-                                            }}
-                                        >
-                                            Supervisor Response
-                                        </Typography>
-
-                                        <Paper
-                                            elevation={0}
-                                            sx={{
+                                                bgcolor: "#FCF8FF",
+                                                border: "1px solid #E9DDF8",
+                                                borderRadius: 2,
                                                 p: 2,
-                                                bgcolor: "#EFF6FF",
-                                                borderLeft: "4px solid #2563EB",
-                                                minHeight: 220
+                                                minHeight: 92,
                                             }}
                                         >
-
-                                            <Typography>
-
-                                                {
-
-                                                    supervisorResponses?.goal_list?.[goalKey]?.review ||
-                                                    "No supervisor review."
-
-                                                }
-
+                                            <Typography
+                                                sx={{
+                                                    color: "#6B149D",
+                                                    fontSize: 12,
+                                                    fontWeight: 700,
+                                                    mb: 0.75,
+                                                }}
+                                            >
+                                                Supervisor Proposed Goal
                                             </Typography>
 
-                                        </Paper>
+                                            <Typography
+                                                sx={{
+                                                    color: "#334155",
+                                                    fontSize: 14,
+                                                    lineHeight: 1.5,
+                                                }}
+                                            >
+                                                {supervisorResponses?.goal_list?.[goalKey]?.review ||
+                                                    "No supervisor review."}
+                                            </Typography>
 
+                                        </Box>
                                     </Box>
 
                                     {/* HR */}
 
-                                    <Box>
+                                    <Box
+                                        sx={{
+                                            bgcolor: "#F3FFF8",
+                                            border: "1px solid #9DECC1",
+                                            borderRadius: 2,
+                                            p: 2,
+                                            mt: 2,
+                                        }}
+                                    >
 
                                         <Typography
-                                            variant="subtitle1"
                                             sx={{
+                                                color: "#075B35",
+                                                fontSize: 12,
                                                 fontWeight: 700,
-                                                mb: 1
+                                                textTransform: "uppercase",
+                                                mb: 1,
                                             }}
                                         >
-                                            Final Agreed Goal 
+                                            Final Agreed Goal (HR Meeting Outcome)
                                         </Typography>
 
                                         <TextField
                                             fullWidth
                                             multiline
-                                            rows={10}
+                                            minRows={3}
                                             placeholder="Type Final agreed goal..."
                                             value={
                                                 responses?.goal_list?.[goalKey]?.final_goal || ""
@@ -296,6 +398,27 @@ export default function GoalListHRPreview({
                                                 });
 
                                             }}
+                                            sx={{
+                                                "& .MuiOutlinedInput-root": {
+                                                    bgcolor: "#FFFFFF",
+                                                    borderRadius: 1.5,
+                                                    "& fieldset": {
+                                                        borderColor: "#6EE7B7",
+                                                    },
+                                                    "&:hover fieldset": {
+                                                        borderColor: "#34D399",
+                                                    },
+                                                    "&.Mui-focused fieldset": {
+                                                        borderColor: "#10B981",
+                                                        borderWidth: 1,
+                                                    },
+                                                },
+                                                "& .MuiInputBase-input": {
+                                                    color: "#334155",
+                                                    fontSize: 14,
+                                                    lineHeight: 1.55,
+                                                },
+                                            }}
                                         />
 
                                     </Box>
@@ -309,13 +432,6 @@ export default function GoalListHRPreview({
                     })}
 
             </Stack>
-
-            {isRealEvaluation && <Button
-                variant="outlined"
-                onClick={addGoal}
-            >
-                + Add Goal
-            </Button>}
 
         </Box>
 

@@ -25,6 +25,19 @@ export default function CompanyInformation({
         component?.coreValues ||
         "Transparency | Results | Growth | Integrity";
 
+    const coreValueItems = Array.isArray(coreValues)
+        ? coreValues.map(coreValue => ({
+            name: coreValue?.name || "",
+            description: coreValue?.description || ""
+        }))
+        : String(coreValues)
+            .split(/\s*\|\s*|\r?\n/)
+            .map(name => ({
+                name: name.trim(),
+                description: ""
+            }))
+            .filter(coreValue => coreValue.name);
+
     return (
 
         <Paper
@@ -97,14 +110,34 @@ export default function CompanyInformation({
                             Core Values:
                         </Typography>
 
-                        <Typography
-                            variant="body1"
+                        <Box
                             sx={{
-                                lineHeight: 1.8
+                                display: "grid",
+                                gap: 0.75
                             }}
                         >
-                            {coreValues}
-                        </Typography>
+
+                            {coreValueItems.map((coreValue, index) => (
+
+                                <Typography
+                                    key={`${coreValue.name}-${index}`}
+                                    variant="body1"
+                                    sx={{ lineHeight: 1.8 }}
+                                >
+                                    <Box
+                                        component="span"
+                                        sx={{ fontWeight: 700 }}
+                                    >
+                                        {coreValue.name}:
+                                    </Box>
+                                    {coreValue.description && (
+                                        <> {coreValue.description}</>
+                                    )}
+                                </Typography>
+
+                            ))}
+
+                        </Box>
 
                     </>
 

@@ -1,6 +1,5 @@
 import {
     Box,
-    Paper,
     Stack,
     TextField,
     Typography
@@ -18,19 +17,66 @@ export default function SelfAssessmentHRPreview({
 
     const questions = component.questions || [];
 
+    function updateHRResponse(questionId, value) {
+
+        onResponsesChange?.({
+
+            ...responses,
+
+            self_assessment: {
+
+                ...(responses?.self_assessment || {}),
+
+                [questionId]: value
+
+            }
+
+        });
+
+    }
+
     return (
 
-        <Box sx={{ mb: 4 }}>
+        <Box
+            sx={{
+                bgcolor: "#FFFFFF",
+                border: "1px solid #E2E8F0",
+                borderRadius: 2,
+                p: {
+                    xs: 2.5,
+                    sm: 3,
+                },
+                mb: 4,
+            }}
+        >
 
             <Typography
-                variant="h5"
-                fontWeight="bold"
-                mb={3}
+                component="h2"
+                sx={{
+                    color: "#0F172A",
+                    fontSize: 18,
+                    fontWeight: 700,
+                    lineHeight: 1.35,
+                    mb: component.description ? 0.75 : 2.5,
+                }}
             >
                 {component.title || "Self Assessment Review"}
             </Typography>
 
-            <Stack spacing={5}>
+            {component.description && (
+                <Typography
+                    sx={{
+                        color: "#64748B",
+                        fontSize: 14,
+                        lineHeight: 1.55,
+                        mb: 2.5,
+                    }}
+                >
+                    {component.description}
+                </Typography>
+            )}
+
+            <Stack spacing={3}>
 
                 {questions.length === 0 ? (
 
@@ -47,9 +93,13 @@ export default function SelfAssessmentHRPreview({
                         <Box key={question.id}>
 
                             <Typography
-                                variant="body1"
-                                fontWeight={700}
-                                mb={2}
+                                sx={{
+                                    color: "#0F172A",
+                                    fontSize: 15,
+                                    fontWeight: 700,
+                                    lineHeight: 1.45,
+                                    mb: 2,
+                                }}
                             >
                                 {index + 1}. {question.text}
                             </Typography>
@@ -57,96 +107,150 @@ export default function SelfAssessmentHRPreview({
                             <Box
                                 sx={{
                                     display: "grid",
-                                    gridTemplateColumns: "1fr 1fr",
-                                    gap: 3
+                                    gridTemplateColumns: {
+                                        xs: "1fr",
+                                        md: "repeat(2, minmax(0, 1fr))",
+                                    },
+                                    gap: 2,
                                 }}
                             >
 
                                 {/* Employee Response */}
 
-                                <Box>
+                                <Box
+                                    sx={{
+                                        bgcolor: "#F5F8FF",
+                                        border: "1px solid #D6E4FF",
+                                        borderRadius: 2,
+                                        p: 2,
+                                        minHeight: 96,
+                                    }}
+                                >
 
                                     <Typography
-                                        variant="body1"
                                         sx={{
-                                            fontWeight: 700
+                                            color: "#173A82",
+                                            fontSize: 12,
+                                            fontWeight: 700,
+                                            textTransform: "uppercase",
+                                            mb: 1,
                                         }}
                                     >
-                                        Employee Response
+                                        Employee Proposal
                                     </Typography>
 
-                                    <Paper
-                                        elevation={0}
+                                    <Typography
                                         sx={{
-                                            p: 2,
-                                            bgcolor: "#F3F4F6",
-                                            borderLeft: "4px solid #64748B",
-                                            minHeight: 120,
-                                            display: "flex",
-                                            alignItems: "flex-start"
+                                            color: "#334155",
+                                            fontSize: 14,
+                                            lineHeight: 1.55,
                                         }}
                                     >
-
-                                        <Typography>
-
-                                            {
-
-                                                employeeResponses?.self_assessment?.[question.id] ||
-
-                                                "No employee response."
-
-                                            }
-
-                                        </Typography>
-
-                                    </Paper>
+                                        {employeeResponses?.self_assessment?.[question.id] ||
+                                            "No employee response."}
+                                    </Typography>
 
                                 </Box>
 
                                 {/* Supervisor Response */}
 
-                                <Box>
+                                <Box
+                                    sx={{
+                                        bgcolor: "#FCF8FF",
+                                        border: "1px solid #E9DDF8",
+                                        borderRadius: 2,
+                                        p: 2,
+                                        minHeight: 96,
+                                    }}
+                                >
 
                                     <Typography
-                                        variant="body1"
                                         sx={{
-                                            fontWeight: 700
+                                            color: "#6B149D",
+                                            fontSize: 12,
+                                            fontWeight: 700,
+                                            textTransform: "uppercase",
+                                            mb: 1,
                                         }}
                                     >
-                                        Supervisor Response
+                                        Supervisor Proposal
                                     </Typography>
 
-                                    <Paper
-                                        elevation={0}
+                                    <Typography
                                         sx={{
-                                            p: 2,
-                                            bgcolor: "#F9FAFB",
-                                            borderLeft: "4px solid #2563EB",
-                                            minHeight: 120,
-                                            display: "flex",
-                                            alignItems: "flex-start"
+                                            color: "#334155",
+                                            fontSize: 14,
+                                            lineHeight: 1.55,
                                         }}
                                     >
-
-                                        <Typography>
-
-                                            {
-
-                                                supervisorResponses?.self_assessment?.[question.id] ||
-
-                                                "No supervisor response."
-
-                                            }
-
-                                        </Typography>
-
-                                    </Paper>
+                                        {supervisorResponses?.self_assessment?.[question.id] ||
+                                            "No supervisor response."}
+                                    </Typography>
 
                                 </Box>
 
                                 
                                 
 
+                            </Box>
+
+                            <Box
+                                sx={{
+                                    bgcolor: "#F3FFF8",
+                                    border: "1px solid #9DECC1",
+                                    borderRadius: 2,
+                                    p: 2,
+                                    mt: 2,
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        color: "#075B35",
+                                        fontSize: 12,
+                                        fontWeight: 700,
+                                        textTransform: "uppercase",
+                                        mb: 1,
+                                    }}
+                                >
+                                    Final Agreed Response (HR Approved)
+                                </Typography>
+
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    minRows={3}
+                                    placeholder="Enter the final agreed response..."
+                                    value={
+                                        responses?.self_assessment?.[question.id] || ""
+                                    }
+                                    onChange={(event) =>
+                                        updateHRResponse(
+                                            question.id,
+                                            event.target.value
+                                        )
+                                    }
+                                    sx={{
+                                        "& .MuiOutlinedInput-root": {
+                                            bgcolor: "#FFFFFF",
+                                            borderRadius: 1.5,
+                                            "& fieldset": {
+                                                borderColor: "#6EE7B7",
+                                            },
+                                            "&:hover fieldset": {
+                                                borderColor: "#34D399",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                                borderColor: "#10B981",
+                                                borderWidth: 1,
+                                            },
+                                        },
+                                        "& .MuiInputBase-input": {
+                                            color: "#334155",
+                                            fontSize: 14,
+                                            lineHeight: 1.55,
+                                        },
+                                    }}
+                                />
                             </Box>
 
                         </Box>

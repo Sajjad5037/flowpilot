@@ -69,46 +69,92 @@ export default function EmployeeFormPreview({
 
             {previewMode === "hr" ? (
 
-                <>
-
+                <Box
+                    sx={{
+                        bgcolor: "#F1F5F9",
+                        textAlign: "center",
+                        px: {
+                            xs: 2,
+                            sm: 4,
+                        },
+                        py: {
+                            xs: 2.5,
+                            sm: 3,
+                        },
+                        mb: 4,
+                    }}
+                >
                     <Typography
-                        variant="h3"
-                        fontWeight={700}
-                        gutterBottom
+                        component="h1"
+                        sx={{
+                            color: "#061A3A",
+                            fontFamily: "Georgia, 'Times New Roman', serif",
+                            fontSize: {
+                                xs: 25,
+                                sm: 31,
+                            },
+                            fontWeight: 800,
+                            lineHeight: 1.15,
+                            letterSpacing: 0,
+                            textTransform: "uppercase",
+                            overflowWrap: "anywhere",
+                        }}
                     >
-                        HR Goal & KPI Setting Master Sheet
+                        Goal &amp; KPI HR Master Sheet
                     </Typography>
 
                     <Typography
-                        variant="h6"
-                        fontWeight={500}
-                        sx={{ mb: 3 }}
+                        sx={{
+                            color: "#60708A",
+                            fontSize: {
+                                xs: 12,
+                                sm: 14,
+                            },
+                            fontWeight: 500,
+                            lineHeight: 1.4,
+                            letterSpacing: 0,
+                            textTransform: "uppercase",
+                            mt: 0.75,
+                        }}
                     >
-
-                        <strong>Employee:</strong>{" "}
-
-                        {employee?.full_name || "-"}
-
-                        {" | "}
-
-                        <strong>Supervisor:</strong>{" "}
-
-                        {employee?.supervisor_name || "-"}
-
+                        Alignment &amp; Final Approval Phase
                     </Typography>
 
-                    <Divider sx={{ mb: 4 }} />
-
-                </>
+                </Box>
 
             ) : (
 
-                <>
+                <Box
+                    sx={{
+                        bgcolor: "#F1F5F9",
+                        textAlign: "center",
+                        px: {
+                            xs: 2,
+                            sm: 4,
+                        },
+                        py: {
+                            xs: 2.5,
+                            sm: 3,
+                        },
+                        mb: 4,
+                    }}
+                >
 
                     <Typography
-                        variant="h4"
-                        fontWeight={700}
-                        gutterBottom
+                        component="h1"
+                        sx={{
+                            color: "#061A3A",
+                            fontFamily: "Georgia, 'Times New Roman', serif",
+                            fontSize: {
+                                xs: 25,
+                                sm: 31,
+                            },
+                            fontWeight: 800,
+                            lineHeight: 1.15,
+                            letterSpacing: 0,
+                            textTransform: "uppercase",
+                            overflowWrap: "anywhere",
+                        }}
                     >
                         {isActualEmployeeEvaluation && previewMode === "supervisor"
                             ? workflow.name.replace(/Employee$/, "Supervisor")
@@ -119,19 +165,26 @@ export default function EmployeeFormPreview({
                             ` — ${previewMode.charAt(0).toUpperCase() + previewMode.slice(1)} Stage`}
                     </Typography>
 
-                    {!isActualEmployeeEvaluation && (
-                        <Typography
-                            color="primary"
-                            fontWeight={700}
-                            mb={2}
-                        >
-                            Preview Mode: {previewMode}
-                        </Typography>
-                    )}
+                    <Typography
+                        sx={{
+                            color: "#60708A",
+                            fontSize: {
+                                xs: 12,
+                                sm: 14,
+                            },
+                            fontWeight: 500,
+                            lineHeight: 1.4,
+                            letterSpacing: 0,
+                            textTransform: "uppercase",
+                            mt: 0.75,
+                        }}
+                    >
+                        {isActualEmployeeEvaluation
+                            ? `${previewMode} stage`
+                            : `Preview Mode: ${previewMode}`}
+                    </Typography>
 
-                    <Divider sx={{ mb: 4 }} />
-
-                </>
+                </Box>
 
             )}
             {stageComponents.length === 0 && (

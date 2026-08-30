@@ -4,6 +4,7 @@ import {
     Divider,
     Stack,
     TextField,
+    Button,
     FormControlLabel,
     Checkbox
 } from "@mui/material";
@@ -24,6 +25,61 @@ export default function CompanyInformationProperties({
             [fieldName]: value
 
         });
+
+    }
+
+    const coreValues = Array.isArray(component.coreValues)
+        ? component.coreValues.map(coreValue => ({
+            name: coreValue?.name || "",
+            description: coreValue?.description || ""
+        }))
+        : typeof component.coreValues === "string"
+            ? component.coreValues
+                .split(/\s*\|\s*|\r?\n/)
+                .map(name => name.trim())
+                .filter(Boolean)
+                .map(name => ({
+                    name,
+                    description: ""
+                }))
+            : [];
+
+    function updateCoreValue(index, fieldName, value) {
+
+        const updatedCoreValues = coreValues.map(
+            (coreValue, coreValueIndex) =>
+                coreValueIndex === index
+                    ? {
+                        ...coreValue,
+                        [fieldName]: value
+                    }
+                    : coreValue
+        );
+
+        updateField("coreValues", updatedCoreValues);
+
+    }
+
+    function removeCoreValue(index) {
+
+        updateField(
+            "coreValues",
+            coreValues.filter(
+                (_, coreValueIndex) => coreValueIndex !== index
+            )
+        );
+
+    }
+
+    function addCoreValue() {
+
+        updateField("coreValues", [
+            ...coreValues,
+            {
+                name: "",
+                description: ""
+            }
+        ]);
 
     }
 
@@ -67,16 +123,74 @@ export default function CompanyInformationProperties({
                     }
                 />
 
-                <TextField
-                    label="Core Values"
-                    multiline
-                    minRows={3}
-                    fullWidth
-                    value={component.coreValues || ""}
-                    onChange={(e) =>
-                        updateField("coreValues", e.target.value)
-                    }
-                />
+                <Stack spacing={2}>
+
+                    <Typography fontWeight={600}>
+                        Core Values
+                    </Typography>
+
+                    {coreValues.map((coreValue, index) => (
+
+                        <Stack
+                            key={index}
+                            spacing={1.5}
+                            sx={{
+                                border: "1px solid #E5E7EB",
+                                borderRadius: 2,
+                                p: 2
+                            }}
+                        >
+
+                            <TextField
+                                label="Name"
+                                fullWidth
+                                value={coreValue.name}
+                                onChange={(e) =>
+                                    updateCoreValue(
+                                        index,
+                                        "name",
+                                        e.target.value
+                                    )
+                                }
+                            />
+
+                            <TextField
+                                label="Description"
+                                multiline
+                                minRows={2}
+                                fullWidth
+                                value={coreValue.description}
+                                onChange={(e) =>
+                                    updateCoreValue(
+                                        index,
+                                        "description",
+                                        e.target.value
+                                    )
+                                }
+                            />
+
+                            <Button
+                                variant="outlined"
+                                color="error"
+                                sx={{ alignSelf: "flex-start" }}
+                                onClick={() => removeCoreValue(index)}
+                            >
+                                Remove
+                            </Button>
+
+                        </Stack>
+
+                    ))}
+
+                    <Button
+                        variant="outlined"
+                        sx={{ alignSelf: "flex-start" }}
+                        onClick={addCoreValue}
+                    >
+                        + Add Core Value
+                    </Button>
+
+                </Stack>
 
                 <Divider />
 

@@ -33,23 +33,52 @@ export default function CompanyInformationPreview({
         component?.coreValues ||
         previewData.company.coreValues;
 
+    const coreValueItems = Array.isArray(coreValues)
+        ? coreValues.map((coreValue) => ({
+            name: coreValue?.name || "",
+            description: coreValue?.description || "",
+        }))
+        : String(coreValues)
+            .split(/\s*\|\s*|\r?\n/)
+            .map((value) => {
+                const separatorIndex = value.indexOf(":");
+
+                if (separatorIndex >= 0) {
+                    return {
+                        name: value.slice(0, separatorIndex).trim(),
+                        description: value.slice(separatorIndex + 1).trim(),
+                    };
+                }
+
+                return {
+                    name: value.trim(),
+                    description: "",
+                };
+            })
+            .filter((coreValue) => coreValue.name);
+
     return (
 
         <Box
             sx={{
                 mb: 4,
-                bgcolor: "#EEF3FB",
-                borderLeft: "4px solid #2563EB",
-                borderRadius: 1,
-                px: 2.5,
-                py: 2
+                display: "grid",
+                gridTemplateColumns: {
+                    xs: "1fr",
+                    md: showMission && showCoreValues
+                        ? "repeat(2, minmax(0, 1fr))"
+                        : "1fr",
+                },
+                gap: 3,
             }}
         >
             {!isActualEmployeeEvaluation && (
                 <Typography
-                    color="primary"
-                    fontWeight={700}
-                    mb={2}
+                    sx={{
+                        gridColumn: "1 / -1",
+                        color: "#7C3AED",
+                        fontWeight: 700,
+                    }}
                 >
                     {previewMode.toUpperCase()} PREVIEW
                 </Typography>
@@ -57,34 +86,109 @@ export default function CompanyInformationPreview({
 
             {showMission && (
 
-                <Typography
-                    variant="body1"
+                <Box
                     sx={{
-                        mb: 1.5,
-                        lineHeight: 1.8,
-                        fontSize: "0.95rem"
+                        bgcolor: "#FFFFFF",
+                        border: "1px solid #E2E8F0",
+                        borderRadius: 2,
+                        p: {
+                            xs: 2.5,
+                            sm: 3,
+                        },
                     }}
                 >
-
-                    <Box
-                        component="span"
+                    <Typography
+                        component="h2"
                         sx={{
-                            fontWeight: 700
+                            color: "#7C00E6",
+                            fontSize: 17,
+                            fontWeight: 700,
+                            lineHeight: 1.3,
+                            mb: 1.5,
                         }}
                     >
-                        Mission:
-                    </Box>{" "}
+                        Mission Statement
+                    </Typography>
 
-                    {mission}
+                    <Typography
+                        sx={{
+                            color: "#334155",
+                            fontSize: 14,
+                            lineHeight: 1.65,
+                            whiteSpace: "pre-line",
+                        }}
+                    >
+                        {mission}
+                    </Typography>
 
-                </Typography>
+                </Box>
 
             )}
+            {showCoreValues && (
+
+                <Box
+                    sx={{
+                        bgcolor: "#FFFFFF",
+                        border: "1px solid #E2E8F0",
+                        borderRadius: 2,
+                        p: {
+                            xs: 2.5,
+                            sm: 3,
+                        },
+                    }}
+                >
+                    <Typography
+                        component="h2"
+                        sx={{
+                            color: "#7C00E6",
+                            fontSize: 17,
+                            fontWeight: 700,
+                            lineHeight: 1.3,
+                            mb: 1.5,
+                        }}
+                    >
+                        Core Values
+                    </Typography>
+
+                    <Box
+                        sx={{
+                            display: "grid",
+                            gap: 0.75,
+                        }}
+                    >
+                        {coreValueItems.map((coreValue, index) => (
+                            <Typography
+                                key={`${coreValue.name}-${index}`}
+                                sx={{
+                                    color: "#334155",
+                                    fontSize: 14,
+                                    lineHeight: 1.5,
+                                }}
+                            >
+                                <Box
+                                    component="span"
+                                    sx={{
+                                        color: "#0F172A",
+                                        fontWeight: 700,
+                                    }}
+                                >
+                                    {coreValue.name}
+                                    {coreValue.description ? ":" : ""}
+                                </Box>
+                                {coreValue.description && ` ${coreValue.description}`}
+                            </Typography>
+                        ))}
+                    </Box>
+
+                </Box>
+
+            )}
+
             {isSupervisor && (
 
                 <Typography
                     color="text.secondary"
-                    sx={{ mt: 2 }}
+                    sx={{ gridColumn: "1 / -1" }}
                 >
                     ✓ Employees will have already reviewed this company information.
                 </Typography>
@@ -95,34 +199,9 @@ export default function CompanyInformationPreview({
 
                 <Typography
                     color="text.secondary"
-                    sx={{ mt: 2 }}
+                    sx={{ gridColumn: "1 / -1" }}
                 >
                     ✓ Employee and Supervisor will have already reviewed this company information.
-                </Typography>
-
-            )}
-
-            {showCoreValues && (
-
-                <Typography
-                    variant="body1"
-                    sx={{
-                        lineHeight: 1.8,
-                        fontSize: "0.95rem"
-                    }}
-                >
-
-                    <Box
-                        component="span"
-                        sx={{
-                            fontWeight: 700
-                        }}
-                    >
-                        Core Values:
-                    </Box>{" "}
-
-                    {coreValues}
-
                 </Typography>
 
             )}
