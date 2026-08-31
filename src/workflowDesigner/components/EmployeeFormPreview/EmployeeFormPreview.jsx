@@ -198,17 +198,6 @@ export default function EmployeeFormPreview({
             )}
 
             {stageComponents
-                .filter(component =>
-
-                    !(
-
-                        previewMode === "hr" &&
-
-                        component.id === "company_information"
-
-                    )
-
-                )
                 .map(component => {
 
                     let PreviewComponent =

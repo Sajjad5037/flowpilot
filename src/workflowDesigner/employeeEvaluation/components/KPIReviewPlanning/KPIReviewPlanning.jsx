@@ -15,96 +15,11 @@ import {
     Typography,
 } from "@mui/material";
 
-
-
-
-const previewKpis = [
-    {
-        id: "kpi-1",
-
-        currentTitle: "R1 Pass",
-        currentExpectation: "25%",
-
-        employeeProposalTitle: "R1 Pass Rate",
-        employeeSuggestedExpectation: "35%",
-        employeeProposalChange: "35%",
-
-        supervisorProposalTitle: "R1 Pass Rate",
-        supervisorSuggestedExpectation: "30%",
-        supervisorProposalChange: "30%",
-    },
-
-    {
-        id: "kpi-2",
-
-        currentTitle: "R2 Pass",
-        currentExpectation: "50%",
-
-        employeeProposalTitle: "R2 Pass Rate",
-        employeeSuggestedExpectation: "55%",
-        employeeProposalChange: "55%",
-
-        supervisorProposalTitle: "R2 Pass Rate",
-        supervisorSuggestedExpectation: "50%",
-        supervisorProposalChange: "50%",
-    },
-
-    {
-        id: "kpi-3",
-
-        currentTitle: "90-day retention",
-        currentExpectation: "70%",
-
-        employeeProposalTitle: "90-Day Retention Rate",
-        employeeSuggestedExpectation: "70%",
-        employeeProposalChange: "70%",
-
-        supervisorProposalTitle: "90-Day Retention Rate",
-        supervisorSuggestedExpectation: "75%",
-        supervisorProposalChange: "75%",
-    },
-
-    {
-        id: "kpi-4",
-
-        currentTitle: "Days to hire",
-        currentExpectation:
-            "30 days for low to mid-level, 60 days for senior or highly technical.",
-
-        employeeProposalTitle: "Days to Hire",
-        employeeSuggestedExpectation: "25 days",
-        employeeProposalChange: "25 days",
-
-        supervisorProposalTitle: "Time To Hire",
-        supervisorSuggestedExpectation: "25 days",
-        supervisorProposalChange: "25 days",
-    },
-
-    {
-        id: "kpi-5",
-
-        currentTitle: "Head Hunting Script",
-        currentExpectation:
-            "Testing 2 or more scripts at all times per role",
-
-        employeeProposalTitle: "Head Hunting Scripts",
-        employeeSuggestedExpectation:
-            "Continue testing multiple scripts",
-        employeeProposalChange:
-            "Continue testing multiple scripts",
-
-        supervisorProposalTitle: "Head Hunting Script",
-        supervisorSuggestedExpectation:
-            "2+ scripts per role",
-        supervisorProposalChange:
-            "2+ scripts per role",
-    },
-];
-
 export default function KPIReviewPlanning({
     component,
     previewMode = "employee",
     reviewCycle,
+    finalizedKpis = [],
     responses = {},
     onResponsesChange,
     employeeResponses = {},
@@ -135,25 +50,19 @@ export default function KPIReviewPlanning({
     const supervisorProposals =
         supervisorResponses?.kpi_review_planning?.supervisor_proposals || [];
 
-    const hrMatrixRows = Array.from(
-        {
-            length: Math.max(
-                employeeProposals.length,
-                supervisorProposals.length
-            ),
-        },
-        (_, index) => ({
-            id: `hr-row-${index}`,
-            employee: employeeProposals[index] || {
-                title: "",
-                proposed: "",
-            },
-            supervisor: supervisorProposals[index] || {
-                title: "",
-                proposed: "",
-            },
-        })
-    );
+    const hrMatrixRows = finalizedKpis.map((finalizedKpi, index) => ({
+        id: `hr-row-${finalizedKpi.id ?? index}`,
+        finalizedKpi,
+        employeeProposal: employeeProposals[index] || null,
+        supervisorProposal: supervisorProposals[index] || null,
+    }));
+
+    const displayValue = (value) =>
+        value !== null &&
+        value !== undefined &&
+        String(value).trim() !== ""
+            ? value
+            : "-";
     const [finalAgreedKpis, setFinalAgreedKpis] = useState(
         hrResponses?.kpi_review_planning?.final_agreed_kpis || []
     );
@@ -705,7 +614,7 @@ export default function KPIReviewPlanning({
         <BodyCell>
 
             <Typography variant="body2">
-                {previewKpis[index]?.currentTitle || ""}
+                {displayValue(row.finalizedKpi.title)}
             </Typography>
 
         </BodyCell>
@@ -716,7 +625,7 @@ export default function KPIReviewPlanning({
         <BodyCell>
 
             <Typography variant="body2">
-                {previewKpis[index]?.currentExpectation || ""}
+                {displayValue(row.finalizedKpi.expectation)}
             </Typography>
 
         </BodyCell>
@@ -727,7 +636,7 @@ export default function KPIReviewPlanning({
         <BodyCell>
 
             <Typography variant="body2">
-                {row.employee.title}
+                {displayValue(row.employeeProposal?.title)}
             </Typography>
 
         </BodyCell>
@@ -738,7 +647,7 @@ export default function KPIReviewPlanning({
         <BodyCell>
 
             <Typography variant="body2">
-                {row.employee.proposed}
+                {displayValue(row.employeeProposal?.proposed)}
             </Typography>
 
         </BodyCell>
@@ -749,7 +658,7 @@ export default function KPIReviewPlanning({
         <BodyCell>
 
             <Typography variant="body2">
-                {row.supervisor.title}
+                {displayValue(row.supervisorProposal?.title)}
             </Typography>
 
         </BodyCell>
@@ -760,7 +669,7 @@ export default function KPIReviewPlanning({
         <BodyCell>
 
             <Typography variant="body2">
-                {row.supervisor.proposed}
+                {displayValue(row.supervisorProposal?.proposed)}
             </Typography>
 
         </BodyCell>

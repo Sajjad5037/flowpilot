@@ -1,7 +1,6 @@
 import {
     Box,
     Stack,
-    TextField,
     Typography
 } from "@mui/material";
 
@@ -9,31 +8,11 @@ export default function SelfAssessmentHRPreview({
 
     component,
     employeeResponses,
-    supervisorResponses,
-    responses,
-    onResponsesChange
+    supervisorResponses
 
 }) {
 
     const questions = component.questions || [];
-
-    function updateHRResponse(questionId, value) {
-
-        onResponsesChange?.({
-
-            ...responses,
-
-            self_assessment: {
-
-                ...(responses?.self_assessment || {}),
-
-                [questionId]: value
-
-            }
-
-        });
-
-    }
 
     return (
 
@@ -192,65 +171,6 @@ export default function SelfAssessmentHRPreview({
                                 
                                 
 
-                            </Box>
-
-                            <Box
-                                sx={{
-                                    bgcolor: "#F3FFF8",
-                                    border: "1px solid #9DECC1",
-                                    borderRadius: 2,
-                                    p: 2,
-                                    mt: 2,
-                                }}
-                            >
-                                <Typography
-                                    sx={{
-                                        color: "#075B35",
-                                        fontSize: 12,
-                                        fontWeight: 700,
-                                        textTransform: "uppercase",
-                                        mb: 1,
-                                    }}
-                                >
-                                    Final Agreed Response (HR Approved)
-                                </Typography>
-
-                                <TextField
-                                    fullWidth
-                                    multiline
-                                    minRows={3}
-                                    placeholder="Enter the final agreed response..."
-                                    value={
-                                        responses?.self_assessment?.[question.id] || ""
-                                    }
-                                    onChange={(event) =>
-                                        updateHRResponse(
-                                            question.id,
-                                            event.target.value
-                                        )
-                                    }
-                                    sx={{
-                                        "& .MuiOutlinedInput-root": {
-                                            bgcolor: "#FFFFFF",
-                                            borderRadius: 1.5,
-                                            "& fieldset": {
-                                                borderColor: "#6EE7B7",
-                                            },
-                                            "&:hover fieldset": {
-                                                borderColor: "#34D399",
-                                            },
-                                            "&.Mui-focused fieldset": {
-                                                borderColor: "#10B981",
-                                                borderWidth: 1,
-                                            },
-                                        },
-                                        "& .MuiInputBase-input": {
-                                            color: "#334155",
-                                            fontSize: 14,
-                                            lineHeight: 1.55,
-                                        },
-                                    }}
-                                />
                             </Box>
 
                         </Box>

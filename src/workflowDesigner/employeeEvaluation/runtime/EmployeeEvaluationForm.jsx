@@ -190,6 +190,7 @@ export default function EmployeeEvaluationForm({
                         component={component}
                         previewMode={previewMode}
                         reviewCycle={employee?.review_cycle}
+                        finalizedKpis={employee?.finalized_kpis || []}
                         responses={responses}
                         onResponsesChange={onResponsesChange}
                         employeeResponses={employeeResponses}
