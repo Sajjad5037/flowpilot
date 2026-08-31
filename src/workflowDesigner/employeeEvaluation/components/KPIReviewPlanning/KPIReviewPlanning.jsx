@@ -63,9 +63,19 @@ export default function KPIReviewPlanning({
         String(value).trim() !== ""
             ? value
             : "-";
-    const [finalAgreedKpis, setFinalAgreedKpis] = useState(
-        hrResponses?.kpi_review_planning?.final_agreed_kpis || []
-    );
+    const [finalAgreedKpis, setFinalAgreedKpis] = useState(() => {
+        const savedFinalAgreedKpis =
+            hrResponses?.kpi_review_planning?.final_agreed_kpis;
+
+        return Array.isArray(savedFinalAgreedKpis) &&
+            savedFinalAgreedKpis.length > 0
+            ? savedFinalAgreedKpis
+            : finalizedKpis.map((finalizedKpi) => ({
+                id: finalizedKpi.id,
+                title: finalizedKpi.title || "",
+                expectation: finalizedKpi.expectation || "",
+            }));
+    });
     const [employeeKpis, setEmployeeKpis] = useState([
         {
             id: "employee-1",
