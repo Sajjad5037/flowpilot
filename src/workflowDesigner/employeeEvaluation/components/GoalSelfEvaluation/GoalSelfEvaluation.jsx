@@ -837,66 +837,6 @@ export default function GoalSelfEvaluation({
                             }}
                         >
 
-                        <Stack
-                            direction="row"
-                            justifyContent="space-between"
-                            alignItems="center"
-                            mb={2}
-                        >
-
-                            <Typography
-                                sx={{
-                                    fontSize: 14,
-                                    fontWeight: 700,
-                                    color: "#7C3AED",
-                                }}
-                            >
-                                Goal # {index + 1}
-                            </Typography>
-
-
-                            <Stack
-                                direction="row"
-                                spacing={2}
-                            >
-
-                                <Typography
-                                    sx={{
-                                        fontSize: 13,
-                                    }}
-                                >
-                                    Goal Weight:{" "}
-                                    <strong>
-                                        {goalWeight}
-                                    </strong>
-                                </Typography>
-
-
-                                <Typography
-                                    sx={{
-                                        fontSize: 13,
-                                    }}
-                                >
-                                    Total Points:{" "}
-                                    <strong>
-                                        {totalPoints}
-                                    </strong>
-                                </Typography>
-
-                            </Stack>
-
-                            <IconButton
-                                size="small"
-                                color="error"
-                                aria-label={`Remove Goal ${index + 1}`}
-                                onClick={() => handleHrRemoveGoal(goalId)}
-                            >
-                                <CloseIcon fontSize="small" />
-                            </IconButton>
-
-                        </Stack>
-
-
                         <HRGoalTable
                             targetDescription={
                                 responses?.goal_self_evaluation
@@ -922,6 +862,66 @@ export default function GoalSelfEvaluation({
                                 handleHrCompletionDateChange
                             }
                             months={months}
+                            goalHeader={
+                                <Stack
+                                    direction="row"
+                                    justifyContent="space-between"
+                                    alignItems="center"
+                                    mb={2}
+                                >
+
+                                    <Typography
+                                        sx={{
+                                            fontSize: 14,
+                                            fontWeight: 700,
+                                            color: "#7C3AED",
+                                        }}
+                                    >
+                                        Goal # {index + 1}
+                                    </Typography>
+
+
+                                    <Stack
+                                        direction="row"
+                                        spacing={2}
+                                    >
+
+                                        <Typography
+                                            sx={{
+                                                fontSize: 13,
+                                            }}
+                                        >
+                                            Goal Weight:{" "}
+                                            <strong>
+                                                {goalWeight}
+                                            </strong>
+                                        </Typography>
+
+
+                                        <Typography
+                                            sx={{
+                                                fontSize: 13,
+                                            }}
+                                        >
+                                            Total Points:{" "}
+                                            <strong>
+                                                {totalPoints}
+                                            </strong>
+                                        </Typography>
+
+                                    </Stack>
+
+                                    <IconButton
+                                        size="small"
+                                        color="error"
+                                        aria-label={`Remove Goal ${index + 1}`}
+                                        onClick={() => handleHrRemoveGoal(goalId)}
+                                    >
+                                        <CloseIcon fontSize="small" />
+                                    </IconButton>
+
+                                </Stack>
+                            }
                         />
 
 
@@ -1271,10 +1271,12 @@ function HRGoalTable({
     months = [],
     showTargetDescription = true,
     showMonthlyProgress = true,
+    goalHeader,
 }) {
     return (
 
         <Box
+            className="pdf-goal-table-block"
             sx={{
                 width: "100%",
                 minWidth: 0,
@@ -1288,9 +1290,17 @@ function HRGoalTable({
                 sx={{
                     display: "grid",
                     gridTemplateColumns:
-                        "2fr 0.9fr 0.9fr 0.9fr 0.7fr",
+                        "2fr 0.8fr 0.8fr 0.8fr 0.8fr",
                 }}
             >
+
+                <Box
+                    sx={{
+                        gridColumn: "1 / -1",
+                    }}
+                >
+                    {goalHeader}
+                </Box>
 
                 <Box
                     sx={{
@@ -1409,8 +1419,7 @@ function HRGoalTable({
 
                 <Box
                     sx={{
-                        p: 1.5,
-                        minHeight: 75,
+                        p: 1,
                         borderRight:
                             "1px solid #CBD5E1",
                     }}
@@ -1419,7 +1428,8 @@ function HRGoalTable({
                     <TextField
                         fullWidth
                         multiline
-                        minRows={3}
+                        minRows={1}
+                        maxRows={4}
                         value={targetDescription || ""}
                         onChange={(event) =>
                             onTargetDescriptionChange(
@@ -1448,8 +1458,7 @@ function HRGoalTable({
                         <Box
                             key={month}
                             sx={{
-                                p: 1.5,
-                                minHeight: 75,
+                                p: 1,
                                 borderRight:
                                     "1px solid #CBD5E1",
                             }}
@@ -1484,8 +1493,7 @@ function HRGoalTable({
 
                 <Box
                     sx={{
-                        p: 1.5,
-                        minHeight: 75,
+                        p: 1,
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",

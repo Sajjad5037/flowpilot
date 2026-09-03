@@ -4,7 +4,7 @@ import {
     Divider,
     Box
 } from "@mui/material";
-
+import { COMPANY_INFORMATION_DEFAULTS } from "../../employeeEvaluation/constants/companyInformationDefaults";
 export default function CompanyInformation({
 
     component
@@ -19,11 +19,11 @@ export default function CompanyInformation({
 
     const mission =
         component?.mission ||
-        "Building the future of wealth-tech by combining sophistication with simplicity to deliver verified, high-performance trading results.";
+        COMPANY_INFORMATION_DEFAULTS.missionStatement;
 
     const coreValues =
         component?.coreValues ||
-        "Transparency | Results | Growth | Integrity";
+        COMPANY_INFORMATION_DEFAULTS.coreValues;
 
     const coreValueItems = Array.isArray(coreValues)
         ? coreValues.map(coreValue => ({

@@ -82,11 +82,13 @@ export default function MasterSheetViewer({
     return (
 
         <Box
+            id={`master-sheet-${assignmentId}`}
             sx={{
                 px: 6,
                 py: 4,
                 maxWidth: 1400,
-                mx: "auto"
+                mx: "auto",
+                backgroundColor: "#fff"
             }}
         >
 

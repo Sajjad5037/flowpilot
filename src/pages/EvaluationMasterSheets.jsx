@@ -21,6 +21,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 import {
+    getEvaluationMasterSheetPdf,
     getEvaluationMasterSheets
 } from "../services/evaluationMasterSheetService";
 import MasterSheetViewer
@@ -42,7 +43,34 @@ export default function EvaluationMasterSheets() {
         loadMasterSheets();
 
     }, []);
+    
+    async function handleDownloadPdf(sheet) {
+        try {
+            const assignmentId = sheet.assignment_id;
+            const pdfBlob = await getEvaluationMasterSheetPdf(
+                assignmentId
+            );
+            const objectUrl = URL.createObjectURL(pdfBlob);
+            const downloadLink = document.createElement("a");
 
+            downloadLink.href = objectUrl;
+            downloadLink.download =
+                `evaluation-master-sheet-${assignmentId}.pdf`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            downloadLink.remove();
+            URL.revokeObjectURL(objectUrl);
+        } catch (error) {
+            console.error(
+                "Failed to download evaluation master sheet PDF:",
+                error
+            );
+
+            alert(
+                "Failed to download evaluation master sheet PDF."
+            );
+        }
+    }
     async function loadMasterSheets() {
 
         try {
@@ -209,26 +237,42 @@ export default function EvaluationMasterSheets() {
 
                                     </TableCell>
 
-                                    <TableCell
-                                        align="center"
-                                    >
+                                    <TableCell align="center">
 
-                                        <Button
-                                            variant="contained"
-                                            onClick={() => {
-
-                                                setSelectedAssignmentId(
-                                                    sheet.assignment_id
-                                                );
-
-                                                setOpenViewer(true);
-
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                gap: 1
                                             }}
                                         >
 
-                                            View
+                                            <Button
+                                                variant="contained"
+                                                onClick={() => {
 
-                                        </Button>
+                                                    setSelectedAssignmentId(
+                                                        sheet.assignment_id
+                                                    );
+
+                                                    setOpenViewer(true);
+
+                                                }}
+                                            >
+                                                View
+                                            </Button>
+
+                                            <Button
+                                                variant="outlined"
+                                                onClick={() =>
+                                                    handleDownloadPdf(sheet)
+                                                }
+                                            >
+                                                Download PDF
+                                            </Button>
+
+                                        </Box>
 
                                     </TableCell>
 

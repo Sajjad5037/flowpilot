@@ -4,11 +4,27 @@ const API_BASE =
   import.meta.env.DEV
     ? "http://127.0.0.1:8000"
     : "https://nurpbackend-production.up.railway.app";
+
 export async function getEvaluationMasterSheets() {
 
     const response = await axios.get(
 
         `${API_BASE}/evaluation-master-sheets`
+
+    );
+
+    return response.data;
+
+}
+
+export async function getEvaluationMasterSheetPdf(assignmentId) {
+
+    const response = await axios.get(
+
+        `${API_BASE}/evaluation-master-sheets/${assignmentId}/pdf`,
+        {
+            responseType: "blob"
+        }
 
     );
 

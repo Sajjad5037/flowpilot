@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "react-router-dom";
-
+import { COMPANY_INFORMATION_DEFAULTS } from "./constants/companyInformationDefaults";
 import {
     Box,
     Button,
@@ -94,13 +94,31 @@ export default function EmployeeEvaluationBuilder() {
                     ]
                     : employeeComponents;
 
+            const initializedEmployeeComponents =
+                normalizedEmployeeComponents.map(component =>
+                    component.id === "company_information"
+                        ? {
+                            ...component,
+                            mission:
+                                component.mission ??
+                                COMPANY_INFORMATION_DEFAULTS.missionStatement,
+                            coreValues:
+                                component.coreValues ??
+                                COMPANY_INFORMATION_DEFAULTS.coreValues,
+                            ratingGuide:
+                                component.ratingGuide ??
+                                COMPANY_INFORMATION_DEFAULTS.ratingGuide,
+                        }
+                        : component
+                );
+
             return {
 
                 ...incomingWorkflow,
 
                 stages: {
 
-                    employee: normalizedEmployeeComponents,
+                    employee: initializedEmployeeComponents,
 
                     supervisor:
                         incomingStages.supervisor || [],
@@ -156,7 +174,6 @@ export default function EmployeeEvaluationBuilder() {
         }
 
         const newComponent = {
-
             ...component,
 
             instanceId: crypto.randomUUID(),
@@ -165,6 +182,13 @@ export default function EmployeeEvaluationBuilder() {
                 ? { goals: [{ id: "goal_1" }] }
                 : {}),
 
+            ...(component.id === "company_information"
+                ? {
+                    mission: COMPANY_INFORMATION_DEFAULTS.missionStatement,
+                    coreValues: COMPANY_INFORMATION_DEFAULTS.coreValues,
+                    ratingGuide: COMPANY_INFORMATION_DEFAULTS.ratingGuide,
+                }
+                : {}),
         };
 
 
