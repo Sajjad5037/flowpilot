@@ -29,6 +29,8 @@ const departmentOptions = [
 
     "Sales",
 
+    "Operations",
+
     "Finance",
 
     "Marketing",
