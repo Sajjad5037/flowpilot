@@ -120,6 +120,38 @@ export default function EmployeeFormPreview({
                         Alignment &amp; Final Approval Phase
                     </Typography>
 
+                    <Typography
+                        sx={{
+                            color: "#60708A",
+                            fontSize: {
+                                xs: 12,
+                                sm: 14,
+                            },
+                            fontWeight: 500,
+                            lineHeight: 1.4,
+                            letterSpacing: 0,
+                            mt: 0.75,
+                        }}
+                    >
+                        Employee Name: {employee?.full_name}
+                    </Typography>
+
+                    <Typography
+                        sx={{
+                            color: "#60708A",
+                            fontSize: {
+                                xs: 12,
+                                sm: 14,
+                            },
+                            fontWeight: 500,
+                            lineHeight: 1.4,
+                            letterSpacing: 0,
+                            mt: 0.75,
+                        }}
+                    >
+                        Supervisor Name: {employee?.supervisor_name}
+                    </Typography>
+
                 </Box>
 
             ) : (
@@ -182,6 +214,38 @@ export default function EmployeeFormPreview({
                         {isActualEmployeeEvaluation
                             ? `${previewMode} stage`
                             : `Preview Mode: ${previewMode}`}
+                    </Typography>
+
+                    <Typography
+                        sx={{
+                            color: "#60708A",
+                            fontSize: {
+                                xs: 12,
+                                sm: 14,
+                            },
+                            fontWeight: 500,
+                            lineHeight: 1.4,
+                            letterSpacing: 0,
+                            mt: 0.75,
+                        }}
+                    >
+                        Employee Name: {employee?.full_name}
+                    </Typography>
+
+                    <Typography
+                        sx={{
+                            color: "#60708A",
+                            fontSize: {
+                                xs: 12,
+                                sm: 14,
+                            },
+                            fontWeight: 500,
+                            lineHeight: 1.4,
+                            letterSpacing: 0,
+                            mt: 0.75,
+                        }}
+                    >
+                        Supervisor Name: {employee?.supervisor_name}
                     </Typography>
 
                 </Box>
