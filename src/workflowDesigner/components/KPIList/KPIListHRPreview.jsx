@@ -23,18 +23,19 @@ export default function KPIListHRPreview({
     const supervisorKpiKeys = Object.keys(
         supervisorResponses?.kpi_list || {}
     );
-    const employeeKpiCount = employeeKpiKeys.length;
-    const supervisorKpiCount = supervisorKpiKeys.length;
-    const initialKpiCount = Math.max(
-        employeeKpiCount,
-        supervisorKpiCount,
-        1
-    );
+    const comparisonKpis = [
+        ...new Set([
+            ...employeeKpiKeys,
+            ...supervisorKpiKeys,
+        ])
+    ].sort(
+        (a, b) => parseInt(a.replace("kpi_", ""), 10) -
+            parseInt(b.replace("kpi_", ""), 10)
+    ).map(kpiKey => [kpiKey, {}]);
 
-    // Authoritative KPI keys come from employee/supervisor data, never from HR's own responses.
     const hasHrKpiList = responses?.kpi_list !== undefined;
 
-    const authoritativeKpiKeys = hasHrKpiList
+    const finalKpiKeys = hasHrKpiList
         ? Object.keys(responses.kpi_list)
         : [
             ...new Set([
@@ -46,7 +47,7 @@ export default function KPIListHRPreview({
                 parseInt(b.replace("kpi_", ""), 10)
         );
 
-    const kpis = authoritativeKpiKeys.map(
+    const finalKpis = finalKpiKeys.map(
         kpiKey => [kpiKey, responses?.kpi_list?.[kpiKey] || {}]
     );
 
@@ -63,14 +64,14 @@ export default function KPIListHRPreview({
 
     function addKPI() {
         updateKpis([
-            ...kpis,
+            ...finalKpis,
             ["kpi_new", {}],
         ]);
     }
 
     function removeKPI(kpiIndex) {
         updateKpis(
-            kpis.filter(([,], index) => index !== kpiIndex)
+            finalKpis.filter(([,], index) => index !== kpiIndex)
         );
     }
     return (
@@ -152,7 +153,7 @@ export default function KPIListHRPreview({
                         ))}
                     </Box>
 
-                    {kpis.map(([kpiKey]) => (
+                    {comparisonKpis.map(([kpiKey]) => (
                         <Box
                             key={`comparison-${kpiKey}`}
                             sx={{
@@ -266,7 +267,7 @@ export default function KPIListHRPreview({
                 </Box>
 
                 <Box sx={{ display: "grid", gap: 1.25 }}>
-                    {kpis.map(([kpiKey], index) => (
+                    {finalKpis.map(([kpiKey], index) => (
                         <Box
                             key={`final-${kpiKey}`}
                             sx={{
