@@ -41,6 +41,15 @@ export default function KPIListSupervisorPreview({
         ? kpiEntries
         : [["kpi_1", {}]];
 
+    console.log(
+        "KPI DEBUG - Supervisor Responses",
+        supervisorResponses?.kpi_list
+    );
+    console.log("KPI DEBUG - Rendered KPIs", {
+        count: kpis.length,
+        keys: kpis.map(([kpiKey]) => kpiKey),
+    });
+
     function updateKpis(updatedKpis) {
         onResponsesChange?.({
             ...currentSupervisorResponses,
@@ -74,9 +83,11 @@ export default function KPIListSupervisorPreview({
     }
 
     function removeKPI(kpiIndex) {
-        updateKpis(
-            kpis.filter(([,], index) => index !== kpiIndex)
+        const updatedKpis = kpis.filter(
+            ([,], index) => index !== kpiIndex
         );
+
+        updateKpis(updatedKpis);
     }
     return (
 

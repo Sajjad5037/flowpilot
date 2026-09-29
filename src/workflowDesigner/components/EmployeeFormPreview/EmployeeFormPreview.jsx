@@ -442,6 +442,15 @@ export default function EmployeeFormPreview({
 
                 }
 
+                if (PreviewComponent === KPIListSupervisorPreview) {
+                    console.log("KPI DEBUG - EmployeeFormPreview", {
+                        kpi_list: supervisorResponses?.kpi_list,
+                        count: Object.keys(
+                            supervisorResponses?.kpi_list || {}
+                        ).length,
+                    });
+                }
+
                 return (
 
                     <Box

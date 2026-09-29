@@ -478,11 +478,17 @@ export default function PublicEvaluation() {
     const supervisorKpiKeys = Object.keys(
         supervisorResponses?.kpi_list || {}
     );
-    const authoritativeKpiKeys = new Set([
-        ...employeeKpiKeys,
-        ...supervisorKpiKeys,
-        ...Object.keys(hrResponses?.kpi_list || {}),
-    ]);
+    const hrKpiKeys = Object.keys(
+        hrResponses?.kpi_list || {}
+    );
+    const authoritativeKpiKeys = new Set(
+        hrKpiKeys.length > 0
+            ? hrKpiKeys
+            : [
+                ...employeeKpiKeys,
+                ...supervisorKpiKeys,
+            ]
+    );
     if (authoritativeKpiKeys.size === 0 && kpiComponent) {
         authoritativeKpiKeys.add("kpi_1");
     }
