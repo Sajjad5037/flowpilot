@@ -76,30 +76,30 @@ export default function KPIReviewPlanning({
                 expectation: finalizedKpi.expectation || "",
             }));
     });
-    const [employeeKpis, setEmployeeKpis] = useState([
-        {
-            id: "employee-1",
-            title: "",
-            proposed: "",
-        },
-        {
-            id: "employee-2",
-            title: "",
-            proposed: "",
-        },
-    ]);
-    const [supervisorKpis, setSupervisorKpis] = useState([
-        {
-            id: "supervisor-1",
-            title: "",
-            proposed: "",
-        },
-        {
-            id: "supervisor-2",
-            title: "",
-            proposed: "",
-        },
-    ]);
+    const [employeeKpis, setEmployeeKpis] = useState(() => {
+        const savedProposals =
+            responses?.kpi_review_planning?.employee_proposals;
+
+        return Array.isArray(savedProposals)
+            ? savedProposals
+            : finalizedKpis.map((finalizedKpi, index) => ({
+                id: `employee-${finalizedKpi.id ?? index + 1}`,
+                title: finalizedKpi.title || "",
+                proposed: finalizedKpi.expectation || "",
+            }));
+    });
+    const [supervisorKpis, setSupervisorKpis] = useState(() => {
+        const savedProposals =
+            responses?.kpi_review_planning?.supervisor_proposals;
+
+        return Array.isArray(savedProposals)
+            ? savedProposals
+            : finalizedKpis.map((finalizedKpi, index) => ({
+                id: `supervisor-${finalizedKpi.id ?? index + 1}`,
+                title: finalizedKpi.title || "",
+                proposed: finalizedKpi.expectation || "",
+            }));
+    });
 
     useEffect(() => {
         if (previewMode !== "employee") {
@@ -285,7 +285,7 @@ export default function KPIReviewPlanning({
                     }}
                 >
                     Review the current KPIs and propose any changes
-                    to KPI titles or expectations for Q3.
+                    to KPI titles or expectations for {quarter}.
                 </Typography>
 
 
@@ -403,7 +403,7 @@ export default function KPIReviewPlanning({
                     }}
                 >
                     Review the current KPIs and propose any changes
-                    to KPI titles or expectations for Q3.
+                    to KPI titles or expectations for {quarter}.
                 </Typography>
 
 
@@ -849,11 +849,21 @@ export default function KPIReviewPlanning({
                                     size="small"
                                     aria-label="Delete KPI"
                                     onClick={() => {
-                                        setFinalAgreedKpis((prev) =>
-                                            prev.filter(
-                                                (row) => row.id !== kpi.id
-                                            )
+                                        const updatedRows = finalAgreedKpis.filter(
+                                            (row) => row.id !== kpi.id
                                         );
+
+                                        setFinalAgreedKpis(updatedRows);
+
+                                        if (typeof onResponsesChange === "function") {
+                                            onResponsesChange({
+                                                ...responses,
+                                                kpi_review_planning: {
+                                                    ...(responses?.kpi_review_planning || {}),
+                                                    final_agreed_kpis: updatedRows,
+                                                },
+                                            });
+                                        }
                                     }}
                                 >
                                     ×
