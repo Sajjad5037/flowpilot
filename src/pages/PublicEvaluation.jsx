@@ -52,6 +52,15 @@ export default function PublicEvaluation() {
         const data = await getEvaluationByToken(accessToken);
 
         console.log("Assignment from API:", data);
+
+        console.log("ASSIGNMENT CYCLE DEBUG:", {
+            id: data.id,
+            review_cycle: data.review_cycle,
+            review_cycle_months: data.review_cycle_months,
+            current_stage: data.current_stage,
+            access_stage: data.access_stage,
+        });
+
         console.log("Employee Responses:");
         console.log(data.employee_responses);
 

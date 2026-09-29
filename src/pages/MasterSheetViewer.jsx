@@ -40,8 +40,9 @@ export default function MasterSheetViewer({
             );
 
             console.log("Master Sheet:");
-
             console.log(data);
+            console.log("MASTER SHEET REVIEW CYCLE:", data.review_cycle);
+            console.log("MASTER SHEET MONTHS:", data.review_cycle_months);
 
             setMasterSheet(data);
 

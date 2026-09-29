@@ -58,7 +58,7 @@ export default function GoalSelfEvaluation({
 
     const months =
         Array.isArray(reviewCycleMonths) &&
-        reviewCycleMonths.length === 3
+        reviewCycleMonths.length > 0
             ? reviewCycleMonths
             : ["April", "May", "June"];
 
@@ -700,22 +700,6 @@ export default function GoalSelfEvaluation({
 
                             )}
 
-
-                            {allowSupervisorNotes && (
-
-                                <TextField
-                                    fullWidth
-                                    size="small"
-                                    sx={{ mt: 2 }}
-                                    value={
-                                        supervisorNotes
-                                    }
-                                    multiline
-                                    minRows={2}
-                                    placeholder="Supervisor notes..."
-                                />
-
-                            )}
 
                         </Box>
 

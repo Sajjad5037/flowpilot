@@ -79,7 +79,8 @@ export default function KPIResults({
 
     const settings = component?.settings || {};
     const months =
-        reviewCycleMonths.length === 3
+        Array.isArray(reviewCycleMonths) &&
+        reviewCycleMonths.length > 0
             ? reviewCycleMonths
             : ["January", "February", "March"];
 
