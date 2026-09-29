@@ -42,6 +42,10 @@ export default function EmployeeFormPreview({
     console.log("DEBUG EmployeeFormPreview workflowName:", workflow?.name);
     console.log("DEBUG EmployeeFormPreview isRealEvaluation:", isRealEvaluation);
     const cycleTitle = reviewCycle?.split(" (")[0];
+    const isGoalKpiSetting = [
+        "goal_kpi_setting",
+        "employee_goal_kpi",
+    ].includes(workflow?.type);
 
     let stageComponents;
 
@@ -67,7 +71,7 @@ export default function EmployeeFormPreview({
 
         <Box>
 
-            {previewMode === "hr" ? (
+            {previewMode === "hr" && !isGoalKpiSetting ? (
 
                 <Box
                     sx={{
@@ -193,60 +197,148 @@ export default function EmployeeFormPreview({
                             : workflow.name}
                         {isActualEmployeeEvaluation && cycleTitle &&
                             ` | ${cycleTitle}`}
-                        {!isActualEmployeeEvaluation &&
+                        {!isActualEmployeeEvaluation && !isGoalKpiSetting &&
                             ` — ${previewMode.charAt(0).toUpperCase() + previewMode.slice(1)} Stage`}
                     </Typography>
 
-                    <Typography
-                        sx={{
-                            color: "#60708A",
-                            fontSize: {
-                                xs: 12,
-                                sm: 14,
-                            },
-                            fontWeight: 500,
-                            lineHeight: 1.4,
-                            letterSpacing: 0,
-                            textTransform: "uppercase",
-                            mt: 0.75,
-                        }}
-                    >
-                        {isActualEmployeeEvaluation
-                            ? `${previewMode} stage`
-                            : `Preview Mode: ${previewMode}`}
-                    </Typography>
+                    {isGoalKpiSetting ? (
 
-                    <Typography
-                        sx={{
-                            color: "#60708A",
-                            fontSize: {
-                                xs: 12,
-                                sm: 14,
-                            },
-                            fontWeight: 500,
-                            lineHeight: 1.4,
-                            letterSpacing: 0,
-                            mt: 0.75,
-                        }}
-                    >
-                        Employee Name: {employee?.full_name}
-                    </Typography>
+                        <Box
+                            sx={{
+                                display: "grid",
+                                gridTemplateColumns: {
+                                    xs: "1fr",
+                                    sm: "repeat(2, minmax(0, 1fr))",
+                                },
+                                gap: {
+                                    xs: 2,
+                                    sm: 4,
+                                },
+                                mt: 2.5,
+                            }}
+                        >
+                            <Box sx={{ textAlign: "left", minWidth: 0 }}>
+                                <Typography
+                                    sx={{
+                                        color: "#60708A",
+                                        fontSize: 12,
+                                        fontWeight: 600,
+                                        lineHeight: 1.4,
+                                        letterSpacing: 0,
+                                    }}
+                                >
+                                    EMPLOYEE NAME
+                                </Typography>
+                                <Typography
+                                    sx={{
+                                        color: "#061A3A",
+                                        fontSize: {
+                                            xs: 22,
+                                            sm: 26,
+                                        },
+                                        fontWeight: 700,
+                                        lineHeight: 1.25,
+                                        letterSpacing: 0,
+                                        overflowWrap: "anywhere",
+                                        mt: 0.5,
+                                    }}
+                                >
+                                    {employee?.full_name}
+                                </Typography>
+                            </Box>
 
-                    <Typography
-                        sx={{
-                            color: "#60708A",
-                            fontSize: {
-                                xs: 12,
-                                sm: 14,
-                            },
-                            fontWeight: 500,
-                            lineHeight: 1.4,
-                            letterSpacing: 0,
-                            mt: 0.75,
-                        }}
-                    >
-                        Supervisor Name: {employee?.supervisor_name}
-                    </Typography>
+                            <Box
+                                sx={{
+                                    textAlign: "right",
+                                    minWidth: 0,
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        color: "#60708A",
+                                        fontSize: 12,
+                                        fontWeight: 600,
+                                        lineHeight: 1.4,
+                                        letterSpacing: 0,
+                                    }}
+                                >
+                                    SUPERVISOR NAME
+                                </Typography>
+                                <Typography
+                                    sx={{
+                                        color: "#061A3A",
+                                        fontSize: {
+                                            xs: 22,
+                                            sm: 26,
+                                        },
+                                        fontWeight: 700,
+                                        lineHeight: 1.25,
+                                        letterSpacing: 0,
+                                        overflowWrap: "anywhere",
+                                        mt: 0.5,
+                                    }}
+                                >
+                                    {employee?.supervisor_name}
+                                </Typography>
+                            </Box>
+                        </Box>
+
+                    ) : (
+
+                        <>
+                            <Typography
+                                sx={{
+                                    color: "#60708A",
+                                    fontSize: {
+                                        xs: 12,
+                                        sm: 14,
+                                    },
+                                    fontWeight: 500,
+                                    lineHeight: 1.4,
+                                    letterSpacing: 0,
+                                    textTransform: "uppercase",
+                                    mt: 0.75,
+                                }}
+                            >
+                                {isActualEmployeeEvaluation
+                                    ? `${previewMode} stage`
+                                    : `Preview Mode: ${previewMode}`}
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    color: "#60708A",
+                                    fontSize: {
+                                        xs: 12,
+                                        sm: 14,
+                                    },
+                                    fontWeight: 500,
+                                    lineHeight: 1.4,
+                                    letterSpacing: 0,
+                                    mt: 0.75,
+                                }}
+                            >
+                                Employee Name: {employee?.full_name}
+                            </Typography>
+
+                            <Typography
+                                sx={{
+                                    color: "#60708A",
+                                    fontSize: {
+                                        xs: 12,
+                                        sm: 14,
+                                    },
+                                    fontWeight: 500,
+                                    lineHeight: 1.4,
+                                    letterSpacing: 0,
+                                    mt: 0.75,
+                                }}
+                            >
+                                Supervisor Name: {employee?.supervisor_name}
+                            </Typography>
+                        </>
+
+                    )}
 
                 </Box>
 

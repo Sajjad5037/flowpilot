@@ -283,7 +283,7 @@ export default function KPIListHRPreview({
                             <TextField
                                 fullWidth
                                 size="small"
-                                placeholder="HR KPI Title"
+                                placeholder="KPI Title"
                                 value={responses?.kpi_list?.[kpiKey]?.title || ""}
                                 onChange={(event) => {
                                     onResponsesChange({
@@ -302,7 +302,7 @@ export default function KPIListHRPreview({
                             <TextField
                                 fullWidth
                                 size="small"
-                                placeholder="HR KPI Expectation"
+                                placeholder="KPI Expectation"
                                 value={responses?.kpi_list?.[kpiKey]?.expectation || ""}
                                 onChange={(event) => {
                                     onResponsesChange({
