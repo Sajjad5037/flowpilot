@@ -1,16 +1,39 @@
-# React + Vite
+# FlowPilot – Performance Review Workflow Automation Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+FlowPilot is a full-stack performance management and workflow automation platform designed to digitize and streamline employee performance review processes.
 
-Currently, two official plugins are available:
+The platform manages the complete performance review lifecycle, from Goal & KPI Setting through Employee, Supervisor, and HR workflows to quarterly Employee Evaluations, finalized targets, monthly performance tracking, and reporting.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Overview
 
-## React Compiler
+Traditional performance review processes often rely on spreadsheets, emails, manual follow-ups, and disconnected documents.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+FlowPilot brings these processes into a centralized workflow platform where:
 
-## Expanding the ESLint configuration
+- Employees submit their Goals & KPIs.
+- Supervisors independently review and contribute to Goals & KPIs.
+- HR finalizes agreed Goals and KPIs.
+- Finalized targets are automatically carried into the Employee Evaluation workflow.
+- Employees and Supervisors complete quarterly performance evaluations.
+- Monthly progress is tracked against finalized goals and KPIs.
+- HR can review consolidated performance information through Master Sheets.
+- Evaluation workflows and notifications are managed centrally.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+The system is designed around configurable workflows rather than hard-coded forms, allowing different evaluation processes to be represented through reusable workflow and component configurations.
+
+---
+
+## Key Features
+
+### Goal & KPI Setting
+
+Complete multi-stage Goal & KPI workflow:
+
+```text
+Employee
+   ↓
+Supervisor
+   ↓
+HR
+   ↓
+Finalized Goals & KPIs
